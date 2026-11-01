@@ -2,53 +2,49 @@ name: Build Thesis PDF
 
 on:
   push:
-    branches: [ "**" ]
-  pull_request:
-    branches: [ "**" ]
+    branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  build:
-    name: Build LaTeX PDF
+  release:
+    name: Build and publish thesis PDF
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - name: Checkout repository
+      - name: Checkout merge commit
         uses: actions/checkout@v4
 
-      - name: Install TeX dependencies for testing build script
+      # The SVG package in the thesis invokes Inkscape through -shell-escape.
+      - name: Install Inkscape
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-lang-czechslovak inkscape
+          sudo apt-get install -y --no-install-recommends inkscape
 
-      - name: Run build script test suite
-        run: ./build.sh test
-
-      - name: Compile LaTeX document
-        uses: xu-cheng/latex-action@v3
+      # TeX Live is cached by the action. Bump cache_version when changing
+      # the TeX Live version or required package set to force a fresh install.
+      - name: Install cached TeX Live
+        uses: zauguin/install-texlive@v4
         with:
-          root_file: main.tex
-          latexmk_use_pdflatex: true
-          args: -pdf -shell-escape -file-line-error -halt-on-error -interaction=nonstopmode
+          texlive_version: 2026
+          cache_version: 1
+          packages: >
+            latexmk
+            collection-latexrecommended
+            collection-latexextra
+            collection-fontsrecommended
+            collection-langczechslovak
 
-      - name: Upload PDF Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: master-thesis
-          path: main.pdf
-          if-no-files-found: error
+      - name: Build PDF
+        run: ./build.sh build
 
       - name: Publish GitHub Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ github.run_number }}
           name: "Thesis Release v${{ github.run_number }}"
           body: |
-            Automaticky publikované vydanie po úspešnom zlúčení do vetvy `main`.
+            Automated PDF release for merge commit ${{ github.sha }}.
           files: main.pdf
           generate_release_notes: true
           make_latest: true
