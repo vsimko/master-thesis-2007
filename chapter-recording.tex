@@ -337,7 +337,7 @@ c=IN IP4 127.0.0.1
 m=video 10000 RTP/AVP 31
 \end{verbatim}
 
-Then run mencoder with \verb|-ovc [raw|lavc|copy]| and \verb|sdp://test.sdp|, or try MPlayer instead of mencoder.
+Then run mencoder with \texttt{-ovc [raw|lavc|copy]} and \verb|sdp://test.sdp|, or try MPlayer instead of mencoder.
 
 Next, start \verb|vic 127.0.0.1/10000|. The video appears in MPlayer, but with artefacts, and the log contains errors such as:
 \begin{verbatim}
