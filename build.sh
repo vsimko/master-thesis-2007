@@ -13,10 +13,10 @@ case "${1:-build}" in
   build)
     if command -v latexmk >/dev/null 2>&1; then
       echo "Building using latexmk..."
-      latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+      latexmk -pdf -shell-escape -interaction=nonstopmode -halt-on-error main.tex
     else
       echo "Building using pdflatex and bibtex..."
-      pdflatex -interaction=nonstopmode -halt-on-error main.tex
+      pdflatex -shell-escape -interaction=nonstopmode -halt-on-error main.tex
       bibtex main
       pdflatex -interaction=nonstopmode -halt-on-error main.tex
       pdflatex -interaction=nonstopmode -halt-on-error main.tex
