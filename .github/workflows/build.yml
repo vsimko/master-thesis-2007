@@ -22,7 +22,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-lang-czechslovak
+            texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-lang-czechslovak inkscape
 
       - name: Run build script test suite
         run: ./build.sh test
@@ -32,6 +32,7 @@ jobs:
         with:
           root_file: main.tex
           latexmk_use_pdflatex: true
+          args: -pdf -shell-escape -file-line-error -halt-on-error -interaction=nonstopmode
 
       - name: Upload PDF Artifact
         uses: actions/upload-artifact@v4
