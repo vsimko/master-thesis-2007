@@ -19,8 +19,9 @@ def asset_path(raw_name: str) -> Path:
     candidate = Path(raw_name)
     if candidate.is_absolute():
         return candidate
-    root_candidate = ROOT / candidate
-    return root_candidate if root_candidate.exists() else IMAGE_DIR / candidate
+    if candidate.parts and candidate.parts[0] == "images":
+        return ROOT / candidate
+    return IMAGE_DIR / candidate
 
 svg_refs = []
 graphics_refs = []
