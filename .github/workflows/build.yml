@@ -35,6 +35,9 @@ jobs:
             collection-fontsrecommended
             collection-langczechslovak
 
+      - name: Validate build and SVG source pipeline
+        run: ./build.sh test
+
       - name: Build PDF
         run: ./build.sh build
 
