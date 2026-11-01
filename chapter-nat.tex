@@ -112,19 +112,19 @@ So far, we have considered situations in which a client in a NAT-protected netwo
 However, it is also possible to address the case of two NAT-protected nodes located in separate networks.
 
 In the following example, the \textbf{nat-traverse} tool is used together with the PPP protocol to create a tunnel. NAT on both sides must preserve port numbers.
-The example shows a NAT gateway \verb|\${CLIENT_IP}| for the client and a NAT gateway \verb|\${CLIENT_IP}| for the server.
+The example shows a NAT gateway \verb|${CLIENT_IP}| for the client and a NAT gateway \verb|${CLIENT_IP}| for the server.
 Both parties exchange UDP packets through port 40000.
 
 \begin{verbatim}
 # client: create the ppp0 interface
 nat-traverse --cmd="pppd updetach noauth passive notty ipparam \
-  vpn 10.0.0.1:10.0.0.2" 40000:\${CLIENT_IP}:40000
+  vpn 10.0.0.1:10.0.0.2" 40000:${CLIENT_IP}:40000
 \end{verbatim}
 
 \begin{verbatim}
 # server: accept the PPP connection
 nat-traverse --cmd="pppd nodetach notty noauth" \
-  40000:\${SERVER_IP}:40000
+  40000:${SERVER_IP}:40000
 \end{verbatim}
 
 After the tunnel has been established, routing tables must be configured on both sides.
