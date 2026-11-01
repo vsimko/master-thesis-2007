@@ -36,7 +36,7 @@ Key topics covered:
 ├── conclusion.tex           # Conclusion & future work
 ├── bibfile.bib              # Bibliography references
 ├── csprimes.tex             # Typography macros
-├── images/                  # Diagrams (.odg, .pdf) and screenshots (.png)
+├── images/                  # SVG sources, historical PDF exports, raster images
 ├── build.sh                 # Build, cleanup, and test script
 ├── tests/                   # Build and SVG pipeline tests
 └── .github/workflows/       # GitHub Actions CI build workflow
@@ -82,7 +82,7 @@ The provided `build.sh` script automates the compilation and cleanup process:
 ### Using latexmk directly
 
 ```sh
-latexmk -pdf main.tex
+latexmk -pdf -shell-escape main.tex
 ```
 
 ---
