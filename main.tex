@@ -3,31 +3,31 @@
 %\usepackage{ucs}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Moja specialna verzia pre 11pt a okrajmi 3cm
+% Custom layout for 11pt text and 3cm margins
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \topmargin=0cm
 \voffset=0.5cm		% 1in=2.5cm => 3cm
 \hoffset=0.5cm		% 1in=2.5cm => 3cm
 \textwidth=14cm
 \textheight=22.5cm
-\oddsidemargin=1cm	% neparne stranky doprava o 1cm
-\evensidemargin=0cm	% parne stranky dolava o 1cm
+\oddsidemargin=1cm	% Odd pages shifted 1cm to the right
+\evensidemargin=0cm	% Even pages shifted 1cm to the left
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %\fbox{ahoj ja som fbox} umoznuje vytvorit ramcek okolo textu
 
-% keby som naozaj chcel odsadzovat aj prve odstavce
-% je to ale typograficky nespravne
+% If I really wanted to indent the first paragraphs as well
+% This is typographically incorrect, however
 %\usepackage{indentfirst}
 
-% definujeme, ze zdrojovy dokument je v kodovani utf8
+% Define UTF-8 encoding for the source document
 \usepackage[utf8]{inputenc}
 
-% spravne kodovanie vysledneho PDF
+% Set the correct encoding for the resulting PDF
 \usepackage{cmap}
 \usepackage[T1]{fontenc}
 
-% pekné fonty vo výslednom PDF dokumente, ale nejde vyhladavat
+% Attractive fonts in the resulting PDF, but the text is not searchable
 %\usepackage{ae,aecompl}
 %\usepackage{times}
 
@@ -43,21 +43,21 @@
 
 \usepackage[
 	pdfborder={0 0 0},
-	unicode, % texty poli v PDF dokumente budu v unicode
+	unicode, % Text in PDF form fields will use Unicode
 	plainpages=false,
 	pdfpagelabels,
 	hyperindex,
 	hyperfigures=true,
-	bookmarksnumbered=true, %v pdf zalozkach vygeneruje aj cisla kapitol
+	bookmarksnumbered=true, % Include chapter numbers in PDF bookmarks
 	bookmarks,
-	breaklinks=true, %hypertextove odkazy mozu byt zalomene na dva riadky
+	breaklinks=true, % Hyperlinks may wrap across two lines
 	hypertexnames=true 
 ]{hyperref}
 
 % must go after hyperref definition
 \usepackage[all]{hypcap} % instead of captions, refs will scroll to images
 
-% malo by totalne zabranit vzniku vdov a sirot
+% Should completely prevent widows and orphans
 \clubpenalty=10000
 \widowpenalty=10000
 
@@ -65,7 +65,7 @@
 
 \usepackage{makeidx}
 
-% musi ist ako posledny prikaz v preambule
+% Must be the last command in the preamble
 \makeindex
 
 % ======================================
@@ -90,10 +90,10 @@
 
 \begin{document}
 
-	% zabezpeci, ze znak uvodzovky bude zobrazeny podla cestiny
+	% Ensures quotation marks are displayed according to Czech conventions
 	\include{csprimes}
 	
-	% zoznam slov, ktore sa nemaju rozdelovat
+	% List of words that must not be hyphenated
 	\hyphenation{AccessGrid AccessGridu VRVS RTMP Polylogues OpenOffice video-projekcie}
 	
 	\frontmatter
