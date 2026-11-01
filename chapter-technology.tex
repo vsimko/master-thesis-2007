@@ -45,128 +45,128 @@ The rest of this chapter discusses the features of selected applications. The se
 
 We selected Skype as an example of a commercially successful and widely used system that is easy to install and operate.
 
-Figure \\ref{fig:Skype-Architecture} illustrates how nodes communicate in the Skype network. Nodes located behind a network firewall communicate with the outside world through so-called supernodes\\footnote{Later in this thesis, we will consider other approaches to solving problems associated with firewalls.}. Users log in to the network through a login server. After successful authentication, supernodes facilitate multimedia transmission between end clients. To establish a connection, a client contacts nearby supernodes in sequence. These recursively contact their neighbours until a route to the called client is found. Multimedia packet routing is then handled at the application layer (according to the ISO/OSI model), taking advantage of the decentralised nature of the Skype network.
+Figure \ref{fig:Skype-Architecture} illustrates how nodes communicate in the Skype network. Nodes located behind a network firewall communicate with the outside world through so-called supernodes\footnote{Later in this thesis, we will consider other approaches to solving problems associated with firewalls.}. Users log in to the network through a login server. After successful authentication, supernodes facilitate multimedia transmission between end clients. To establish a connection, a client contacts nearby supernodes in sequence. These recursively contact their neighbours until a route to the called client is found. Multimedia packet routing is then handled at the application layer (according to the ISO/OSI model), taking advantage of the decentralised nature of the Skype network.
 
-This dependence on supernodes is directly related to the closed nature of the Skype protocol. As Figure \\ref{fig:Skype-Architecture} shows, a client with a sufficiently fast connection and its own public IP address may become a supernode. According to \\cite{ArticleUreliable-Root-10-duvodu-proc-nepouzivat-skype}, alternative interfaces could allow applications to prevent supernodes from being created, which could improve the overall transmission quality across the Skype network. The developers therefore have little incentive to publish their protocol.
+This dependence on supernodes is directly related to the closed nature of the Skype protocol. As Figure \ref{fig:Skype-Architecture} shows, a client with a sufficiently fast connection and its own public IP address may become a supernode. According to \cite{ArticleUreliable-Root-10-duvodu-proc-nepouzivat-skype}, alternative interfaces could allow applications to prevent supernodes from being created, which could improve the overall transmission quality across the Skype network. The developers therefore have little incentive to publish their protocol.
 
 The automatic creation of supernodes leads to bandwidth being used without the network owner's knowledge. This can be a problem when transferred data are metered and charged for, as was the case, for example, with UPC cable television and Internet networks or ADSL connections in the Czech Republic.
 
-\\subsubsection*{Advantages}
+\subsubsection*{Advantages}
 \begin{paklist}
-\\item Easy to install and operate.
-\\item The distributed nature of the application allows it to traverse NAT and firewalls\\index{NAT!traversal} using its supernode network (Figure \\ref{fig:Skype-Architecture}).
-\\item The application is currently free of charge, and the provider also offers calls to commercial telephone networks.
-\\item The application is available for Windows, Mac, Linux and Pocket PC.
-\\item Additional modules support videoconferencing features such as text, audio, video and selective desktop sharing.
-\\item Communication between nodes is encrypted. Key exchange uses 2048-bit RSA encryption, while the transmission itself uses 256-bit AES.
+\item Easy to install and operate.
+\item The distributed nature of the application allows it to traverse NAT and firewalls\index{NAT!traversal} using its supernode network (Figure \ref{fig:Skype-Architecture}).
+\item The application is currently free of charge, and the provider also offers calls to commercial telephone networks.
+\item The application is available for Windows, Mac, Linux and Pocket PC.
+\item Additional modules support videoconferencing features such as text, audio, video and selective desktop sharing.
+\item Communication between nodes is encrypted. Key exchange uses 2048-bit RSA encryption, while the transmission itself uses 256-bit AES.
 \end{paklist}
 
-\\subsubsection*{Disadvantages}
+\subsubsection*{Disadvantages}
 \begin{paklist}
-\\item Closed protocol.
-\\item The Linux interface, version 1.3.0.53 at the time of writing, does not support video transmission.
-\\item Supernodes are created automatically and consume network bandwidth without the network owner's knowledge.
-\\item The application does not allow users to control transmission quality directly; settings are adjusted automatically.
-\\item The system cannot be used without an Internet connection (for example, on an isolated LAN). It must always contact the login server (Figure \\ref{fig:Skype-Architecture}).
+\item Closed protocol.
+\item The Linux interface, version 1.3.0.53 at the time of writing, does not support video transmission.
+\item Supernodes are created automatically and consume network bandwidth without the network owner's knowledge.
+\item The application does not allow users to control transmission quality directly; settings are adjusted automatically.
+\item The system cannot be used without an Internet connection (for example, on an isolated LAN). It must always contact the login server (Figure \ref{fig:Skype-Architecture}).
 \end{paklist}
 
 % ==================================================
 \subsection{Adobe Flash}\label{kap:Adobe Flash}
 % ==================================================
-Given its widespread availability in most contemporary web browsers, Flash technology offers a way to deliver a videoconferencing solution to users without requiring them to install a separate application. The latest version, Flash 9, is available for Windows, Mac and Linux, while older versions exist for Solaris, HP-UX, BeOS and other platforms. Examples of videoconferencing solutions built on this technology include InstantPresenter \\cite{Company-Flash-InstantPresenter} and FlashMeeting \\cite{Company-Flash-FlashMeeting}.
+Given its widespread availability in most contemporary web browsers, Flash technology offers a way to deliver a videoconferencing solution to users without requiring them to install a separate application. The latest version, Flash 9, is available for Windows, Mac and Linux, while older versions exist for Solaris, HP-UX, BeOS and other platforms. Examples of videoconferencing solutions built on this technology include InstantPresenter \cite{Company-Flash-InstantPresenter} and FlashMeeting \cite{Company-Flash-FlashMeeting}.
 
 \begin{figure}[htp]
 \centering
 \includesvg[width=0.6\textwidth]{flash-architecture}
 %\includegraphics[width=0.45\textwidth]{images/app-flashmeeting-testtool}
 %\includegraphics[width=0.45\textwidth]{images/app-flashmeeting-vote}
-\\caption{Flash Media Server architecture.}
+\caption{Flash Media Server architecture.}
 \label{fig:Flash-Architecture}
 \end{figure}
 
-Figure \\ref{fig:Flash-Architecture} illustrates the centralised nature of the system. The central component, Flash Media Server, is assumed to have a public IP address and a sufficiently fast connection to handle communication with connected clients (labelled "node" in the figure). This centralised architecture can traverse NAT and firewalls\\index{NAT!traversal}, since it can, if necessary, encapsulate communication in TCP packets.
+Figure \ref{fig:Flash-Architecture} illustrates the centralised nature of the system. The central component, Flash Media Server, is assumed to have a public IP address and a sufficiently fast connection to handle communication with connected clients (labelled "node" in the figure). This centralised architecture can traverse NAT and firewalls\index{NAT!traversal}, since it can, if necessary, encapsulate communication in TCP packets.
 
-Multimedia packets are transmitted using the proprietary Real Time Messaging Protocol (RTMP\\footnote{Do not confuse this with the Routing Table Maintenance Protocol from the AppleTalk family.}). Since no freely available RTMP specification exists, the open-source Red5 project \\cite{OpenSourceFlash-Red5} was created. Using reverse engineering\\footnote{The authors describe this process as "discovery through observation."}, it implements a substantial part of the protocol \\cite{OpenSourceFlash-RTMP-AMF}. RTMP uses UDP port 1935 and, if that port is blocked, can tunnel traffic through TCP port 80 (HTTP).
+Multimedia packets are transmitted using the proprietary Real Time Messaging Protocol (RTMP\footnote{Do not confuse this with the Routing Table Maintenance Protocol from the AppleTalk family.}). Since no freely available RTMP specification exists, the open-source Red5 project \cite{OpenSourceFlash-Red5} was created. Using reverse engineering\footnote{The authors describe this process as "discovery through observation."}, it implements a substantial part of the protocol \cite{OpenSourceFlash-RTMP-AMF}. RTMP uses UDP port 1935 and, if that port is blocked, can tunnel traffic through TCP port 80 (HTTP).
 
-\\subsubsection*{Advantages}
+\subsubsection*{Advantages}
 \begin{paklist}
-\\item The technology is available on multiple platforms.
-\\item Apart from installing the web browser itself and the Flash plugin, no additional application installation is required. Communication takes place directly in the web browser.
-\\item Simple camera and microphone setup and calibration.
-\\item Other features advertised by the manufacturer include SSL communication, load balancing and QoS.
-\\item A large number of open-source projects related to Flash technology \\cite{OpenSourceFlash-AllProjects}.
+\item The technology is available on multiple platforms.
+\item Apart from installing the web browser itself and the Flash plugin, no additional application installation is required. Communication takes place directly in the web browser.
+\item Simple camera and microphone setup and calibration.
+\item Other features advertised by the manufacturer include SSL communication, load balancing and QoS.
+\item A large number of open-source projects related to Flash technology \cite{OpenSourceFlash-AllProjects}.
 \end{paklist}
 
-\\subsubsection*{Disadvantages}
+\subsubsection*{Disadvantages}
 \begin{paklist}
-\\item The system is intended for relatively small conferences because the Flash plugin has higher hardware requirements than, for example, VRVS or AccessGrid, which are discussed later in this chapter.
-\\item At the time of writing, no complete open-source implementation or other native implementation was available for the x86-64, PowerPC or ARM architectures.
-\\item Dependence on reverse engineering.
+\item The system is intended for relatively small conferences because the Flash plugin has higher hardware requirements than, for example, VRVS or AccessGrid, which are discussed later in this chapter.
+\item At the time of writing, no complete open-source implementation or other native implementation was available for the x86-64, PowerPC or ARM architectures.
+\item Dependence on reverse engineering.
 \end{paklist}
 
 % ==================================
 \subsection{InSORS}\label{kap:InSORS}
 % ==================================
-The InSORS IG2 solution is based on MBone technology, which will be discussed in later chapters in connection with AccessGrid (Chapter \\ref{kap:AccessGrid}). InSORS provides an integrated environment comprising both software and hardware components. Customers therefore receive a fully configured videoconferencing system, although it is available only for Windows.
+The InSORS IG2 solution is based on MBone technology, which will be discussed in later chapters in connection with AccessGrid (Chapter \ref{kap:AccessGrid}). InSORS provides an integrated environment comprising both software and hardware components. Customers therefore receive a fully configured videoconferencing system, although it is available only for Windows.
 
 \begin{figure}[htp]
 \centering
 \includesvg[width=0.8\textwidth]{arch-multicast}
-\\caption{Architecture of a system using a multicast network.}
+\caption{Architecture of a system using a multicast network.}
 \label{fig:ArchMulticast}
 \end{figure}
 
-As with AccessGrid, communication takes place either over a multicast network or through bridges from a unicast network (Figure \\ref{fig:ArchMulticast}).
+As with AccessGrid, communication takes place either over a multicast network or through bridges from a unicast network (Figure \ref{fig:ArchMulticast}).
 
 The system includes the IG Recorder tool, which can record shared presentations in addition to audio and video. Conference recordings can also be played back during an ongoing videoconference.
 
 \subsubsection*{Advantages}
 \begin{paklist}
-\\item Recording of shared conferences and presentations.
-\\item An integrated environment, with software and hardware available as a single package.
-\\item Integration with other VoIP technologies and bridging between H.323 and AccessGrid systems.
-\\item InSORS uses open standards, including the H.261, H.263 and H.264 codecs (Chapters \\ref{kap:H.261}, \\ref{kap:H.263} and \\ref{kap:H.264}). Multimedia data are transmitted using RTP (Chapter \\ref{kap:RTP+RTCP}).
+\item Recording of shared conferences and presentations.
+\item An integrated environment, with software and hardware available as a single package.
+\item Integration with other VoIP technologies and bridging between H.323 and AccessGrid systems.
+\item InSORS uses open standards, including the H.261, H.263 and H.264 codecs (Chapters \ref{kap:H.261}, \ref{kap:H.263} and \ref{kap:H.264}). Multimedia data are transmitted using RTP (Chapter \ref{kap:RTP+RTCP}).
 \end{paklist}
 
 \subsubsection*{Disadvantages}
 \begin{paklist}
-\\item The application is available only for Windows.
-\\item Use of InSORS videoconferencing is subject to a fee.
+\item The application is available only for Windows.
+\item Use of InSORS videoconferencing is subject to a fee.
 \end{paklist}
 
 % ==================================
 \subsection{VRVS + EVO}\label{kap:VRVS}\index{VRVS!system}
 % ==================================
-The final commercial videoconferencing solutions discussed in this thesis are Virtual Rooms Videoconferencing System (VRVS) and its successor, EVO. VRVS is a distributed system for real-time communication, accessible through a web-based user interface that uses platform-dependent client applications. These are modified versions of MBone tools such as VIC (Chapter \\ref{kap:VIC}) and RAT (Chapter \\ref{kap:RAT}) from the OpenMash project (Chapter \\ref{kap:OpenMash}). Other components, such as bridges for software or hardware H.323 clients, use Java.
+The final commercial videoconferencing solutions discussed in this thesis are Virtual Rooms Videoconferencing System (VRVS) and its successor, EVO. VRVS is a distributed system for real-time communication, accessible through a web-based user interface that uses platform-dependent client applications. These are modified versions of MBone tools such as VIC (Chapter \ref{kap:VIC}) and RAT (Chapter \ref{kap:RAT}) from the OpenMash project (Chapter \ref{kap:OpenMash}). Other components, such as bridges for software or hardware H.323 clients, use Java.
 
 \begin{figure}[htp]
 \centering
 \includegraphics[width=0.48\textwidth]{images/app-monalisa1.png}
 \includegraphics[width=0.48\textwidth]{images/app-monalisa3.png}
-\\caption{Monitoring the distributed VRVS reflector network\\index{VRVS!reflektor} using the MonaLisa application.}
+\caption{Monitoring the distributed VRVS reflector network\index{VRVS!reflektor} using the MonaLisa application.}
 \label{fig:MonaLisa-frontend}
 \end{figure}
 
-VRVS operates a network of reflectors\\index{VRVS!reflektor}: servers located around the world that facilitate communication between VRVS clients. A special type of reflector is the VRVS-AG Reflector, which enables communication with AccessGrid nodes. Regardless of whether a client has unicast or multicast connectivity, VRVS transparently bridges AccessGrid, QuickTime and H.323 technologies.
+VRVS operates a network of reflectors\index{VRVS!reflektor}: servers located around the world that facilitate communication between VRVS clients. A special type of reflector is the VRVS-AG Reflector, which enables communication with AccessGrid nodes. Regardless of whether a client has unicast or multicast connectivity, VRVS transparently bridges AccessGrid, QuickTime and H.323 technologies.
 
-Network monitoring for VRVS\\index{VRVS!monitoring} is provided by a modified version of the MonaLisa system\\footnote{Monitoring Agents using a Large Integrated Services Architecture}. Its graphical interface is shown in Figure \\ref{fig:MonaLisa-frontend}. On the left, a world map shows the reflector network, including reflectors located in Europe; on the right, the same network is presented as a clear graph.
+Network monitoring for VRVS\index{VRVS!monitoring} is provided by a modified version of the MonaLisa system\footnote{Monitoring Agents using a Large Integrated Services Architecture}. Its graphical interface is shown in Figure \ref{fig:MonaLisa-frontend}. On the left, a world map shows the reflector network, including reflectors located in Europe; on the right, the same network is presented as a clear graph.
 
-An interesting feature that reduces bandwidth requirements is "Voice Switched mode". The VRVS authors provide the following example in their publication \\cite{VRVS-SK-Manual}:
+An interesting feature that reduces bandwidth requirements is "Voice Switched mode". The VRVS authors provide the following example in their publication \cite{VRVS-SK-Manual}:
 
 \begin{quote}
 Example: Assume that the guaranteed network capacity is 1024 Kbit/s and that 15 participants are taking part in a videoconference. Each participant transmits high-quality video at approximately 800 Kbit/s. The network would therefore need a capacity of at least 12 Mbit/s:
 
 Number of participants x 800 Kbit/s + 64 Kbit/s (minimum audio stream) =
-= (15 x 800 + 64) Kbit/s = \\textbf{12064 Kbit/s}.
+= (15 x 800 + 64) Kbit/s = \textbf{12064 Kbit/s}.
 
-Solution: We enable "Voice Switched" mode and ask the VRVS reflector\\index{VRVS!reflektor} to send video only from the participant who is currently speaking. This reduces the required bandwidth to:
+Solution: We enable "Voice Switched" mode and ask the VRVS reflector\index{VRVS!reflektor} to send video only from the participant who is currently speaking. This reduces the required bandwidth to:
 
-1 x 800 Kbit/s (video) + 64 Kbit/s (audio) = \\textbf{864 Kbit/s}.
+1 x 800 Kbit/s (video) + 64 Kbit/s (audio) = \textbf{864 Kbit/s}.
 \end{quote} 
 
 Like InSORS and AccessGrid, VRVS also supports conference recording. However, recording takes place on the server side, where an authorised operator manually controls the recording of RTP packets from a selected virtual room.
 
-Although VRVS is a commercial project of the California Institute of Technology, the system is available to the scientific community free of charge. Expansion of the VRVS reflector network\\index{VRVS!reflektor} is managed by the system developers. Applicants who meet the criteria can operate their own reflector connected to the VRVS network. Users are organised into groups according to their fields of interest, known as VRVS communities (Internet2, SLOVAKIA\\ldots).
+Although VRVS is a commercial project of the California Institute of Technology, the system is available to the scientific community free of charge. Expansion of the VRVS reflector network\index{VRVS!reflektor} is managed by the system developers. Applicants who meet the criteria can operate their own reflector connected to the VRVS network. Users are organised into groups according to their fields of interest, known as VRVS communities (Internet2, SLOVAKIA\ldots).
 
 In September 2003, the Slovak Academic Videoconferencing Network was opened to all universities, Slovak Academy of Sciences research institutes and government organisations connected to the SANET optical network (Association of Users of the Slovak Academic Data Network). This created an environment for experimental projects such as open and distance learning.
 
@@ -175,55 +175,55 @@ The EVO application is intended to become the successor to VRVS in the near futu
 \begin{samepage}
 \subsubsection*{Advantages}
 \begin{paklist}
-\\item Available directly through a web interface, with automatic installation.
-\\item Integrated virtual-room reservation system.
-\\item Peer-to-peer reflector network.
-\\item Bridging between different technologies.
-\\item Network status monitoring.
-\\item Voice Switched mode.
+\item Available directly through a web interface, with automatic installation.
+\item Integrated virtual-room reservation system.
+\item Peer-to-peer reflector network.
+\item Bridging between different technologies.
+\item Network status monitoring.
+\item Voice Switched mode.
 \end{paklist}
 \end{samepage}
 
 \subsubsection*{Disadvantages}
 \begin{paklist}
-\\item Requires the deployment of a reflector network.
-\\item Users must install Java and accept certificates.
+\item Requires the deployment of a reflector network.
+\item Users must install Java and accept certificates.
 \end{paklist}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\\section{Selected freely available systems}
+\section{Selected freely available systems}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % ================================================================
-\\subsection{VoIP solutions}\\label{kap:VoIP-Software}
+\subsection{VoIP solutions}\label{kap:VoIP-Software}
 % ================================================================
-From this category, we select the following applications: \\textbf{Linphone}, \\textbf{Ekiga}, \\textbf{Wengophone} and \\textbf{Asterisk}. All are available for Windows and Linux, are distributed under the GPL licence\\footnote{General Public License $\\Rightarrow$ open source}, and support SIP and, in some cases, H.323 (Chapter \\ref{kap:VoIP-Protocols}).
+From this category, we select the following applications: \textbf{Linphone}, \textbf{Ekiga}, \textbf{Wengophone} and \textbf{Asterisk}. All are available for Windows and Linux, are distributed under the GPL licence\footnote{General Public License $\Rightarrow$ open source}, and support SIP and, in some cases, H.323 (Chapter \ref{kap:VoIP-Protocols}).
 
-Linphone supports audio transmission only. Ekiga and Wengophone use a connected webcam to transmit video. They also provide new users with a free SIP account, such as \\url{username@ekiga.net} or \\url{username@voip.wengo.fr}. Wengophone even provides credit for calls to landline and mobile networks and can route calls directly to a SIP account. It also supports SMS messages.
+Linphone supports audio transmission only. Ekiga and Wengophone use a connected webcam to transmit video. They also provide new users with a free SIP account, such as \url{username@ekiga.net} or \url{username@voip.wengo.fr}. Wengophone even provides credit for calls to landline and mobile networks and can route calls directly to a SIP account. It also supports SMS messages.
 
-Both applications transmit video at CIF resolution (Figure \\ref{fig:Resolutions}), and each node can send only one video stream and one audio stream. This makes them unsuitable for large-scale videoconferencing, although they are sufficient for desktop-to-desktop communication.
+Both applications transmit video at CIF resolution (Figure \ref{fig:Resolutions}), and each node can send only one video stream and one audio stream. This makes them unsuitable for large-scale videoconferencing, although they are sufficient for desktop-to-desktop communication.
 
-In addition to SIP and H.323 clients, we should mention software designed to operate a private branch exchange (PBX). Asterisk supports audio transmission using several protocols (IAX2, SIP and H.323), voicemail, directory services, conference calls, call forwarding, queuing of incoming calls and more\\ldots. The design of IAX2 allows it to traverse NAT and firewalls\\index{NAT!traversal}. SIP also supports forwarding multimedia packets through a so-called STUN server (for example, stun.ekiga.net), but it is not as effective in this respect as IAX2.
+In addition to SIP and H.323 clients, we should mention software designed to operate a private branch exchange (PBX). Asterisk supports audio transmission using several protocols (IAX2, SIP and H.323), voicemail, directory services, conference calls, call forwarding, queuing of incoming calls and more\ldots. The design of IAX2 allows it to traverse NAT and firewalls\index{NAT!traversal}. SIP also supports forwarding multimedia packets through a so-called STUN server (for example, stun.ekiga.net), but it is not as effective in this respect as IAX2.
 
 \subsubsection*{Advantages}
 \begin{paklist}
-\\item Available on multiple platforms and open-source; SIP is an IETF standard, while IAX2 is at the proposal stage (IETF Internet-Draft \\cite{IETFDraft-IAX2}).
-\\item Easy installation and use.
-\\item IAX2 design and the STUN server for SIP address NAT and firewall traversal.
-\\item Integration with telephone lines.
-\\item High-quality and efficient codecs, such as Speex.
-\\item Built-in echo cancellation.
-\\item A dedicated Linux distribution for Asterisk is available, including as a VMware appliance.
+\item Available on multiple platforms and open-source; SIP is an IETF standard, while IAX2 is at the proposal stage (IETF Internet-Draft \cite{IETFDraft-IAX2}).
+\item Easy installation and use.
+\item IAX2 design and the STUN server for SIP address NAT and firewall traversal.
+\item Integration with telephone lines.
+\item High-quality and efficient codecs, such as Speex.
+\item Built-in echo cancellation.
+\item A dedicated Linux distribution for Asterisk is available, including as a VMware appliance.
 \end{paklist}
 
 \subsubsection*{Disadvantages}
 \begin{paklist}
-\\item Solutions primarily designed for telephony.
-\\item Fixed CIF video resolution and a fixed number of data streams limit their use to desktop-to-desktop communication. This is a limitation of the particular implementation, not of the architecture.
-\\item Combining different SIP clients often leads to connection and communication errors, such as selection of an incompatible codec or differences between protocol implementations.
+\item Solutions primarily designed for telephony.
+\item Fixed CIF video resolution and a fixed number of data streams limit their use to desktop-to-desktop communication. This is a limitation of the particular implementation, not of the architecture.
+\item Combining different SIP clients often leads to connection and communication errors, such as selection of an incompatible codec or differences between protocol implementations.
 \end{paklist}
 
 
@@ -235,112 +235,112 @@ The goal of the AccessGrid (AG) project is to enable the most natural interactio
 
 The software includes components for video and audio transmission, presentation sharing, visualisation and system control. A dedicated room is usually reserved for an AG conference, making high-quality communication possible even with a large number of participants. AG technology is specifically designed for collaboration among groups of researchers, where presenting and visualising research results requires multiple projection devices and cameras, more sophisticated audio processing, and therefore greater computing capacity for audio and video encoding.
 
-Such a room is usually called an AccessGrid node (AG node). Figure \\ref{fig:ArchAccessGridDefault} shows an example of a typical AG node architecture. The distributed nature of the system is immediately apparent. The figure shows four separate computers: Display Computer, Video Capture Computer, Audio Capture Computer and Control Computer. The software consists of VenueServer, VenueClient, NodeManager, NodeService and Bridge components. A VenueServer represents a virtual room in which conference participants meet. It contains files that shared applications can download. Clients connect to the VenueServer through their VenueClients, and each participant authenticates using a certificate\\footnote{A participant must request a certificate from a certification authority in advance. A dedicated tool called "Certificate Request Tool" is provided for this purpose. An anonymous certificate can be used if necessary.}. NodeManager controls the distributed system components and starts or stops streaming services. This is done through NodeServices, which connect separate hardware components into a distributed system communicating over XML-RPC. The final component is the Bridge, which provides connectivity for participants without multicast access.
+Such a room is usually called an AccessGrid node (AG node). Figure \ref{fig:ArchAccessGridDefault} shows an example of a typical AG node architecture. The distributed nature of the system is immediately apparent. The figure shows four separate computers: Display Computer, Video Capture Computer, Audio Capture Computer and Control Computer. The software consists of VenueServer, VenueClient, NodeManager, NodeService and Bridge components. A VenueServer represents a virtual room in which conference participants meet. It contains files that shared applications can download. Clients connect to the VenueServer through their VenueClients, and each participant authenticates using a certificate\footnote{A participant must request a certificate from a certification authority in advance. A dedicated tool called "Certificate Request Tool" is provided for this purpose. An anonymous certificate can be used if necessary.}. NodeManager controls the distributed system components and starts or stops streaming services. This is done through NodeServices, which connect separate hardware components into a distributed system communicating over XML-RPC. The final component is the Bridge, which provides connectivity for participants without multicast access.
 
 Compared with other technologies, AG may appear overly complex. However, a high-quality videoconferencing experience with many participants requires greater investment in room equipment. Unlike a desktop monitor, the video is displayed on projection screens using several projectors.
 
 \begin{figure}
 \centering
 \includesvg[width=0.95\textwidth]{arch-ag-default}
-\\caption{Typical AccessGrid architecture (sources: \\protect\\cite{ArticleUVTMU-KomunikaceAGPoint} and \\cite{childers00}).}
+\caption{Typical AccessGrid architecture (sources: \protect\cite{ArticleUVTMU-KomunikaceAGPoint} and \cite{childers00}).}
 \label{fig:ArchAccessGridDefault}
 \end{figure}
 
 \subsubsection*{Advantages}
 \begin{paklist}
-\\item A solution that scales according to conference size.
-\\item A wide range of shared applications and other tools.
-\\item High-quality video and audio.
-\\item Transmission over both unicast and multicast networks.
-\\item Cross-platform support: Linux, Windows, macOS X and FreeBSD.
+\item A solution that scales according to conference size.
+\item A wide range of shared applications and other tools.
+\item High-quality video and audio.
+\item Transmission over both unicast and multicast networks.
+\item Cross-platform support: Linux, Windows, macOS X and FreeBSD.
 \end{paklist}
 
 \subsubsection*{Disadvantages}
 \begin{paklist}
-\\item The architecture requires a high-speed network connection.
-\\item Ordinary users may have difficulty installing and configuring AG.
-\\item Greater space requirements and higher costs for purchasing the necessary hardware.
-\\item Problems with multicast connectivity.
-\\item Problems traversing NAT\\index{NAT!problem}.
+\item The architecture requires a high-speed network connection.
+\item Ordinary users may have difficulty installing and configuring AG.
+\item Greater space requirements and higher costs for purchasing the necessary hardware.
+\item Problems with multicast connectivity.
+\item Problems traversing NAT\index{NAT!problem}.
 \end{paklist}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\\section{Requirements and parameters of the selected solution}
+\section{Requirements and parameters of the selected solution}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The applications selected above were not chosen at random. Among commercial solutions, we selected Skype because of its widespread use in IP telephony and its ability to traverse NAT and firewalls\\index{NAT!traversal} using a distributed supernode system. We selected Adobe Flash because it is available in most web browsers and is easy to install. InSORS appealed to us because it uses MBone technology and other open standards in an easy-to-use package that can also be purchased with specialised hardware. VRVS is an example of an application that can be launched directly from the web without installation, as well as a distributed reflector network monitored by the MonaLisa system (Figure \\ref{fig:MonaLisa-frontend}). Among non-commercial applications, we selected Wengophone and Ekiga as examples of SIP and H.323 clients, and AccessGrid as an example of a robust open-source videoconferencing solution.
+The applications selected above were not chosen at random. Among commercial solutions, we selected Skype because of its widespread use in IP telephony and its ability to traverse NAT and firewalls\index{NAT!traversal} using a distributed supernode system. We selected Adobe Flash because it is available in most web browsers and is easy to install. InSORS appealed to us because it uses MBone technology and other open standards in an easy-to-use package that can also be purchased with specialised hardware. VRVS is an example of an application that can be launched directly from the web without installation, as well as a distributed reflector network monitored by the MonaLisa system (Figure \ref{fig:MonaLisa-frontend}). Among non-commercial applications, we selected Wengophone and Ekiga as examples of SIP and H.323 clients, and AccessGrid as an example of a robust open-source videoconferencing solution.
 
 The following sections define the requirements for the resulting system, based on our experience with existing videoconferencing solutions. A system that satisfies every requirement may not exist in practice; it is sufficient for the selected solution to come close to this ideal.
 
 %====================================
-\\subsection{General requirements}
+\subsection{General requirements}
 %====================================
 
 %---------------------
-\\paragraph*{Scalability:}
+\paragraph*{Scalability:}
 The videoconferencing system architecture should be sufficiently flexible to support communication among both small and large numbers of participants. This would allow organisations of any size to deploy it. Large organisations could use a distributed version of the system, while smaller organisations could rely on a basic configuration. An overloaded system should be easy to expand with additional hardware components. This idea could be taken as far as creating a virtual university with many lectures taking place simultaneously.
 
 %---------------------
-\\paragraph*{Security:}
+\paragraph*{Security:}
 Enable encrypted communication within a conference, ideally encrypting all messages. Users should be able to choose the required level of security. Additional functionality may include participant authentication and authorisation, allowing access only to a selected subset of ongoing conferences. We also require data transmissions to be protected against modification by unauthorised parties (integrity). For some organisations, this requirement is particularly important.
 
 %---------------------
-\\paragraph*{Accessibility:}
-The main concern is solving problems associated with firewalls, NAT\\index{NAT!accessibility requirement} and proxy servers. Many clients are behind some form of NAT because of IPv4 addressing limitations. Networks may also include a firewall or various forms of transparent proxy. Traversing every possible network obstacle would be extremely difficult, but the system should at least account for the most common problems, especially NAT.
+\paragraph*{Accessibility:}
+The main concern is solving problems associated with firewalls, NAT\index{NAT!accessibility requirement} and proxy servers. Many clients are behind some form of NAT because of IPv4 addressing limitations. Networks may also include a firewall or various forms of transparent proxy. Traversing every possible network obstacle would be extremely difficult, but the system should at least account for the most common problems, especially NAT.
 
 %---------------------
-\\paragraph*{Modifiability:}
+\paragraph*{Modifiability:}
 The ability to replace or modify system components.
 
 %---------------------
-\\paragraph*{Stability:}
+\paragraph*{Stability:}
 Long-term stability. The system should be able to run continuously without crashing. In the event of a failure, it should leave data in a consistent state.
 
 %---------------------
-\\paragraph*{Bandwidth:}
+\paragraph*{Bandwidth:}
 The success of a videoconference depends heavily on the network speed available to participants.
 
 %---------------------
-\\paragraph*{One-way latency:}\\index{latency!one-way}
+\paragraph*{One-way latency:}\index{latency!one-way}
 One-way latency is the time between a packet being sent by the sender and received by the recipient. In the following discussion, we are primarily interested in round-trip latency.
 
 %---------------------
-\\paragraph*{Round-trip latency:}\\index{latency!round-trip}
-We define this quantity as the time between sending a request and receiving a response ($\\approx 2 \\times one-way latency$). In this thesis, we refer to it as \\textbf{latency}. The literature \\cite{ITU-G.114-One-way-transmission-time} states that audio latency should not exceed 300 ms; otherwise, participants can no longer communicate effectively. This is also illustrated in Figure \\ref{fig:ITU-G.114}. For video transmission, this value can be several times higher without difficulty. Multimedia communication therefore favours unreliable, unacknowledged delivery, known as \\textbf{unreliable unicast/multicast}, using UDP rather than TCP.
+\paragraph*{Round-trip latency:}\index{latency!round-trip}
+We define this quantity as the time between sending a request and receiving a response ($\approx 2 \times one-way latency$). In this thesis, we refer to it as \textbf{latency}. The literature \cite{ITU-G.114-One-way-transmission-time} states that audio latency should not exceed 300 ms; otherwise, participants can no longer communicate effectively. This is also illustrated in Figure \ref{fig:ITU-G.114}. For video transmission, this value can be several times higher without difficulty. Multimedia communication therefore favours unreliable, unacknowledged delivery, known as \textbf{unreliable unicast/multicast}, using UDP rather than TCP.
 
 \begin{figure}
 \centering
 \includesvg[width=0.7\textwidth]{mouth-to-ear-delay}
-\\caption{Effects of audio delay according to ITU-T G.114 \\protect\\cite{ITU-G.114-One-way-transmission-time}.}
+\caption{Effects of audio delay according to ITU-T G.114 \protect\cite{ITU-G.114-One-way-transmission-time}.}
 \label{fig:ITU-G.114}
 \end{figure}
 
 %---------------------
-\\paragraph*{Jitter:}
+\paragraph*{Jitter:}
 Jitter is the variation in latency over time. A guaranteed maximum jitter value makes it possible to estimate buffer sizes. However, the use of buffers is constrained by the overall latency.
 
 %---------------------
-\\paragraph*{Hardware requirements:}
+\paragraph*{Hardware requirements:}
 The intended system will process dozens of independent data streams. The codecs used must therefore have modest computational requirements. Hardware-intensive processes can increase system latency. This issue is particularly relevant to video processing.
 
 %---------------------
-\\paragraph*{Standards:}
-We will use standardised communication protocols and codecs. This requirement follows from our intention to use open-source software exclusively. RTP is therefore a suitable protocol for transmitting multimedia packets (Chapter \\ref{kap:RTP+RTCP}).
+\paragraph*{Standards:}
+We will use standardised communication protocols and codecs. This requirement follows from our intention to use open-source software exclusively. RTP is therefore a suitable protocol for transmitting multimedia packets (Chapter \ref{kap:RTP+RTCP}).
 
 %---------------------
-\\paragraph*{Cross-platform availability:}
+\paragraph*{Cross-platform availability:}
 Allow conferences to be viewed on at least Linux and Windows systems.
 
 %=======================
-\\subsection{Video}
+\subsection{Video}
 %=======================
 
 %---------------------
-\\paragraph*{Video resolution:}
-The system should allow users to choose the video resolution. This is important, for example, when capturing a large room with many participants rather than a close-up of a face. We assume that individual video streams will be displayed on a large projection screen using a data projector, so we recommend supporting at least D1 PAL resolution (720x576; see Figure \\ref{fig:Resolutions}). Most current videoconferencing systems use CIF as their default format, at 352x288 or 352x240 (see Figure \\ref{fig:Resolutions}). This limitation is mainly associated with the H.261 codec (see Chapter \\ref{kap:H.261}).
+\paragraph*{Video resolution:}
+The system should allow users to choose the video resolution. This is important, for example, when capturing a large room with many participants rather than a close-up of a face. We assume that individual video streams will be displayed on a large projection screen using a data projector, so we recommend supporting at least D1 PAL resolution (720x576; see Figure \ref{fig:Resolutions}). Most current videoconferencing systems use CIF as their default format, at 352x288 or 352x240 (see Figure \ref{fig:Resolutions}). This limitation is mainly associated with the H.261 codec (see Chapter \ref{kap:H.261}).
 
 % **********************************************
 % Image Resolutions
@@ -348,65 +348,65 @@ The system should allow users to choose the video resolution. This is important,
 \begin{figure}
 \centering
 \includesvg[width=0.6\textwidth]{resolutions}
-\\caption{Comparison of different video resolutions.}
+\caption{Comparison of different video resolutions.}
 \label{fig:Resolutions}
 \end{figure}
 % **********************************************
 
-The Skype and Flash systems discussed above (Chapters \\ref{kap:Skype} and \\ref{kap:Adobe Flash}) use a fixed video resolution. This simplifies implementation and operation for the user. In contrast, AccessGrid, InSORS and VRVS (Chapters \\ref{kap:AccessGrid}, \\ref{kap:InSORS} and \\ref{kap:VRVS}) offer a choice of resolutions, at the cost of greater complexity.
+The Skype and Flash systems discussed above (Chapters \ref{kap:Skype} and \ref{kap:Adobe Flash}) use a fixed video resolution. This simplifies implementation and operation for the user. In contrast, AccessGrid, InSORS and VRVS (Chapters \ref{kap:AccessGrid}, \ref{kap:InSORS} and \ref{kap:VRVS}) offer a choice of resolutions, at the cost of greater complexity.
 
 %---------------------
-\\paragraph*{Motion encoding:}
+\paragraph*{Motion encoding:}
 The image of a conference room can be either static or dynamic, and this should be considered when choosing an appropriate codec. A static image might show a group of seated people captured from several metres away under constant lighting conditions. A dynamic image might show a person captured close up or a large number of moving objects. Poor lighting also increases the bitrate because cameras introduce various image artefacts.
 
 %---------------------
-\\paragraph*{Video quality:}
-For communication between individuals with bandwidth below 1 Mbit/s, lower video quality is naturally sufficient. A large conference, by contrast, typically requires at least 10 Mbit/s. High-quality transmission may require as much as 25 Mbit/s for a single data stream (compressed HDV video). Further discussion of this topic can be found, for example, in \\cite{ArticleUVTMU-VideokonferenceSVysokouKvalitou}.
+\paragraph*{Video quality:}
+For communication between individuals with bandwidth below 1 Mbit/s, lower video quality is naturally sufficient. A large conference, by contrast, typically requires at least 10 Mbit/s. High-quality transmission may require as much as 25 Mbit/s for a single data stream (compressed HDV video). Further discussion of this topic can be found, for example, in \cite{ArticleUVTMU-VideokonferenceSVysokouKvalitou}.
 
 %=======================
-\\subsection{Audio}
+\subsection{Audio}
 %=======================
 
 %---------------------
-\\paragraph*{Audio quality:}
-We place greater demands on audio quality than on video quality. People are much more sensitive to brief audio interruptions than to the complete absence of video. (Chapter \\ref{kap:RTP+RTCP} explains that RTP uses separate UDP ports for audio and video for this very reason.) If we want to transmit speech and do not require high-fidelity music, a sampling frequency of around 8000 Hz is sufficient. Our main concerns will be latency and jitter.
+\paragraph*{Audio quality:}
+We place greater demands on audio quality than on video quality. People are much more sensitive to brief audio interruptions than to the complete absence of video. (Chapter \ref{kap:RTP+RTCP} explains that RTP uses separate UDP ports for audio and video for this very reason.) If we want to transmit speech and do not require high-fidelity music, a sampling frequency of around 8000 Hz is sufficient. Our main concerns will be latency and jitter.
 
 %---------------------
-\\paragraph*{Echo and feedback:}
+\paragraph*{Echo and feedback:}
 In a room equipped with loudspeakers, the system must deal with acoustic feedback and other undesirable audio effects. Echo cancellation has a higher priority than the audio signal quality itself.
 
 %==========================================
-\\subsection{Presentation and visualisation}
+\subsection{Presentation and visualisation}
 %==========================================
 
 %---------------------
-\\paragraph*{Supported formats:}
+\paragraph*{Supported formats:}
 A videoconferencing technology provider is expected to accommodate participants as much as possible and support a wide range of formats. Ideally, participants should not be restricted in their choice of presentation format. In practice, however, the provider must define a list of supported formats and inform all participants well in advance.
 
 %---------------------
-\\paragraph*{Video sequences:}
+\paragraph*{Video sequences:}
 We should support different codecs and file sizes, ranging from files of a few dozen MiB to video stored in DVD format. A typical user requirement may be the ability to play a video sequence and control it at least with PLAY/PAUSE buttons.
 
 Automatic conversion between video formats is supported by tools such as FFmpeg, MPlayer and VLC. Audio files can be converted using sox. Audacity is suitable for interactive audio editing, while Avidemux can be used for video.
 
 %---------------------
-\\paragraph*{Presentations as static slides:}
+\paragraph*{Presentations as static slides:}
 PDF and PPT are common formats for preparing presentations. In our solution, we prefer PDF. This means that videoconference participants will have to omit video sequences and animated slide transitions from their presentations. This reduces both the amount of transmitted data and the processor load.
 
-Participants using Unix-like environments will probably use PDF, PS (PostScript) or ODF (OpenDocument Format). Windows users will probably bring PPT, PDF or ODF files. Automatic conversion can be provided by a simple script using the OpenOffice macro language (source: \\cite{OpenOffice-Conversion}). Further tools for processing vector formats include pstoedit, a2ping and xpdf. Automatic conversion between raster formats can be handled by the NetPBM package and ImageMagick. For script-based data visualisation, we can use Gnuplot, R or Graphviz.
+Participants using Unix-like environments will probably use PDF, PS (PostScript) or ODF (OpenDocument Format). Windows users will probably bring PPT, PDF or ODF files. Automatic conversion can be provided by a simple script using the OpenOffice macro language (source: \cite{OpenOffice-Conversion}). Further tools for processing vector formats include pstoedit, a2ping and xpdf. Automatic conversion between raster formats can be handled by the NetPBM package and ImageMagick. For script-based data visualisation, we can use Gnuplot, R or Graphviz.
 
 %---------------------
-\\paragraph*{Interactive 2D/3D simulations:}
+\paragraph*{Interactive 2D/3D simulations:}
 This category includes various 3D models and environments created using specialised applications such as 3D Studio Max, Blender, SolidEdge and AutoCAD. It also includes environments created with game engines such as Unreal, Half-Life, Quake and many others. Other environments that we could support include OpenInventor and VRML.
 
 \begin{samepage}
 \noindent
 We can divide presentation methods into four groups:
 \begin{enumerate}
-\\item Applications running on an external computer connected through an S-Video signal.
-\\item Applications using a VNC display.
-\\item Applications with built-in collaboration support.
-\\item Applications emulated using VMware.
+\item Applications running on an external computer connected through an S-Video signal.
+\item Applications using a VNC display.
+\item Applications with built-in collaboration support.
+\item Applications emulated using VMware.
 \end{enumerate}
 \end{samepage}
 
@@ -414,19 +414,19 @@ We can divide presentation methods into four groups:
 The Polylogues videoconferences showed that the most stable solution is to use an external computer connected through S-Video. This allows a user to bring their own environment, with their presentation already configured and tested.
 
 %---------------------
-\\paragraph*{Video from an external source:}
+\paragraph*{Video from an external source:}
 As mentioned above, a suitable solution is to use external hardware connected through S-Video to a capture card. The disadvantage is that additional hardware may have to be purchased. In some cases, however, the user does not even have an S-Video output, so we may need to use an alternative such as VNC.
 
 %---------------------
-\\paragraph*{Quality:}
+\paragraph*{Quality:}
 When transmitting video sequences together with audio, the same requirements apply as for video and audio described above. We must also consider that slide presentations are mostly static and therefore require different techniques, codecs and image sizes. Presentations containing embedded video make the situation somewhat more complicated. For this reason, we prefer presentations in PDF format.
 
 %---------------------
-\\paragraph*{Control:}
+\paragraph*{Control:}
 Conference participants should be able to control the presentation in progress. In AccessGrid, this can be achieved using SharedPresentation or SharedPDF.
 
 %=======================
-\\subsection{Collaboration}
+\subsection{Collaboration}
 %=======================
 
 %http://www.vide.net/cookbook/cookbook.en/
@@ -437,7 +437,7 @@ The solution should support different forms of collaboration between conference 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\\section{Selected system}
+\section{Selected system}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
