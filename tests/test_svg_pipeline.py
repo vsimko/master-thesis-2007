@@ -34,6 +34,13 @@ for tex_file in TEX_FILES:
     ))
 
 errors = []
+build_script = (ROOT / "build.sh").read_text(encoding="utf-8")
+workflow = (ROOT / ".github" / "workflows" / "build.yml").read_text(encoding="utf-8")
+if "-shell-escape" not in build_script:
+    errors.append("build.sh must pass -shell-escape so LaTeX can invoke Inkscape")
+if not re.search(r"apt-get install[^\n]*\binkscape\b", workflow):
+    errors.append("GitHub Actions must install Inkscape before building the PDF")
+
 used_svg = set()
 for tex_file, raw_name in svg_refs:
     name = raw_name.removesuffix(".svg")
