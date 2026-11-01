@@ -36,9 +36,9 @@ Key topics covered:
 ├── conclusion.tex           # Conclusion & future work
 ├── bibfile.bib              # Bibliography references
 ├── csprimes.tex             # Typography macros
-├── images/                  # Diagrams (.odg, .pdf) and screenshots (.png)
+├── images/                  # SVG sources, historical PDF exports, raster images
 ├── build.sh                 # Build, cleanup, and test script
-├── tests/                   # Test suite for build script
+├── tests/                   # Build and SVG pipeline tests
 └── .github/workflows/       # GitHub Actions CI build workflow
 ```
 
@@ -82,10 +82,19 @@ The provided `build.sh` script automates the compilation and cleanup process:
 ### Using latexmk directly
 
 ```sh
-latexmk -pdf main.tex
+latexmk -pdf -shell-escape main.tex
 ```
 
 ---
+
+
+### Figure source policy
+
+- The 23 maintained vector diagrams in `images/*.svg` are the editable source of truth.
+- Reference vector diagrams from LaTeX with `\includesvg{...}`; the `svg` package invokes Inkscape during the build to create the PDF representation embedded in `main.pdf`.
+- Do not replace these references with PDF-only `\includegraphics` calls. The matching PDF files are retained as historical/reference exports, not editable sources.
+- Photos and screenshots remain raster assets and are included with `\includegraphics`.
+- Run `python3 tests/test_svg_pipeline.py` (or `./build.sh test`) to validate the figure references and source files.
 
 ## Continuous Integration & Releases (CI/CD)
 
