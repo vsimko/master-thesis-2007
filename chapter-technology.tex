@@ -43,192 +43,187 @@ The rest of this chapter discusses the features of selected applications. The se
 \label{fig:Skype-Architecture}
 \end{figure}
 
-Systém Skype sme vybrali ako zástupcu komerčne úspešného a masovo používaného systému s jednoduchou inštaláciou a obsluhou.
+We selected Skype as an example of a commercially successful and widely used system that is easy to install and operate.
 
-Obrázok \ref{fig:Skype-Architecture} znázorňuje spôsob komunikácie medzi uzlami v sieti Skype. Uzly umiestnené za sieťovým firewallom komunikujú s okolitým svetom prostredníctvom tzv. superuzlov\footnote{V ďalšom texte uvidíme ešte iné prístupy k riešeniu problémov spojených s firewallmi}. Prihlasovanie do siete sa uskutočňuje pomocou login servera. Po úspešnej autentifikácii sprostredkujú superuzly multimediálny prenos medzi koncovými klientmi. Nadväzovanie spojenia prebieha tak, že klient postupne kontaktuje najbližšie superuzly, ktoré rekurzívne kontaktujú svojich susedov až pokiaľ nie je známa trasa k volanému klientovi. Výsledné smerovanie multimediálnych paketov je zabezpečené na aplikačnej úrovni (podľa modelu ISO/OSI) a využíva sa decentralizovaná povaha siete Skype.
+Figure \\ref{fig:Skype-Architecture} illustrates how nodes communicate in the Skype network. Nodes located behind a network firewall communicate with the outside world through so-called supernodes\\footnote{Later in this thesis, we will consider other approaches to solving problems associated with firewalls.}. Users log in to the network through a login server. After successful authentication, supernodes facilitate multimedia transmission between end clients. To establish a connection, a client contacts nearby supernodes in sequence. These recursively contact their neighbours until a route to the called client is found. Multimedia packet routing is then handled at the application layer (according to the ISO/OSI model), taking advantage of the decentralised nature of the Skype network.
 
-Spomínaná závislosť na superuzloch je priamo spojená s uzavretosťou protokolu Skype. Ako vidíme na obrázku \ref{fig:Skype-Architecture}, klient, ktorý disponuje dostatočne rýchlym pripojením a vlastnou IP adresou, sa mení na tzv. superuzol. Ako uvádza zdroj \cite{ArticleUreliable-Root-10-duvodu-proc-nepouzivat-skype}, pokiaľ by existovali alternatívne rozhrania, mohli by takéto aplikácie zabraňovať vzniku superuzlov, čo by sa následne odrazilo na celkovej kvalite prenosu v celej sieti Skype. Autori preto nemajú záujem na zverejňovaní svojho protokolu.
+This dependence on supernodes is directly related to the closed nature of the Skype protocol. As Figure \\ref{fig:Skype-Architecture} shows, a client with a sufficiently fast connection and its own public IP address may become a supernode. According to \\cite{ArticleUreliable-Root-10-duvodu-proc-nepouzivat-skype}, alternative interfaces could allow applications to prevent supernodes from being created, which could improve the overall transmission quality across the Skype network. The developers therefore have little incentive to publish their protocol.
 
-Automatický vznik superuzlov vedie k využívaniu prenosovej kapacity bez vedomia vlastníka siete. Problém sa prejaví pri spoplatnenom objeme prenesených dát, v Českej Republike napr. v sieti rozvodov káblovej televízie a internetu UPC alebo s pripojením ADSL.
+The automatic creation of supernodes leads to bandwidth being used without the network owner's knowledge. This can be a problem when transferred data are metered and charged for, as was the case, for example, with UPC cable television and Internet networks or ADSL connections in the Czech Republic.
 
-\subsubsection*{Výhody}
+\\subsubsection*{Advantages}
 \begin{paklist}
-\item Jednoduchá inštalácia a obsluha.
-\item Distribuovaná povaha aplikácie umožňuje prekonať NAT/firewall\index{NAT!traversal} pomocou siete superuzlov (obrázok \ref{fig:Skype-Architecture}).
-\item Aplikácia je v súčasnosti zdarma, poskytovateľ umožňuje aj telefonické hovory do komerčných sietí.
-\item Aplikácia je k dispozícii pre platformy Windows, Mac, Linux a Pocket PC.
-\item Možnosť uskutočniť videokonferencie pomocou ďalších modulov -- text, audio, video, selektívne zdieľanie pracovnej plochy.
-\item Komunikácia medzi uzlami je šifrovaná. Výmena kľúčov je zabezpečná pomocou 2048-bit RSA šifry a samotný prenos využíva 256-bit AES.
+\\item Easy to install and operate.
+\\item The distributed nature of the application allows it to traverse NAT and firewalls\\index{NAT!traversal} using its supernode network (Figure \\ref{fig:Skype-Architecture}).
+\\item The application is currently free of charge, and the provider also offers calls to commercial telephone networks.
+\\item The application is available for Windows, Mac, Linux and Pocket PC.
+\\item Additional modules support videoconferencing features such as text, audio, video and selective desktop sharing.
+\\item Communication between nodes is encrypted. Key exchange uses 2048-bit RSA encryption, while the transmission itself uses 256-bit AES.
 \end{paklist}
 
-\subsubsection*{Neýhody}
+\\subsubsection*{Disadvantages}
 \begin{paklist}
-\item Uzavretý protokol.
-\item Rozhranie pre platformu Linux zatiaľ vo verzii 1.3.0.53 neumožňuje prenos obrazu.
-\item Vznik superuzlov, využívanie prenosovej kapacity bez vedomia vlastníka siete.
-\item Aplikácia neumožňuje ovplyvňovať kvalitu prenosu priamo, nastavenie prebieha automaticky.
-\item Systém nie je možné používať bez internetového pripojenia (napr. v izolovanej sieti LAN). Vždy je nutné kontaktovať Login server (obrázok \ref{fig:Skype-Architecture}).
+\\item Closed protocol.
+\\item The Linux interface, version 1.3.0.53 at the time of writing, does not support video transmission.
+\\item Supernodes are created automatically and consume network bandwidth without the network owner's knowledge.
+\\item The application does not allow users to control transmission quality directly; settings are adjusted automatically.
+\\item The system cannot be used without an Internet connection (for example, on an isolated LAN). It must always contact the login server (Figure \\ref{fig:Skype-Architecture}).
 \end{paklist}
 
 % ==================================================
 \subsection{Adobe Flash}\label{kap:Adobe Flash}
 % ==================================================
-Technológia Flash vzhľadom na svoje rozšírenie vo väčšine súčasných internetových prehliadačov môže ponúknuť spôsob ako dopraviť videokonferenčné riešenie k užívateľovi bez nutnosti inštalácie. Najnovšia verzia Flash 9 je dostupná pre platformy Windows, Mac a Linux, staršie verzie existujú pre platformy Solaris, HP-UX, BeOS a ďalšie. Ako príklad videokonferenčných riešení postavených na tejto technológii môžeme uviesť
-InstantPresenter \cite{Company-Flash-InstantPresenter} alebo
-FlashMeeting \cite{Company-Flash-FlashMeeting}.
+Given its widespread availability in most contemporary web browsers, Flash technology offers a way to deliver a videoconferencing solution to users without requiring them to install a separate application. The latest version, Flash 9, is available for Windows, Mac and Linux, while older versions exist for Solaris, HP-UX, BeOS and other platforms. Examples of videoconferencing solutions built on this technology include InstantPresenter \\cite{Company-Flash-InstantPresenter} and FlashMeeting \\cite{Company-Flash-FlashMeeting}.
 
 \begin{figure}[htp]
 \centering
 \includesvg[width=0.6\textwidth]{flash-architecture}
 %\includegraphics[width=0.45\textwidth]{images/app-flashmeeting-testtool}
 %\includegraphics[width=0.45\textwidth]{images/app-flashmeeting-vote}
-\caption{Architektúra Flash Media Server.}
+\\caption{Flash Media Server architecture.}
 \label{fig:Flash-Architecture}
 \end{figure}
 
-Na obrázku \ref{fig:Flash-Architecture} je znázornená centralizovaná povaha systému. Predpokladá sa, že centrálny prvok Flash Media Server disponuje verejnou IP adresou, a dostatočne rýchlym pripojením aby zvládla spracovať komunikáciu pripojených klientov (na obrázku označených ako "node"). Takto centralizovaná architektúra umožňuje prekonávať NAT/firewall\index{NAT!traversal}, pretože dokáže v krajnom prípade zabaliť komunikáciu do~TCP paketov.
+Figure \\ref{fig:Flash-Architecture} illustrates the centralised nature of the system. The central component, Flash Media Server, is assumed to have a public IP address and a sufficiently fast connection to handle communication with connected clients (labelled "node" in the figure). This centralised architecture can traverse NAT and firewalls\\index{NAT!traversal}, since it can, if necessary, encapsulate communication in TCP packets.
 
-Prenos multimediálnych paketov zabezpečuje proprietárny Real Time Messaging Protocol (RTMP\footnote{Nezamieňať s Routing Table Maintenance Protocolom z rodiny AppleTalk.}). Pretože neexistuje voľne dostupná špecifikácia RTMP, vznikol open-source projekt Red5 \cite{OpenSourceFlash-Red5}, ktorý pomocou reverse engineeringu\footnote{Autori označujú tento akt ako "discovery through observation".} implementuje jeho podstatnú časť \cite{OpenSourceFlash-RTMP-AMF}.
-Protokol RTMP využíva UDP port 1935 a v prípade blokovania tunel cez TCP port 80 (HTTP).
+Multimedia packets are transmitted using the proprietary Real Time Messaging Protocol (RTMP\\footnote{Do not confuse this with the Routing Table Maintenance Protocol from the AppleTalk family.}). Since no freely available RTMP specification exists, the open-source Red5 project \\cite{OpenSourceFlash-Red5} was created. Using reverse engineering\\footnote{The authors describe this process as "discovery through observation."}, it implements a substantial part of the protocol \\cite{OpenSourceFlash-RTMP-AMF}. RTMP uses UDP port 1935 and, if that port is blocked, can tunnel traffic through TCP port 80 (HTTP).
 
-\subsubsection*{Výhody}
+\\subsubsection*{Advantages}
 \begin{paklist}
-\item Technológia dostupná pre rôzne platformy.
-\item Pokiaľ odhliadneme od nutnosti inštalovať samotný internetový prehliadač a flash-plugin, nevyžadujú ďalšie aplikácie žiadnu inštaláciu. Komunikácia prebieha priamo z internetového prehliadača.
-\item Jednoduché nastavenie a kalibrácia kamery a mikrofónu.
-\item Ďalšie vlastnosti, ktoré uvádza výrobca, ako napr. komunikácia cez SSL, vyvažovanie záťaže, QoS.
-\item Množstvo open-source projektov súvisiacich s technológiou flash \cite{OpenSourceFlash-AllProjects}.
+\\item The technology is available on multiple platforms.
+\\item Apart from installing the web browser itself and the Flash plugin, no additional application installation is required. Communication takes place directly in the web browser.
+\\item Simple camera and microphone setup and calibration.
+\\item Other features advertised by the manufacturer include SSL communication, load balancing and QoS.
+\\item A large number of open-source projects related to Flash technology \\cite{OpenSourceFlash-AllProjects}.
 \end{paklist}
 
-\subsubsection*{Neýhody}
+\\subsubsection*{Disadvantages}
 \begin{paklist}
-\item Systém je určený pre relatívne malé konferencie vzhľadom na vyššie hardwarové nároky samotnéhu flash-pluginu v porovnaní napr. s VRVS alebo AccessGridom popisovaných neskôr v tomto texte.
-\item Zatiaľ neexistuje plnohodnotná open-source implementácia ani iná natívna implementácia pre architektúry x86-64, PowerPC, ARM.
-\item Závislosť na reverse engineeringu.
+\\item The system is intended for relatively small conferences because the Flash plugin has higher hardware requirements than, for example, VRVS or AccessGrid, which are discussed later in this chapter.
+\\item At the time of writing, no complete open-source implementation or other native implementation was available for the x86-64, PowerPC or ARM architectures.
+\\item Dependence on reverse engineering.
 \end{paklist}
 
 % ==================================
 \subsection{InSORS}\label{kap:InSORS}
 % ==================================
-Riešenie InSORS IG2 je postavené na technológii MBone o ktorej budeme hovoriť v ďalších kapitolách v súvislosti s AccessGridom (kapitola  \ref{kap:AccessGrid}). InSORS prináša integrované prostredie, ktoré zahŕňa softwarové aj hardwarové komponenty. Zákazník tak môže získať vyladený videokonferenčný systém, ktorý je ale zatiaľ dostupný iba pre platformu Windows.
+The InSORS IG2 solution is based on MBone technology, which will be discussed in later chapters in connection with AccessGrid (Chapter \\ref{kap:AccessGrid}). InSORS provides an integrated environment comprising both software and hardware components. Customers therefore receive a fully configured videoconferencing system, although it is available only for Windows.
 
 \begin{figure}[htp]
 \centering
 \includesvg[width=0.8\textwidth]{arch-multicast}
-\caption{Architektúra systému s použitím multicastovej siete.}
+\\caption{Architecture of a system using a multicast network.}
 \label{fig:ArchMulticast}
 \end{figure}
 
-Podobne ako v prípade AccessGridu, prebieha komunikácia buď prostredníctvom multicastovej siete, alebo pomocou premostení z unicastovej siete (obrázok \ref{fig:ArchMulticast}).
+As with AccessGrid, communication takes place either over a multicast network or through bridges from a unicast network (Figure \\ref{fig:ArchMulticast}).
 
-Systém disponuje nástrojom IG Recorder, ktorý umožňuje okrem zvuku a obrazu nahrávať zdieľané prezentácie. Záznamy z konferencií je možné zároveň prehrať v~prebiehajúcej videokonferencií.
+The system includes the IG Recorder tool, which can record shared presentations in addition to audio and video. Conference recordings can also be played back during an ongoing videoconference.
 
 \subsubsection*{Výhody}
 \begin{paklist}
-\item Nahrávanie zdieľaných konferencií a prezentácií.
-\item Integrované prostredie -- možnosť zakúpiť zároveň software aj hardware.
-\item Integrácia s ostatnými VoIP technológiami, premostenie systémov H.323 a AccessGrid.
-\item InSORS využíva otvorené štandardy ako napr. kodeky
-H.261, H.263, H.264 (kapitoly \ref{kap:H.261}, \ref{kap:H.263}, \ref{kap:H.264}). Prenos multimediálnych dát je riešený pomocou protokolu RTP (kapitola \ref{kap:RTP+RTCP}).
+\\item Recording of shared conferences and presentations.
+\\item An integrated environment, with software and hardware available as a single package.
+\\item Integration with other VoIP technologies and bridging between H.323 and AccessGrid systems.
+\\item InSORS uses open standards, including the H.261, H.263 and H.264 codecs (Chapters \\ref{kap:H.261}, \\ref{kap:H.263} and \\ref{kap:H.264}). Multimedia data are transmitted using RTP (Chapter \\ref{kap:RTP+RTCP}).
 \end{paklist}
 
 \subsubsection*{Neýhody}
 \begin{paklist}
-\item Aplikácia je k dispozícii jedine pre platformu Windows.
-\item Videokonferencia pomocou InSORS je spoplatnená.
+\\item The application is available only for Windows.
+\\item Use of InSORS videoconferencing is subject to a fee.
 \end{paklist}
 
 % ==================================
 \subsection{VRVS + EVO}\label{kap:VRVS}\index{VRVS!system}
 % ==================================
-Posledným zástupcom komerčných videokonferenčných riešení, ktorý v tejto práci popíšeme, je Virtual Rooms Videoconferencing Systems (VRVS) a jeho následník EVO. VRVS je distribuovaný systém určený pre komunikáciu v reálnom čase prístupný cez webové užívateľské rozhranie, ktoré využíva platformovo závislé aplikácie na strane klienta. Ide o upravené verzie MBone nástrojov akými sú napr. VIC (kapitola \ref{kap:VIC}) a RAT (kapitola \ref{kap:RAT}) z projektu OpenMash (kapitola \ref{kap:OpenMash}). Ďalšie komponenty, ako napr. premostenia pre softwarové alebo hardwarové H.323 klienty, používajú technológiu Java.
+The final commercial videoconferencing solutions discussed in this thesis are Virtual Rooms Videoconferencing System (VRVS) and its successor, EVO. VRVS is a distributed system for real-time communication, accessible through a web-based user interface that uses platform-dependent client applications. These are modified versions of MBone tools such as VIC (Chapter \\ref{kap:VIC}) and RAT (Chapter \\ref{kap:RAT}) from the OpenMash project (Chapter \\ref{kap:OpenMash}). Other components, such as bridges for software or hardware H.323 clients, use Java.
 
 \begin{figure}[htp]
 \centering
 \includegraphics[width=0.48\textwidth]{images/app-monalisa1.png}
 \includegraphics[width=0.48\textwidth]{images/app-monalisa3.png}
-\caption{Monitorovanie distribuovaného systému VRVS reflektorov\index{VRVS!reflektor} pomocou aplikácie MonaLisa.}
+\\caption{Monitoring the distributed VRVS reflector network\\index{VRVS!reflektor} using the MonaLisa application.}
 \label{fig:MonaLisa-frontend}
 \end{figure}
 
-VRVS disponuje sieťou reflektorov\index{VRVS!reflektor} -- serverov rozmiestnených na rôznych miestach sveta, ktoré sprostredkovávajú komunikáciu medzi VRVS klientmi. Špeciálnym prípadom takéhoto reflektoru je VRVS-AG Reflector, ktorý umožňuje komunikovať s uzlami AccessGridu. Nezáleží, či klient disponuje unicast alebo multicast pripojením, VRVS transparentne premosťuje technológie AccessGrid, QuickTime a H.323.
+VRVS operates a network of reflectors\\index{VRVS!reflektor}: servers located around the world that facilitate communication between VRVS clients. A special type of reflector is the VRVS-AG Reflector, which enables communication with AccessGrid nodes. Regardless of whether a client has unicast or multicast connectivity, VRVS transparently bridges AccessGrid, QuickTime and H.323 technologies.
 
-Monitorovanie stavu VRVS\index{VRVS!monitoring} siete umožňuje upravená verzia systému MonaLisa\footnote{Moitoring Agents using a Large Integrated Services Architecture}. Jeho grafické rozhranie vidíme na obrázku \ref{fig:MonaLisa-frontend}. Vľavo je na svetovej mape znázornená sieť reflektorov umiestnených v Európe, vpravo je tá istá sieť znázornená vo~forme prehľadného grafu.
+Network monitoring for VRVS\\index{VRVS!monitoring} is provided by a modified version of the MonaLisa system\\footnote{Monitoring Agents using a Large Integrated Services Architecture}. Its graphical interface is shown in Figure \\ref{fig:MonaLisa-frontend}. On the left, a world map shows the reflector network, including reflectors located in Europe; on the right, the same network is presented as a clear graph.
 
-Zaujímavou funkciou, ktorá minimalizuje nároky na prenosovú kapacitu, je funkcia "Voice Switched mode". Autori VRVSV uvádzajú v publikácii \cite{VRVS-SK-Manual} nasledujúci príklad:
+An interesting feature that reduces bandwidth requirements is "Voice Switched mode". The VRVS authors provide the following example in their publication \\cite{VRVS-SK-Manual}:
 
 \begin{quote}
-Príklad: Garantovaná kapacita siete je 1024Kbit/s. Videokonferencie sa zúčastňuje 15 partnerov. Každý vysiela kvalitný obraz (s datovými tokmi okolo 800Kbit/s). Kapacita siete by teda mala byť aspoň 12Mbit/s:
+Example: Assume that the guaranteed network capacity is 1024 Kbit/s and that 15 participants are taking part in a videoconference. Each participant transmits high-quality video at approximately 800 Kbit/s. The network would therefore need a capacity of at least 12 Mbit/s:
 
-Počet účastníkov x 800 Kbit/s + 64Kbit/s (minimálny audio tok) =
-= (15 x 800 + 64) Kbit/s = \textbf{12064Kbit/s}.
+Number of participants x 800 Kbit/s + 64 Kbit/s (minimum audio stream) =
+= (15 x 800 + 64) Kbit/s = \\textbf{12064 Kbit/s}.
 
-Riešenie: Použijeme „Voice Switched“ mode, takže vytvoríme požiadavku na VRVS reflektor\index{VRVS!reflektor}, aby posielal len video tok od toho partnera, ktorý práve rozpráva. Splnením tejto požiadavky dosiahneme obmedzenie toku na úroveň:
+Solution: We enable "Voice Switched" mode and ask the VRVS reflector\\index{VRVS!reflektor} to send video only from the participant who is currently speaking. This reduces the required bandwidth to:
 
-1 x 800Kbit/s (video) + 64Kbit/s (audio) = \textbf{864Kbit/s}.
+1 x 800 Kbit/s (video) + 64 Kbit/s (audio) = \\textbf{864 Kbit/s}.
 \end{quote} 
 
-Podobne ako InSORS a AccessGrid, podporuje VRVS aj nahrávanie konferencií. To však prebieha na strane servera, kde poverený operátor manuálne ovláda nahrávanie RTP paketov z vybranej virtuálnej miestnosti.
+Like InSORS and AccessGrid, VRVS also supports conference recording. However, recording takes place on the server side, where an authorised operator manually controls the recording of RTP packets from a selected virtual room.
 
-Aj keď ide o komerčný projekt California Institute of Technology, je systém dostupný zdarma pre vedeckú komunitu. Rozširovanie siete VRVS reflektorov\index{VRVS!reflektor} je spravované autormi systému. Po splnení kritérií môže záujemca poskytovať svoj vlastný reflektor pripojený do VRVS siete.
-Užívatelia sú združení do skupín podľa oblasti záujmu, tzv. VRVS komunity (Internet2, SLOVAKIA\ldots)
+Although VRVS is a commercial project of the California Institute of Technology, the system is available to the scientific community free of charge. Expansion of the VRVS reflector network\\index{VRVS!reflektor} is managed by the system developers. Applicants who meet the criteria can operate their own reflector connected to the VRVS network. Users are organised into groups according to their fields of interest, known as VRVS communities (Internet2, SLOVAKIA\\ldots).
 
-V septembri 2003, bola otvorená Slovenská akademická videokonferenčná sieť, ktorá je k dispozícií všetkým univerzitám, výskumným ústavom SAV a vládnym organizáciám pripojených na optickú sieť SANET (Association of users of Slovak Academic data NETwork). Vznikol tak priestor pre experimentálne projekty ako napr. otvorené alebo dištančné vzdelávanie.
+In September 2003, the Slovak Academic Videoconferencing Network was opened to all universities, Slovak Academy of Sciences research institutes and government organisations connected to the SANET optical network (Association of Users of the Slovak Academic Data Network). This created an environment for experimental projects such as open and distance learning.
 
-Nasledovníkom VRVS sa má v blízkej budúcnosti stať aplikácia EVO. Rozhranie je vytvorené v Jave a oproti VRVS podporuje navyše: Instant Messaging, Private Meetings (videokonferencia bez virtuálnej miestnosti), kryptovanie textových správ, výmenu súborov atď. Aplikácia je tiež multiplatformná.
+The EVO application is intended to become the successor to VRVS in the near future. Its interface is written in Java and, compared with VRVS, adds instant messaging, private meetings (videoconferences without a virtual room), encryption of text messages, file sharing and other features. The application is also cross-platform.
 
 \begin{samepage}
 \subsubsection*{Výhody}
 \begin{paklist}
-\item Dostupnosť priamo z webového rozhrania -- automatická inštalácia.
-\item Integrovaný systém rezervácie virtuálnych miestností.
-\item P2P-sieť reflektorov.
-\item Premostenie rozdielnych technológií.
-\item Monitorovanie stavu siete.
-\item Voice Switched mode.
+\\item Available directly through a web interface, with automatic installation.
+\\item Integrated virtual-room reservation system.
+\\item Peer-to-peer reflector network.
+\\item Bridging between different technologies.
+\\item Network status monitoring.
+\\item Voice Switched mode.
 \end{paklist}
 \end{samepage}
 
 \subsubsection*{Neýhody}
 \begin{paklist}
-\item Nutná výstavba siete reflektorov.
-\item Užívateľ musí inštalovať Javu, potvrdzovať certifikáty.
+\\item Requires the deployment of a reflector network.
+\\item Users must install Java and accept certificates.
 \end{paklist}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Vybrané voľne dostupné systémy}
+\\section{Selected freely available systems}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % ================================================================
-\subsection{VoIP riešenia}\label{kap:VoIP-Software}
+\\subsection{VoIP solutions}\\label{kap:VoIP-Software}
 % ================================================================
-Z tejto kategórie vyberieme nasledujúce aplikácie: \textbf{Linphone}, \textbf{Ekiga}, \textbf{Wengophone} a \textbf{Asterisk}. Všetky existujú pre plaformy Windows aj Linux, sú dostupné pod licenciou GPL\footnote{General Public License $\Rightarrow$ open-source}, podporujú protokol SIP, prípadne H.323 (kapitola \ref{kap:VoIP-Protocols}).
+From this category, we select the following applications: \\textbf{Linphone}, \\textbf{Ekiga}, \\textbf{Wengophone} and \\textbf{Asterisk}. All are available for Windows and Linux, are distributed under the GPL licence\\footnote{General Public License $\\Rightarrow$ open source}, and support SIP and, in some cases, H.323 (Chapter \\ref{kap:VoIP-Protocols}).
 
-Aplikácia Linphone umožňuje iba prenos zvuku. Ekiga a Wengophone využívajú pripojenú webkameru na prenos obrazu. Navyše poskytujú pre nových užívateľov bezplatný SIP účet \url{username@ekiga.net} resp. \url{username@voip.wengo.fr}. Wengophone dokonca poskytuje kredit pre volanie do pevnej a mobilnej telefónnej siete, prípadne prepája hovory priamo na SIP účet. Podporuje aj posielanie SMS správ.
+Linphone supports audio transmission only. Ekiga and Wengophone use a connected webcam to transmit video. They also provide new users with a free SIP account, such as \\url{username@ekiga.net} or \\url{username@voip.wengo.fr}. Wengophone even provides credit for calls to landline and mobile networks and can route calls directly to a SIP account. It also supports SMS messages.
 
-Prenos obrazu je v oboch aplikáciách vo veľkosti CIF (obrázok \ref{fig:Resolutions}), každý uzol môže odosielať iba jeden obrazový a jeden zvukový dátový tok, čo znevýhodňuje nasadenie týchto aplikácií pre účely rozsiahlej videokonferencie, naopak postačuje pre účely desktop-to-desktop komunikácie.
+Both applications transmit video at CIF resolution (Figure \\ref{fig:Resolutions}), and each node can send only one video stream and one audio stream. This makes them unsuitable for large-scale videoconferencing, although they are sufficient for desktop-to-desktop communication.
 
-Okrem SIP a H.323 klientov by sme radi spomenuli software určený pre chod telefónej ústredne (PBX). Asterisk podporuje prenos zvuku pomocou niekoľkých protoklov (IAX2, SIP, H.323), voicemail, adresárové služby, konferenčné hovory, odkazovač, prijímanie spojení čakajúcich vo fronte a ďalšie \ldots. Design protokolu IAX2 umožňuje prekonávať problémy s NAT/firewallmi\index{NAT!traversal}. Protokol SIP tiež podporuje preposielanie multimediálnych paketov cez tzv. STUN proxy server (napr. stun.ekiga.net). Nie je však natoľko úspešný ako práve IAX2.
+In addition to SIP and H.323 clients, we should mention software designed to operate a private branch exchange (PBX). Asterisk supports audio transmission using several protocols (IAX2, SIP and H.323), voicemail, directory services, conference calls, call forwarding, queuing of incoming calls and more\\ldots. The design of IAX2 allows it to traverse NAT and firewalls\\index{NAT!traversal}. SIP also supports forwarding multimedia packets through a so-called STUN server (for example, stun.ekiga.net), but it is not as effective in this respect as IAX2.
 
 \subsubsection*{Výhody}
 \begin{paklist}
-\item Existencia pre rôzne platformy, open-source, SIP je IETF štandard. IAX2 je vo fáze návrhu (IETF Internet-Draft \cite{IETFDraft-IAX2}).
-\item Jednoduchá inštalácia a používanie.
-\item Design IAX2 a STUN server pre SIP riešia problémy s NAT/firewallom.
-\item Integrácia s telefónnymi linkami.
-\item Kvalitné a efektívne kodeky ako napr. Speex.
-\item Vstavané odstaňovanie spätnej väzby.
-\item Pre Asterisk existuje špeciálna distribúcia Linuxu, dokonca aj vo formáte VMWare appliance.
+\\item Available on multiple platforms and open-source; SIP is an IETF standard, while IAX2 is at the proposal stage (IETF Internet-Draft \\cite{IETFDraft-IAX2}).
+\\item Easy installation and use.
+\\item IAX2 design and the STUN server for SIP address NAT and firewall traversal.
+\\item Integration with telephone lines.
+\\item High-quality and efficient codecs, such as Speex.
+\\item Built-in echo cancellation.
+\\item A dedicated Linux distribution for Asterisk is available, including as a VMware appliance.
 \end{paklist}
 
 \subsubsection*{Neýhody}
 \begin{paklist}
-\item Riešenia primárne určené pre telefonovanie.
-\item Fixná veľkosť obrazu CIF a fixný počet dátových tokov obmedzuje použitie na desktop-to-desktop komunikáciu. Je to však problém konkrétnej implementácie, nie architektúry.
-\item Kombinácia rôznych SIP klientov častokrát vedie k chybám pri spojovaní a komunikácii -- voľba nesprávneho kodeku, rozdielne implementácie protokolov.
+\\item Solutions primarily designed for telephony.
+\\item Fixed CIF video resolution and a fixed number of data streams limit their use to desktop-to-desktop communication. This is a limitation of the particular implementation, not of the architecture.
+\\item Combining different SIP clients often leads to connection and communication errors, such as selection of an incompatible codec or differences between protocol implementations.
 \end{paklist}
 
 
@@ -236,121 +231,116 @@ Okrem SIP a H.323 klientov by sme radi spomenuli software určený pre chod tele
 \subsection{AccessGrid}\label{kap:AccessGrid}
 % ============================================
 
-Cieľom projektu AccessGrid (AG) je umožniť čo najprirodzenejšiu interakciu medzi účastníkmi konferencie s využitím existujúcej sieťovej infraštruktúry. Tento robustný nástoj pozostáva zo sady softwarových a hardwarových komponentov škálovateľných na mieru potrebám videokonferencie, od komunikácie medzi jednotlivcami až po celé skupiny.
+The goal of the AccessGrid (AG) project is to enable the most natural interaction possible among conference participants using the existing network infrastructure. This robust toolkit consists of software and hardware components that can be scaled to meet the needs of a videoconference, from communication between individuals to communication between entire groups.
 
-Po softwarovej stránke tu môžeme nájsť komponenty určené na prenos obrazu, zvuku, zdieľanie prezentácií, vizualizačné a riadiace programy. Pre konferenciu prostredníctvom AG je obvykle vyhradená špeciálna miestnosť, čo umožňuje zabezpečiť kvalitnú komunikáciu aj pri veľkom počte účastníkov. Technológia AG je priamo navrhnutá pre spoluprácu medzi skupinami vedcov, kde prezentácia a vizualizácia výsledkov výskumu vyžaduje viac projekčnej techniky, kamier, náročnejšie spracovánie zvuku, a teda aj väčšie množstvo výpočtovej techniky potrebnej pre kódovanie zvuku a obrazu.
+The software includes components for video and audio transmission, presentation sharing, visualisation and system control. A dedicated room is usually reserved for an AG conference, making high-quality communication possible even with a large number of participants. AG technology is specifically designed for collaboration among groups of researchers, where presenting and visualising research results requires multiple projection devices and cameras, more sophisticated audio processing, and therefore greater computing capacity for audio and video encoding.
 
-Obvykle takúto miestnosť označujeme ako uzol AccessGridu (AG node). Obrázok \ref{fig:ArchAccessGridDefault} znázorňuje príklad typickej architektúry AG node. Hneď na prvý pohľad si môžeme všimnúť distribuovanú povahu celého systému. Na obrázku sú znázornené štyri oddelené počítače -- Display Computer, Video Capture Computer, Audio Capture Computer a Control Computer. Po softwarovej stránke je AG zložený z komponentov VenueServer, VenueClient, NodeManager, NodeService a Bridge. Venue server predstavuje virtuálnu miestosť, v ktorej sa nachádzajú účastníci konferencie. Obsahuje súbory určené pre stiahnutie zdieľanými aplikáciami. Na VenueServer sa klienti pripájajú pomocou svojich VenueClientov, kde sa každý účastník autentifikuje pomocou certifikátu\footnote{O certifikát musí účastník dopredu požiadať certifikačnú autoritu. K tomuto účelu slúži špeciálny nástroj pomenovaný "Certificate Request Tool". V prípade nutnosti je možné použiť anonymný certifikát.}. NodeManager umožňuje ovládať distribuované prvky systému, zapínať a vypínať streamovacie služby. To sa deje prostredníctvom NodeService -- služieb spájajúcich oddelený hardware do distribuovaného systému, ktorý komunikuje pomocou XML-RPC. Posledným komponentom je Bridge, ktorý je určený na spostredkovanie služby pre účastnikov bez multicastovej siete.
+Such a room is usually called an AccessGrid node (AG node). Figure \\ref{fig:ArchAccessGridDefault} shows an example of a typical AG node architecture. The distributed nature of the system is immediately apparent. The figure shows four separate computers: Display Computer, Video Capture Computer, Audio Capture Computer and Control Computer. The software consists of VenueServer, VenueClient, NodeManager, NodeService and Bridge components. A VenueServer represents a virtual room in which conference participants meet. It contains files that shared applications can download. Clients connect to the VenueServer through their VenueClients, and each participant authenticates using a certificate\\footnote{A participant must request a certificate from a certification authority in advance. A dedicated tool called "Certificate Request Tool" is provided for this purpose. An anonymous certificate can be used if necessary.}. NodeManager controls the distributed system components and starts or stops streaming services. This is done through NodeServices, which connect separate hardware components into a distributed system communicating over XML-RPC. The final component is the Bridge, which provides connectivity for participants without multicast access.
 
-V porovnaní s ostatnými technológiami sa môže zdať AG ako príliš zložitý systém. Kvalitný zážitok z videokonferencie za účasti veľkého počtu osôb, však vyžaduje viac investícií do zariadenia miestnosti. Obraz je na~rozdiel od monitoru zobrazovaný na projekčné plátno niekoľkými projektormi.
+Compared with other technologies, AG may appear overly complex. However, a high-quality videoconferencing experience with many participants requires greater investment in room equipment. Unlike a desktop monitor, the video is displayed on projection screens using several projectors.
 
 \begin{figure}
 \centering
 \includesvg[width=0.95\textwidth]{arch-ag-default}
-\caption{Typická architektúra AccessGridu. (zdroje \protect\cite{ArticleUVTMU-KomunikaceAGPoint}\cite{childers00})}
+\\caption{Typical AccessGrid architecture (sources: \\protect\\cite{ArticleUVTMU-KomunikaceAGPoint} and \\cite{childers00}).}
 \label{fig:ArchAccessGridDefault}
 \end{figure}
 
 \subsubsection*{Výhody}
 \begin{paklist}
-\item Škálovateľné riešenie podľa veľkosti konferencie.
-\item Množstvo zdieľaných aplikácií a iných nástrojov.
-\item Vysoká kvalita obrazu a zvuku.
-\item Možnosť prenosu prostredníctvom unicast aj multicast siete.
-\item Multiplatformnosť: Linux, Windows, MacOS X, FreeBSD
+\\item A solution that scales according to conference size.
+\\item A wide range of shared applications and other tools.
+\\item High-quality video and audio.
+\\item Transmission over both unicast and multicast networks.
+\\item Cross-platform support: Linux, Windows, macOS X and FreeBSD.
 \end{paklist}
 
 \subsubsection*{Neýhody}
 \begin{paklist}
-\item Architektúra vyžaduje rýchle sieťové pripojenie.
-\item Bežný užívateľ môže mať problémy pri inštalácii a nastavení AG.
-\item Vyššie nároky na priestor a vyššie finančné náklady na nákup potrebného hardware.
-\item Problémy s multicastovým pripojením.
-\item Problémy s prekonávaním NAT\index{NAT!problem}.
+\\item The architecture requires a high-speed network connection.
+\\item Ordinary users may have difficulty installing and configuring AG.
+\\item Greater space requirements and higher costs for purchasing the necessary hardware.
+\\item Problems with multicast connectivity.
+\\item Problems traversing NAT\\index{NAT!problem}.
 \end{paklist}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Požiadavky a parametre zvoleného riešenia}
+\\section{Requirements and parameters of the selected solution}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Predchádzajúci výber aplikácií nebol náhodný. Z komerčných riešení sme vybrali Skype pre jeho masové rozšírenie v oblasti IP telefonie a jeho schopnosť prekonávať NAT/firewall\index{NAT!traversal} pomocou distribuovaného systému superuzlov.
-Adobe Flash sme vybrali pre jeho dostupnosť vo väčšine internetových prehliadačov a jednoduchosť inštalácie.
-InSORS nás oslovil spôsobom, ktorým využíva technológiu MBone a ďalšie otvorené štandardy, ktoré ponúka v ľahko ovládateľnom balíku s možnosťou zakúpenia spolu so špecializovaným hardwarom.
-Systém VRVS je pre nás príkladom aplikácie spustiteľnej priamo z webu (teda bez nutnosti inštalácie) a príkladom distribuovanej siete reflektorov monitorovaných systémom MonaLisa (obrázok \ref{fig:MonaLisa-frontend}).
-Z~nekomerčných aplikácií sme vybrali Wengophone a Ekigu ako zástupcov SIP a H.323 a AccessGrid ako zástupcu robustného open-source videokonferenčného riešenia.
+The applications selected above were not chosen at random. Among commercial solutions, we selected Skype because of its widespread use in IP telephony and its ability to traverse NAT and firewalls\\index{NAT!traversal} using a distributed supernode system. We selected Adobe Flash because it is available in most web browsers and is easy to install. InSORS appealed to us because it uses MBone technology and other open standards in an easy-to-use package that can also be purchased with specialised hardware. VRVS is an example of an application that can be launched directly from the web without installation, as well as a distributed reflector network monitored by the MonaLisa system (Figure \\ref{fig:MonaLisa-frontend}). Among non-commercial applications, we selected Wengophone and Ekiga as examples of SIP and H.323 clients, and AccessGrid as an example of a robust open-source videoconferencing solution.
 
-Cieľom nasledujúceho textu je definovať zoznam požiadaviek, ktoré kladieme na~výsledný systém na základe skúseností z existujúcich videokonferencčných riešení. V skutočnosti nemusí existovať systém, ktorý by vyhovoval všetkým požiadavkom, stačí ak sa tomuto ideálu priblíži.
+The following sections define the requirements for the resulting system, based on our experience with existing videoconferencing solutions. A system that satisfies every requirement may not exist in practice; it is sufficient for the selected solution to come close to this ideal.
 
 %====================================
-\subsection{Základné požiadavky}
+\\subsection{General requirements}
 %====================================
 
 %---------------------
-\paragraph*{Škálovateľnosť:}
-Architektúra videokonferenčného systému by mala byť dostatočne flexibilná na to, aby umožňovala zároveň komunikáciu medzi veľkým aj malým počtom účastníkov, tým sa otvoria možnosti nasadenia v organizáciách nezávisle na~ich veľkosti. Veľké organizácie budú mať možnosť nasadiť distribuovanú verziu systému, zatiaľ čo malé organizácie vystačia so základným nastavaním. Príliš zaťažený systém by mal byť jednoducho rozšíriteľný o nové hardwarové komponenty. Túto myšlienku by sme mohli rozvinúť až tak ďaleko, že budeme uvažovať o~vytvorení virtuálnej univerzity s množstvom simultánne prebiehajúcich prednášok.
+\\paragraph*{Scalability:}
+The videoconferencing system architecture should be sufficiently flexible to support communication among both small and large numbers of participants. This would allow organisations of any size to deploy it. Large organisations could use a distributed version of the system, while smaller organisations could rely on a basic configuration. An overloaded system should be easy to expand with additional hardware components. This idea could be taken as far as creating a virtual university with many lectures taking place simultaneously.
 
 %---------------------
-\paragraph*{Bezpečnosť:}
-Umožniť šifrovanú komunikáciu v~rámci konferencie. V ideálnom prípade úplné šifrovanie všetkých správ. Možnosť voľby miery zabezpečenia. Ďalšou funkčnosťou môže byť autentifikácia a autorizácia účastníkov tak, aby mali prístup do vybranej podmnožiny prebiehajúcich konferencií. V prípade bezpečnosti budeme taktiež požadovať, aby dátové prenosy nemohli byť modifikované neznámimi subjektmi (integrita).
-Pre niektoré organizácie býva práve táto požiadavka kľúčová.
+\\paragraph*{Security:}
+Enable encrypted communication within a conference, ideally encrypting all messages. Users should be able to choose the required level of security. Additional functionality may include participant authentication and authorisation, allowing access only to a selected subset of ongoing conferences. We also require data transmissions to be protected against modification by unauthorised parties (integrity). For some organisations, this requirement is particularly important.
 
 %---------------------
-\paragraph*{Dostupnosť:}
-Hlavne vyriešenie problémov spojených s firewallmi, NAT\index{NAT!požiadavka dostupnosti} a proxy servermi. Množstvo klientov sa nachádza za istou formou NAT kvôli problémom adresovania v IPv4 sieti. Sieť býva navyše obohatená o firewall, prípadne rôzne formy tzv. transparent proxy. Dokonalý prechod cez všetky sieťové prekážky by bol veľmi komplikovaný, ale systém by mal počítať aspoň s najbežnejšími problémami, hlavne NAT.
+\\paragraph*{Accessibility:}
+The main concern is solving problems associated with firewalls, NAT\\index{NAT!accessibility requirement} and proxy servers. Many clients are behind some form of NAT because of IPv4 addressing limitations. Networks may also include a firewall or various forms of transparent proxy. Traversing every possible network obstacle would be extremely difficult, but the system should at least account for the most common problems, especially NAT.
 
 %---------------------
-\paragraph*{Modifikovateľnosť:}
-Možnosť zmeny komponentov systému.
+\\paragraph*{Modifiability:}
+The ability to replace or modify system components.
 
 %---------------------
-\paragraph*{Stabilita:}
-Stabilita v čase. Systém by mal byť schopný bežať nepretržite bez pádu. V prípade poruchy by mal zanechať konzistentnú množinu dát.
+\\paragraph*{Stability:}
+Long-term stability. The system should be able to run continuously without crashing. In the event of a failure, it should leave data in a consistent state.
 
 %---------------------
-\paragraph*{Prenosová kapacita:}
-Úspech videokonferencie výrazne závisí na rýchlosti siete, ktorou účastníci disponujú.
+\\paragraph*{Bandwidth:}
+The success of a videoconference depends heavily on the network speed available to participants.
 
 %---------------------
-\paragraph*{One-way Latency:}\index{latency!one-way}
-Jednosmerná reakčná odozva je doba medzi odoslaním paketu na strane odosielateľa a prijatím paketu na strane príjemcu. V ďalšom texte nás bude hlavne zaujímať hodnota Round-trip Latency.
+\\paragraph*{One-way latency:}\\index{latency!one-way}
+One-way latency is the time between a packet being sent by the sender and received by the recipient. In the following discussion, we are primarily interested in round-trip latency.
 
 %---------------------
-\paragraph*{Round-trip Latency:}\index{latency!round-trip}
-Túto veličinu definujeme ako dobu medzi odoslaním požiadavku a prijatím odpovede ($\approx 2 \times one way latency$). V texte ju budeme používať pod názvom \textbf{Reakčná odozva} resp. \textbf{Latency}. V literatúre \cite{ITU-G.114-One-way-transmission-time} sa uvádza, že v~prípade zvuku by nemala presahovať 300ms, inak si účastníci rozhovoru prestávajú rozumieť. Znázorňuje to aj obrázok \ref{fig:ITU-G.114}. V prípade prenosu obrazu môže byť táto hodnota bez problémov niekoľkonásobne väčšia. V multimediálnej komunikácii preto uprednostníme nespoľahlivé nepotvrdzované doručovanie tzv. \textbf{Unreliable Unicast/Multicast}. Doručovanie pomocou UDP pred TCP.
+\\paragraph*{Round-trip latency:}\\index{latency!round-trip}
+We define this quantity as the time between sending a request and receiving a response ($\\approx 2 \\times one-way latency$). In this thesis, we refer to it as \\textbf{latency}. The literature \\cite{ITU-G.114-One-way-transmission-time} states that audio latency should not exceed 300 ms; otherwise, participants can no longer communicate effectively. This is also illustrated in Figure \\ref{fig:ITU-G.114}. For video transmission, this value can be several times higher without difficulty. Multimedia communication therefore favours unreliable, unacknowledged delivery, known as \\textbf{unreliable unicast/multicast}, using UDP rather than TCP.
 
 \begin{figure}
 \centering
 \includesvg[width=0.7\textwidth]{mouth-to-ear-delay}
-\caption{Dôsledky oneskorenia zvuku podľa ITU-T G.114 \protect\cite{ITU-G.114-One-way-transmission-time}.}
+\\caption{Effects of audio delay according to ITU-T G.114 \\protect\\cite{ITU-G.114-One-way-transmission-time}.}
 \label{fig:ITU-G.114}
 \end{figure}
 
 %---------------------
-\paragraph*{Jitter:}
-Rozptyl reakčnej odozvy definujeme ako zmenu reakčnej odozvy v čase. Garancia maximálnej hodnoty pre jitter umožňuje odhadnúť veľkosti bufferov. Použitie bufferov je však obmedzené celkovou latenciou.
+\\paragraph*{Jitter:}
+Jitter is the variation in latency over time. A guaranteed maximum jitter value makes it possible to estimate buffer sizes. However, the use of buffers is constrained by the overall latency.
 
 %---------------------
-\paragraph*{Hardwarové nároky:}
-Zamýšľaný systém bude spracovávať desiatky nezávislých dátových tokov. Použité kodeky musia byť v tom prípade nenáročné na výpočtový výkon. Hardwarovo náročné procesy môžu zhoršiť reakčnú odozvu systému. Tento problém sa týka hlavne spracovania obrazu.
+\\paragraph*{Hardware requirements:}
+The intended system will process dozens of independent data streams. The codecs used must therefore have modest computational requirements. Hardware-intensive processes can increase system latency. This issue is particularly relevant to video processing.
 
 %---------------------
-\paragraph*{Štandardy:}
-Budeme používať štandardizované komunikačné protokoly a kodeky. Táto požiadavka plynie už z nášho zámeru požívať jedine open-source software. Pre prenos multimediálnych paketov tak prichádza do úvahy protokol RTP (kapitola \ref{kap:RTP+RTCP}).
+\\paragraph*{Standards:}
+We will use standardised communication protocols and codecs. This requirement follows from our intention to use open-source software exclusively. RTP is therefore a suitable protocol for transmitting multimedia packets (Chapter \\ref{kap:RTP+RTCP}).
 
 %---------------------
-\paragraph*{Dostupnosť pre rôzne platformy:}
-Umožniť sledovanie konferencie minimálne na systémoch Linux a Windows.
+\\paragraph*{Cross-platform availability:}
+Allow conferences to be viewed on at least Linux and Windows systems.
 
 %=======================
-\subsection{Obraz}
+\\subsection{Video}
 %=======================
 
 %---------------------
-\paragraph*{Veľkost obrazu:}
-Systém by mal umožniť voľbu veľkostí obrazu. Myslíme tým hlavne rozdiely medzi snímaním veľkej miestnosti s množstvom účastníkov oproti detailnému snímaniu tváre. Predpokladáme, že jednotlivé obrazové toky budeme zobrazovať na veľké projekčné plátno pomocou data-projektora, preto doporučujeme použiť aspoň formát D1 PAL 720x576 (viď obrázok \ref{fig:Resolutions}). Implicitným formátom väčšiny súčasných videokonferenčných systémov býva totiž formát CIF 352x288 resp. 352x240 (viď obrázok \ref{fig:Resolutions}). Toto obmedzenie sa týka hlavne použitého kodeku H.261 (pozri kap. \ref{kap:H.261}).
+\\paragraph*{Video resolution:}
+The system should allow users to choose the video resolution. This is important, for example, when capturing a large room with many participants rather than a close-up of a face. We assume that individual video streams will be displayed on a large projection screen using a data projector, so we recommend supporting at least D1 PAL resolution (720x576; see Figure \\ref{fig:Resolutions}). Most current videoconferencing systems use CIF as their default format, at 352x288 or 352x240 (see Figure \\ref{fig:Resolutions}). This limitation is mainly associated with the H.261 codec (see Chapter \\ref{kap:H.261}).
 
 % **********************************************
 % Image Resolutions
@@ -358,105 +348,97 @@ Systém by mal umožniť voľbu veľkostí obrazu. Myslíme tým hlavne rozdiely
 \begin{figure}
 \centering
 \includesvg[width=0.6\textwidth]{resolutions}
-\caption{Porovnanie rôznych veľkostí obrazu.}
+\\caption{Comparison of different video resolutions.}
 \label{fig:Resolutions}
 \end{figure}
 % **********************************************
 
-Popisované systémy Skype a Flash
-(kap. \ref{kap:Skype}, \ref{kap:Adobe Flash})
-pracujú s fixnou veľkosťou obrazu.
-Výhodou je jednoduchšia implementácia a ovládanie zo strany užívateľa.
-Naopak systémy AccessGrid, InSORS a VRVS
-(kap. \ref{kap:AccessGrid}, \ref{kap:InSORS}, \ref{kap:VRVS})
-dávajú možnosť voľby na úkor jednoduchosti.
+The Skype and Flash systems discussed above (Chapters \\ref{kap:Skype} and \\ref{kap:Adobe Flash}) use a fixed video resolution. This simplifies implementation and operation for the user. In contrast, AccessGrid, InSORS and VRVS (Chapters \\ref{kap:AccessGrid}, \\ref{kap:InSORS} and \\ref{kap:VRVS}) offer a choice of resolutions, at the cost of greater complexity.
 
 %---------------------
-\paragraph*{Kódovanie pohybu:}
-Obraz z miestnosti, kde prebieha konferencia, može mať statickú alebo dynamickú povahu, čo by sme mali zohľadniť aj pri voľbe vhodného kodeku. Za statický obraz v tomto prípade pokladáme napr. skupinu sediacich ľudí, ktorí sú snímaní kamerou z niekoľkometrovej vzdialenosti pri konštantných svetelných podmienkach. Príkladom dynamického obrazu môže byť napr. jedna osoba snímaná z blízka, prípadne množstvo pohyblivých objektov. Slabé osvetlenie navyše spôsobuje nárast dátového toku, pretože kamery pridávajú do obrazu rôzne artefakty.
+\\paragraph*{Motion encoding:}
+The image of a conference room can be either static or dynamic, and this should be considered when choosing an appropriate codec. A static image might show a group of seated people captured from several metres away under constant lighting conditions. A dynamic image might show a person captured close up or a large number of moving objects. Poor lighting also increases the bitrate because cameras introduce various image artefacts.
 
 %---------------------
-\paragraph*{Kvalita obrazu:}
-Pokiaľ nám ide o komunikáciu medzi jednotlivcami, ktorí navyše disponujú prenosovou kapacitou menšou ako 1Mbit/s, prirodzene nám postačí nižšia kvalita obrazu ako v prípade rozsiahlej konferencie, kde obvykle vyžadujeme aspoň 10 Mbit/s. V prípade požiadavku na prenosy vo vysokej kvalite musíme počítať dokonca s kapacitou 25Mbit/s pre jeden dátový tok (komprimované video vo formáte HDV). Rozpracovanie tejto problematiky je možné nájsť napr. v článku \cite{ArticleUVTMU-VideokonferenceSVysokouKvalitou}.
+\\paragraph*{Video quality:}
+For communication between individuals with bandwidth below 1 Mbit/s, lower video quality is naturally sufficient. A large conference, by contrast, typically requires at least 10 Mbit/s. High-quality transmission may require as much as 25 Mbit/s for a single data stream (compressed HDV video). Further discussion of this topic can be found, for example, in \\cite{ArticleUVTMU-VideokonferenceSVysokouKvalitou}.
 
 %=======================
-\subsection{Zvuk}
+\\subsection{Audio}
 %=======================
 
 %---------------------
-\paragraph*{Kvalita zvuku:}
-Na kvalitu zvuku kladieme vyššie nároky než na kvalitu obrazu. Človek je oveľa citlivejší na drobné výpadky zvuku ako na úplnú absenciu obrazu. (V~kapitole \ref{kap:RTP+RTCP}, pojednávame o protokole RTP, ktorý práve z tohto dôvodu používa oddelené UDP porty pre prenos zvuku a obrazu).
-Pokiaľ chceme prenášať reč a nezaujíma nás prenos hudby v najvyššej kvalite, vystačíme s frekvenciou okolo 8000Hz. Najväčším nepriateľom pre nás bude latency (reakčná odozva) resp. jitter (rozptyl reakčnej odozvy).
+\\paragraph*{Audio quality:}
+We place greater demands on audio quality than on video quality. People are much more sensitive to brief audio interruptions than to the complete absence of video. (Chapter \\ref{kap:RTP+RTCP} explains that RTP uses separate UDP ports for audio and video for this very reason.) If we want to transmit speech and do not require high-fidelity music, a sampling frequency of around 8000 Hz is sufficient. Our main concerns will be latency and jitter.
 
 %---------------------
-\paragraph*{Problém spätnej väzby:}
-V podmienkach ozvučenej miestnosti sa musí systém vyrovnať so vznikom spätnej väzby a inými nevhodnými zvukovými efektmi. Potlačenie ozveny má vyššiu prioritu ako samotná kvalita zvukového signálu.
+\\paragraph*{Echo and feedback:}
+In a room equipped with loudspeakers, the system must deal with acoustic feedback and other undesirable audio effects. Echo cancellation has a higher priority than the audio signal quality itself.
 
 %==========================================
-\subsection{Prezentácia/Vizualizácia}
+\\subsection{Presentation and visualisation}
 %==========================================
 
 %---------------------
-\paragraph*{Podporované formáty:}
-Od poskytovateľa videokonferenčnej technológie sa očakáva, že bude v~maximálnej miere vychádzať v ústrety účastníkom a podporovať široké portfólio formátov. V ideálnom prípade by účastníci nemali byť obmedzovaní pri výbere formátu, ktorý chcú prezentovať. V reálnom svete však musí poskytovateľ definovať zoznam podporovaných formátov a oboznámiť s ním všetkých zainteresovaných účastníkov s dostatočným predstihom.
+\\paragraph*{Supported formats:}
+A videoconferencing technology provider is expected to accommodate participants as much as possible and support a wide range of formats. Ideally, participants should not be restricted in their choice of presentation format. In practice, however, the provider must define a list of supported formats and inform all participants well in advance.
 
 %---------------------
-\paragraph*{Video sekvencie:}
-Mali by sme podporovať rôzne kodeky a veľkosti od súborov s desiatkami MiB až po video uložené vo formáte DVD. Typickým požiadavkom užívateľa môže byť spustenie video sekvenice, ktorú je možné ovládať minimálne tlačítkom PLAY/PAUSE.
+\\paragraph*{Video sequences:}
+We should support different codecs and file sizes, ranging from files of a few dozen MiB to video stored in DVD format. A typical user requirement may be the ability to play a video sequence and control it at least with PLAY/PAUSE buttons.
 
-Automatické konverzie medzi video formátmi zvládajú napr. nástroje FFMPEG, MPlayer a VLC. Zvukové súbory môžeme konvertovať pomocou nástroja sox. Pre interaktívnu úpravu zvuku je vhodná aplikácia Audacity, v prípade obrazu poslúži napr. Avidemux.
-
-%---------------------
-\paragraph*{Prezentácia vo forme statických snímkov:}
-Obvyklým formátom pre prípravu prezentácie bývajú formáty PDF a PPT. V~našom riešení budeme uprednostňovať formát PDF. Účastníci videokonferencie budú totiž nútení vypustiť videosekvencie a animované prechody medzi snímkami zo svojich prezentácií. Zmenší sa tak objem prenesených dát aj záťaž procesoru.
-
-Účastníci, ktorí inklinujú k prostrediu typu Unix budú pravdepodobne používať formáty PDF, PS (PostScript) alebo ODF (Open Document Format). Užívatelia Windows prinesú pravdepodobne formáty PPT, PDF alebo ODF. Automatickú konverziu je možné zabezpečiť jednoduchým skriptom, ktorý využíva OpenOffice makrojazyk (zdroj \cite{OpenOffice-Conversion})
-Ďalšie úpravy vektorových formátov pokrývajú nástroje pstoedit, a2ping a xpdf. Automatické konverzie medzi rastrovými formátmi je možné zabezpečiť pomocou balíka NetPbm a ImageMagick. Pre vizualizáciu dát pomocou skriptov môžeme využiť programy Gnuplot, R či Graphviz.
+Automatic conversion between video formats is supported by tools such as FFmpeg, MPlayer and VLC. Audio files can be converted using sox. Audacity is suitable for interactive audio editing, while Avidemux can be used for video.
 
 %---------------------
-\paragraph*{Interaktívne 2D/3D simulácie:}
-Do tejto kategórie patria rôzne 3D modely a prostredia vytvorené v špecializovaných aplikáciách typu 3D Studio Max, Blender, SolidEdge či AutoCad. Patria sem aj prostredia vytvorené pre niektorý z herných enginov ako napr. Unreal, Half-Life, Quake a mnoho ďalších. Medzi prostredia, ktoré by sme mohli podporovať patrí ďalej OpenInventor a VRML.
+\\paragraph*{Presentations as static slides:}
+PDF and PPT are common formats for preparing presentations. In our solution, we prefer PDF. This means that videoconference participants will have to omit video sequences and animated slide transitions from their presentations. This reduces both the amount of transmitted data and the processor load.
+
+Participants using Unix-like environments will probably use PDF, PS (PostScript) or ODF (OpenDocument Format). Windows users will probably bring PPT, PDF or ODF files. Automatic conversion can be provided by a simple script using the OpenOffice macro language (source: \\cite{OpenOffice-Conversion}). Further tools for processing vector formats include pstoedit, a2ping and xpdf. Automatic conversion between raster formats can be handled by the NetPBM package and ImageMagick. For script-based data visualisation, we can use Gnuplot, R or Graphviz.
+
+%---------------------
+\\paragraph*{Interactive 2D/3D simulations:}
+This category includes various 3D models and environments created using specialised applications such as 3D Studio Max, Blender, SolidEdge and AutoCAD. It also includes environments created with game engines such as Unreal, Half-Life, Quake and many others. Other environments that we could support include OpenInventor and VRML.
 
 \begin{samepage}
 \noindent
-Spôsoby prezentácie by sme mohli rozdeliť do štyroch skupín:
+We can divide presentation methods into four groups:
 \begin{enumerate}
-\item Programy spustené na externom počítači, ktorý je pripojený S-Video signálom.
-\item Programy používajúce VNC display.
-\item Programy, ktoré priamo podporujú kolaboráciu.
-\item Programy emulované pomocou VMWare.
+\\item Applications running on an external computer connected through an S-Video signal.
+\\item Applications using a VNC display.
+\\item Applications with built-in collaboration support.
+\\item Applications emulated using VMware.
 \end{enumerate}
 \end{samepage}
 
 \noindent
-Počas videokonferencií Polylogues sa ukázalo, že najstabilnejším riešením je použitie externého počítača pripojeného cez S-Video. Užívateľ tak môže priniesť vlastné prostredie, na ktorom má odladenú svoju prezentáciu.
+The Polylogues videoconferences showed that the most stable solution is to use an external computer connected through S-Video. This allows a user to bring their own environment, with their presentation already configured and tested.
 
 %---------------------
-\paragraph*{Obraz z externého zdroja:}
-Už sme spomenuli, že vhodným riešením je použiť externý hardware pripojený cez S-Video do digitalizačnej karty. Nevýhodou môže byť nutnosť zakúpenia ďalšieho hardwarového komponentu. Niekedy však užívateľ nedisponuje ani S-Video výstupom, takže musíme pristúpiť napr. k inštalácii VNC.
+\\paragraph*{Video from an external source:}
+As mentioned above, a suitable solution is to use external hardware connected through S-Video to a capture card. The disadvantage is that additional hardware may have to be purchased. In some cases, however, the user does not even have an S-Video output, so we may need to use an alternative such as VNC.
 
 %---------------------
-\paragraph*{Kvalita:}
-Pri prenose videosekvencií spolu so zvukom platia rovnaké pravidlá ako sme stanovili v požiadavkoch na obraz a zvuk. Navyše musíme brať do úvahy, že pri prezentácii snímkov, ktoré majú väčšinou statickú povahu budeme používať iné techniky, kodeky, veľkosti obrazu. Situáciu mierne komplikujú prezentácie, ktoré v~sebe obsahujú videosekvencie. Z toho dôvodu uprednostňujeme prezentáciu vo~formáte PDF.
+\\paragraph*{Quality:}
+When transmitting video sequences together with audio, the same requirements apply as for video and audio described above. We must also consider that slide presentations are mostly static and therefore require different techniques, codecs and image sizes. Presentations containing embedded video make the situation somewhat more complicated. For this reason, we prefer presentations in PDF format.
 
 %---------------------
-\paragraph*{Ovládanie:}
-Účastníci konferencie by mali dostať možnosť ovládať prebiehajúcu prezentáciu. V prípade AccessGridu je to napr. SharedPresentation alebo SharedPDF.
+\\paragraph*{Control:}
+Conference participants should be able to control the presentation in progress. In AccessGrid, this can be achieved using SharedPresentation or SharedPDF.
 
 %=======================
-\subsection{Spolupráca}
+\\subsection{Collaboration}
 %=======================
 
 %http://www.vide.net/cookbook/cookbook.en/
 %HighlightVideoConsumer, PositionalAudioService
 %http://scv.bu.edu/~putnam/ag-audio/services-2.4/doc/
 
-Riešenie by malo podporovať rôzne formy spolupráce medzi účastníkmi konferencie. Od jednoduchého zdieľania súborov až po zdieľanú pracovnú plochu. V tomto prípade môžeme znova využiť vlastnosti VNC.
+The solution should support different forms of collaboration between conference participants, from simple file sharing to a shared desktop. In this case, we can again make use of VNC.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Vybraný systém}
+\\section{Selected system}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-V prvej kapitole sme popísali niekoľko existujúcich aplikácií, vyberali sme hlavne prakticky odskúšané riešenia z oblasti closed-source aj open-source software. Snažili sme sa popísať technológie vhodné pre desktop-to-desktop komunikáciu ako aj pre group-to-group komunikáciu a poukázali sme na rozdiely medzi oboma prístupmi. Pre každú aplikáciu sme pripravili zoznam ich výhod a nevýhod. Vytvorili sme obraz ideálneho videokonferenčného systému tak, že sme poskytli detailný zoznam požiadaviek. To nám umožní vybrať vhodné protokoly, kodeky a komponenty. Z~voľne dostupných technológií vyberáme AccessGrid, pretože vo svete open-source sa jedná o najkomplexnejší videokonferenčný systém, ktorého základ využívajú aj niektoré komerčné produkty.
+In the first part of this chapter, we described several existing applications, focusing mainly on solutions that had been tested in practice, from both closed-source and open-source software. We considered technologies suitable for desktop-to-desktop as well as group-to-group communication and highlighted the differences between these approaches. For each application, we listed its advantages and disadvantages. We then outlined an ideal videoconferencing system by defining a detailed set of requirements. This provides a basis for selecting suitable protocols, codecs and components. Among freely available technologies, we selected AccessGrid because it is the most comprehensive open-source videoconferencing system, and its underlying components are also used by some commercial products.
