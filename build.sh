@@ -31,6 +31,7 @@ case "${1:-build}" in
     ;;
   test)
     sh ./tests/test_build.sh
+    python3 ./tests/test_svg_pipeline.py
     ;;
   *)
     printf 'Použitie: sh build.sh [build|clean|distclean|test]\n' >&2
