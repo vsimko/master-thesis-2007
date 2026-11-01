@@ -1,38 +1,37 @@
-\chapter{Záver}
+\chapter{Conclusion}
 
-Ciele stanovené v úvode práce sa podarilo úspešne splniť. Našli sme spôsob tvorby videokonferenčného uzla založeného výhradne na voľne dostupných komponentoch. Nástroje, ktoré vznikli v priebehu tejto práce, umožňujú prípravu a nahrávanie konferencie. Spôsob, ktorým sme spojili existujúce komponenty, je v prostredí AccessGridu unikátny.
+The objectives set out in the introduction have been successfully achieved. We found a way to create a videoconferencing node based entirely on freely available components. The tools developed during this work make it possible to prepare and record a conference. The way in which we combined the existing components is unique within the Access Grid environment.
 
-\paragraph*{Za hlavné prínosy považujeme:}
+\paragraph*{We consider the following to be the main contributions:}
 \begin{enumerate}
 %---------------------------
-\item Vytvorenie videokonferenčného uzla v organizácii Ciant. Ide o druhý uzol AccessGridu v Českej Republike, ktorý môže slúžiť ako model pre uzly v~ďalších organizáciách.
+\item Creation of a videoconferencing node at the Ciant organization. It is the second Access Grid node in the Czech Republic and can serve as a model for nodes at other organizations.
 
 %---------------------------
-\item V~rámci tvorby uzla boli vytvorené internetové stránky, ktoré okrem informácií, týkajúcich sa samotného uzla, obsahujú aj kolekciu nástrojov súvisiacich s~videokonferenčnými technológiami. Engine použitý pri ich tvorbe je k dispozícii záujemcom.
+\item As part of creating the node, a website was developed. In addition to information about the node itself, it contains a collection of tools related to videoconferencing technologies. The engine used to create the website is available to interested users.
 
 %---------------------------
-\item Kontakty získané počas uplynulých aktivít uzla využijeme v budúcej spolupráci medzi MFF UK a MARCEL network, ktorá by mohla vygenerovať ďalšie zaujímavé projekty ako zdroje bakalárskych, magisterských aj dizertačných prác.
+\item The contacts established through the node's activities to date will be used in future cooperation between MFF UK and the MARCEL network. This cooperation could generate further interesting projects that could serve as topics for bachelor's, master's, and doctoral theses.
 
 %---------------------------
-\item Praktické skúsenosti získané pri tvorbe uzla umožnili navrhnúť AccessGridový uzol zložený výlučne z voľne dostupných komponentov. Bolo nutné zabezpečiť chýbajúce aplikácie, inak dostupné v komerčných platformách.
+\item The practical experience gained while creating the node made it possible to design an Access Grid node composed entirely of freely available components. Applications that are otherwise available on commercial platforms had to be provided separately.
 
 %---------------------------
-\item Vytvorenie zdieľaného multimediálneho prehrávača pre operačný systém Linux -- SharedMPlayer, ktorý doteraz v AccessGride chýbal. Za zmienku stojí aj oprava existujúcej verzie SharedPresentation.
+\item Creation of a shared multimedia player for the Linux operating system—SharedMPlayer—which had previously been missing from Access Grid. The repair of the existing version of SharedPresentation is also worth mentioning.
 
 %---------------------------
-\item Ďalší softwarový prvok, ktorý vznikol na základe tejto práce, je EVIC -- upravená verzia aplikácie VIC z projektu VRVS. Hlavným cieľom bolo nájsť vhodného kandidáta na nahrávanie obrazovky VNC, čo pôvodný VIC z~dielne UCL neumožňoval. EVIC sa stal súčasťou nástroja StreamVNC a poskytuje ovládacie prvky umiestnené na vzdialený X11 display.
+\item Another software component developed as a result of this work is EVIC, a modified version of the VIC application from the VRVS project. The main objective was to find a suitable candidate for recording a VNC screen, which the original VIC developed at UCL did not support. EVIC became part of the StreamVNC tool and provides control elements located on a remote X11 display.
 
 %---------------------------
-\item Pre účely prípravy prezentácií vhodných pre vysielanie do AccessGridovej konferencie vznikol integrovaný nástroj StreamVNC. Umožňuje lokálne nahrávanie obsahu VNC, zvuku a obrazu z kamery. Dátový tok vo forme RTP paketov ukladáme pomocou nástroja AGVCR.
+\item The integrated StreamVNC tool was developed to prepare presentations suitable for broadcasting to an Access Grid conference. It enables local recording of VNC content, audio, and video from a camera. The data stream, in the form of RTP packets, is stored using the AGVCR tool.
 
 %---------------------------
-\item Po teoretickej stránke sme popísali hlavné problémy AccessGridu a videokonferenčných technológií vôbec. Na malých príkladoch sme ukázali možnosť prechodu cez NAT a firewall, možnosti tunelovania a premostenia multicastovej siete. Pre uzol v organizácii Ciant sme postavili QuickBridge, ktorý čiastočne rieši problém s nedostupnosťou multicastovej siete. V budúcnosti uvažujeme o~nasadení novšej verzie AG 3, ktorá obsahuje kvalitnejšie premostenie pomocou UMTP.
+\item From a theoretical perspective, we described the main problems of Access Grid and videoconferencing technologies in general. Using small examples, we demonstrated ways to traverse NAT and firewalls, as well as tunnelling and multicast-network bridging. For the node at Ciant, we built QuickBridge, which partially addresses the problem of multicast-network unavailability. In the future, we are considering deploying the newer version AG 3, which provides improved bridging using UMTP.
 
 \end{enumerate}
 
-Podstatná časť spomínaných výsledkov môže v budúcnosti generovať nové projekty. Videokonferenčné technológie sa neustále vyvíjajú a užívatelia kladú stále nové požiadavky na kvalitu prenosu, funkčnosť a jednoduchosť použitia. AccessGrid potrebuje nové kvalitné zvukové a obrazové kodeky, čo implikuje vylepšenie existujúcich komponentov VIC a RAT. Podľa modelu InSORS a VRVS je vhodné implementovať nové premostenia (SIP, Skype, H.323, Asterisk \ldots). Taktiež navrhujeme upraviť súčasnú robustnú architektúru pre použitie v stiesnených podmienkach bez~negatívneho účinku na kvalitu prenosu v ostatných miestach siete. Použiteľnosť sa zvýši zjednodušením rozhrania VenueClient, napr. podľa modelu EVO, VRVS alebo InSORS.
+A substantial part of these results may lead to new projects in the future. Videoconferencing technologies are constantly evolving, and users continue to make new demands regarding transmission quality, functionality, and ease of use. Access Grid needs new, high-quality audio and video codecs, which implies improvements to the existing VIC and RAT components. Following the InSORS and VRVS models, it would be appropriate to implement new bridges (SIP, Skype, H.323, Asterisk \ldots). We also propose adapting the current robust architecture for use in constrained environments without negatively affecting transmission quality at other points in the network. Usability could be improved by simplifying the VenueClient interface, for example, following the EVO, VRVS, or InSORS models.
 
 \medskip
-Veríme, že projekt Ciant AG node bude ďalej pokračovať a záujemcov radi privítame na našich wiki-stránkach \cite{CIANT-AGnodeWiki}, kde sa nachádzajú najnovšie verzie všetkých spomenutých komponentov a samozrejme aj tento text v elektronickej podobe.
+We hope that the Ciant AG node project will continue, and we welcome interested users to visit our wiki pages \cite{CIANT-AGnodeWiki}, where the latest versions of all the components mentioned above can be found, as well as this text in electronic form.
 \proofed
-
