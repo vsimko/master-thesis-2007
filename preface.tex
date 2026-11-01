@@ -1,4 +1,7 @@
 % -------------------------------------
+% The titlepage environment resets the page counter to 1. Disable its PDF
+% destination so the acknowledgements page can use the page.i destination.
+\hypersetup{pageanchor=false}
 \begin{titlepage}
 	\begin{center}
 
@@ -30,6 +33,7 @@
 		Prague~2007
 	\end{center}
 \end{titlepage}
+\hypersetup{pageanchor=true}
 % -------------------------------------
 
 \pagebreak
