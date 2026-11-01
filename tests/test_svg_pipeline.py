@@ -8,23 +8,22 @@ ROOT = Path(__file__).resolve().parents[1]
 IMAGE_DIR = ROOT / "images"
 TEX_FILES = sorted(ROOT.glob("*.tex"))
 
-# Ignore TeX comments while preserving escaped percent signs.
 def uncomment(source: str) -> str:
     lines = []
     for line in source.splitlines():
-        line = re.split(r"(?<!\\\\)%", line, maxsplit=1)[0]
+        line = re.split(r"(?<!\\)%", line, maxsplit=1)[0]
         lines.append(line)
-    return "\\n".join(lines)
+    return "\n".join(lines)
 
 svg_refs = []
 graphics_refs = []
 for tex_file in TEX_FILES:
     source = uncomment(tex_file.read_text(encoding="utf-8"))
     svg_refs.extend((tex_file.name, name.strip()) for name in re.findall(
-        r"\\\\includesvg(?:\\s*\\[[^]]*\\])?\\s*\\{([^}]+)\\}", source
+        r"\\includesvg(?:\s*\[[^]]*\])?\s*\{([^}]+)\}", source
     ))
     graphics_refs.extend((tex_file.name, name.strip()) for name in re.findall(
-        r"\\\\includegraphics(?:\\s*\\[[^]]*\\])?\\s*\\{([^}]+)\\}", source
+        r"\\includegraphics(?:\s*\[[^]]*\])?\s*\{([^}]+)\}", source
     ))
 
 errors = []
@@ -52,8 +51,6 @@ for tex_file, raw_name in graphics_refs:
             f"{tex_file}: vector figure {raw_name!r} must use \\includesvg, not \\includegraphics"
         )
 
-# Every explicit graphics asset must exist. Extensionless references are resolved
-# against files in images/, which preserves normal raster inclusion semantics.
 for tex_file, raw_name in graphics_refs:
     candidate = IMAGE_DIR / raw_name
     if candidate.suffix:
