@@ -8,13 +8,13 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This chapter describes the construction of a node based on freely available components. We use the existing AccessGrid node at CIANT as the basis for the architecture. Our contribution to the AG community consists of several applications made freely available on the project wiki \\cite{CIANT-AGnodeWiki}. Among the shared applications, we focus particularly on SharedMPlayer.
+This chapter describes the construction of a node based on freely available components. We use the existing AccessGrid node at CIANT as the basis for the architecture. Our contribution to the AG community consists of several applications made freely available on the project wiki \cite{CIANT-AGnodeWiki}. Among the shared applications, we focus particularly on SharedMPlayer.
 
 \paragraph*{Fundamental rules:}
 \begin{paklist}
-\\item Minimise the amount of hardware required.
-\\item Provide connectivity for nodes behind firewalls and NAT.
-\\item Use the Linux operating system and freely available components.
+\item Minimise the amount of hardware required.
+\item Provide connectivity for nodes behind firewalls and NAT.
+\item Use the Linux operating system and freely available components.
 \end{paklist}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,7 +23,7 @@ This chapter describes the construction of a node based on freely available comp
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-According to E. Hladka and P. Holub \\cite{ArticleUVTMU-KomunikaceAGPoint}, the space requirements of a videoconferencing node should be considered before implementation. The recommendations \\cite{AG-MinimumReqirements} state that space should be reserved for at least three participants, computers and projection equipment. Otherwise, building such a node may not be worthwhile. We must distinguish, however, between a fully equipped videoconferencing node, a mobile videoconferencing node \\cite{ArticleUVTMU-MobilniUzelAG}, and a so-called personal interface to grid (PIG), which provides connectivity for individuals without expensive projection equipment. The main difference is the amount of hardware required. A full or mobile node may use several projectors, whereas an AG PIG participant can use a single laptop, even without a camera or microphone of their own. They can therefore choose whether to watch the transmission passively or contribute their own data streams. The source also discusses problems that may arise when participants communicate across different time zones. To reduce fatigue, participants should feel comfortable in the room, which can be influenced by appropriate furniture and lighting.
+According to E. Hladka and P. Holub \cite{ArticleUVTMU-KomunikaceAGPoint}, the space requirements of a videoconferencing node should be considered before implementation. The recommendations \cite{AG-MinimumReqirements} state that space should be reserved for at least three participants, computers and projection equipment. Otherwise, building such a node may not be worthwhile. We must distinguish, however, between a fully equipped videoconferencing node, a mobile videoconferencing node \cite{ArticleUVTMU-MobilniUzelAG}, and a so-called personal interface to grid (PIG), which provides connectivity for individuals without expensive projection equipment. The main difference is the amount of hardware required. A full or mobile node may use several projectors, whereas an AG PIG participant can use a single laptop, even without a camera or microphone of their own. They can therefore choose whether to watch the transmission passively or contribute their own data streams. The source also discusses problems that may arise when participants communicate across different time zones. To reduce fatigue, participants should feel comfortable in the room, which can be influenced by appropriate furniture and lighting.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -39,16 +39,16 @@ A PIG (Personal Interface to Grid) requires a network connection with a capacity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We now turn to the hardware required to build a fully equipped node. The hardware configuration can follow the architecture described in Chapter \\ref{kap:CiantAGKomponenty}. We therefore use an AG-Display computer for projection, an AG-AudioVideo computer for video encoding and audio encoding/decoding, and an AG-Bridge computer for multicast bridging. Among the components, it is important to purchase several video-capture cards for AG-AudioVideo and several graphics cards for AG-Display. If we intend to use a multicast network, we will also need a network switch\\footnote{Instead of this specialised hardware, it is possible to use a computer with several network cards and multicast-routing support in the operating-system kernel. However, for reasons of latency, reliability and power consumption, we recommend a hardware switch.} with IGMP support (Chapter \\ref{kap:Multicast}).
+We now turn to the hardware required to build a fully equipped node. The hardware configuration can follow the architecture described in Chapter \ref{kap:CiantAGKomponenty}. We therefore use an AG-Display computer for projection, an AG-AudioVideo computer for video encoding and audio encoding/decoding, and an AG-Bridge computer for multicast bridging. Among the components, it is important to purchase several video-capture cards for AG-AudioVideo and several graphics cards for AG-Display. If we intend to use a multicast network, we will also need a network switch\footnote{Instead of this specialised hardware, it is possible to use a computer with several network cards and multicast-routing support in the operating-system kernel. However, for reasons of latency, reliability and power consumption, we recommend a hardware switch.} with IGMP support (Chapter \ref{kap:Multicast}).
 
 If every conference participant uses a headset with a microphone, we do not need to invest in an echo-cancellation device. However, this reduces the overall comfort of the participants. In either case, audio quality must be checked carefully. It is not enough to hear the other conference participants; we must also ensure that the audio transmitted by our own node is of good quality.
 
 For projection, we recommend using at least two projectors. One can display presentation slides, while the other displays the participants.
 
-Before purchasing equipment, we recommend consulting accessgrid.org, particularly the hardware database \\cite{AG-HardwareDatabase} maintained by members of the AG community. It provides an overview of specific hardware components, including video cameras, webcams, microphones, sound cards, projectors and many others, together with their specifications, photographs and links to manufacturers' websites.
+Before purchasing equipment, we recommend consulting accessgrid.org, particularly the hardware database \cite{AG-HardwareDatabase} maintained by members of the AG community. It provides an overview of specific hardware components, including video cameras, webcams, microphones, sound cards, projectors and many others, together with their specifications, photographs and links to manufacturers' websites.
 
 \paragraph*{Important notice:}
-The multicast bridge must be installed on a separate computer. If two processes read data from the same socket, the data are received by the process that most recently opened the socket using the \\verb|bind()| system call. One possible solution would be to mirror packets using a proxy of some kind, implemented either as a user-space process or directly in the operating-system kernel.
+The multicast bridge must be installed on a separate computer. If two processes read data from the same socket, the data are received by the process that most recently opened the socket using the \verb|bind()| system call. One possible solution would be to mirror packets using a proxy of some kind, implemented either as a user-space process or directly in the operating-system kernel.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -65,15 +65,15 @@ AccessGrid is a cross-platform application available in various forms for severa
 \item MPlayer-1.0rc1try2-2.pm.1
 \item xorg-x11-Xvnc-6.8.2-100
 \item agvcr-2.1.4-1
-\\item All required dependencies.
+\item All required dependencies.
 \end{paklist}
 
-The second system used is Debian GNU/Linux 3.1. This is not the ideal choice for AccessGrid 2.4, since installation packages are available only for the related Ubuntu distribution. However, we needed to use an existing server, which also hosts the CIANT AG node project wiki. The server is currently available at \\url{ciant114.cesnet.cz}.
+The second system used is Debian GNU/Linux 3.1. This is not the ideal choice for AccessGrid 2.4, since installation packages are available only for the related Ubuntu distribution. However, we needed to use an existing server, which also hosts the CIANT AG node project wiki. The server is currently available at \url{ciant114.cesnet.cz}.
 
 \paragraph*{Installed packages:}
 \begin{paklist}
-\\item accessgrid2.4-1.4 (from the Ubuntu distribution)
-\\item All required dependencies.
+\item accessgrid2.4-1.4 (from the Ubuntu distribution)
+\item All required dependencies.
 \end{paklist}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,45 +82,45 @@ The second system used is Debian GNU/Linux 3.1. This is not the ideal choice for
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-One of the most important parts of AccessGrid is the set of so-called MBone tools, which provide communication over multicast networks. Variants of these tools are also used by VRVS and InSORS. They are applications for transmitting video and audio and sharing text documents; data transmission uses the multicast extension of IPv4 (Chapter \\ref{kap:Multicast}). The main differences between versions concern the number of supported codecs and the appearance of the user interface.
+One of the most important parts of AccessGrid is the set of so-called MBone tools, which provide communication over multicast networks. Variants of these tools are also used by VRVS and InSORS. They are applications for transmitting video and audio and sharing text documents; data transmission uses the multicast extension of IPv4 (Chapter \ref{kap:Multicast}). The main differences between versions concern the number of supported codecs and the appearance of the user interface.
 
-These tools are also available for use outside AccessGrid at the address listed in the bibliography as \\cite{Original-MBone-Tools-Download}. For practical use, however, we recommend one of the available modified versions. We have made several tested versions available on the CIANT AG node project website \\cite{CIANT-AGnodeWiki} as part of this thesis.
+These tools are also available for use outside AccessGrid at the address listed in the bibliography as \cite{Original-MBone-Tools-Download}. For practical use, however, we recommend one of the available modified versions. We have made several tested versions available on the CIANT AG node project website \cite{CIANT-AGnodeWiki} as part of this thesis.
 
 \subsection{OpenMash framework}\label{kap:OpenMash}
-OpenMash \\cite{OpenMashProject} was developed for the scientific community in response to the need to handle multimedia data streams in videoconferencing systems. The package was designed to overcome problems found in similar earlier systems, particularly poor portability to operating systems other than those for which they were originally designed, unavailable source code, and incomplete or limited support for IETF protocols. The idea originated with Larry Rowe and Steve McCanne, and development dates back to 1999. The OpenMash application suite reimplements projects developed by the MBone community, including sdr, nv, vic, vat, wb and mtrace.
+OpenMash \cite{OpenMashProject} was developed for the scientific community in response to the need to handle multimedia data streams in videoconferencing systems. The package was designed to overcome problems found in similar earlier systems, particularly poor portability to operating systems other than those for which they were originally designed, unavailable source code, and incomplete or limited support for IETF protocols. The idea originated with Larry Rowe and Steve McCanne, and development dates back to 1999. The OpenMash application suite reimplements projects developed by the MBone community, including sdr, nv, vic, vat, wb and mtrace.
 
-From an implementation perspective, OpenMash combines C/C++ with Tcl/Tk \\cite{WIKI-TCL-TK}. Tcl is a simple but powerful scripting language, intended not only for application prototyping but also for developing genuinely portable systems. Its cross-platform graphical toolkit, Tk, is also used with other languages, such as Python. OpenMash additionally uses the OTcl extension \\cite{OTcl-Extension}, which adds object-oriented features to an otherwise functional language. C++ is used for computationally intensive procedures, while the interpreted Tcl/Tk language is suitable as a glue layer and for user interaction through the graphical interface.
+From an implementation perspective, OpenMash combines C/C++ with Tcl/Tk \cite{WIKI-TCL-TK}. Tcl is a simple but powerful scripting language, intended not only for application prototyping but also for developing genuinely portable systems. Its cross-platform graphical toolkit, Tk, is also used with other languages, such as Python. OpenMash additionally uses the OTcl extension \cite{OTcl-Extension}, which adds object-oriented features to an otherwise functional language. C++ is used for computationally intensive procedures, while the interpreted Tcl/Tk language is suitable as a glue layer and for user interaction through the graphical interface.
 
-OpenMash is available on all major platforms, making it an ideal tool for a cross-platform videoconferencing solution. The developers of the successful VRVS\index{VRVS!OpenMash} and EVO systems, described in Chapter \\ref{kap:VRVS}, recognised this as well. They used OpenMash for their video and audio transmission applications.
+OpenMash is available on all major platforms, making it an ideal tool for a cross-platform videoconferencing solution. The developers of the successful VRVS\index{VRVS!OpenMash} and EVO systems, described in Chapter \ref{kap:VRVS}, recognised this as well. They used OpenMash for their video and audio transmission applications.
 
-Tcl/Tk allowed us to modify the existing VIC-VRVS and VIEVO applications from the VRVS and EVO project and create a new application, EVIC, which we make available on the CIANT AG node website \\cite{CIANT-AGnodeWiki}.
+Tcl/Tk allowed us to modify the existing VIC-VRVS and VIEVO applications from the VRVS and EVO project and create a new application, EVIC, which we make available on the CIANT AG node website \cite{CIANT-AGnodeWiki}.
 
 \subsection{VIC}\label{kap:VIC}
-The Video Conferencing Tool (VIC) transmits video in real time using RTP, which is introduced in Chapter \\ref{kap:RTP+RTCP}. Audio transmission must be handled by a separate application. VIC supports several codecs, although their number and implementation quality vary between versions. The most stable versions appear to be VIC-2.8ucl1.1.3 from the AccessGrid package and the VIC version from OpenMash. VIC supports multipoint communication over multicast networks. One special feature that we use is the ability to send RTP packets to the network loopback device (localhost). This allows us to prepare a presentation, record it and share it again during a conference. RTP packet contents can be encrypted before transmission to improve security. However, a potential attacker can still see the sender and receiver of each RTP packet, as well as a great deal of other potentially useful information. H.261 is the default codec. As explained in Chapter \\ref{kap:H.261}, it is up to three times more efficient than the original NV codec. Other important codecs are H.263 and H.263+ (Chapter \\ref{kap:H.263}), although they cause the application to crash in some VIC versions. Fortunately, this does not apply to the OpenMash-based version that we intend to use. A development version of VIC with H.264 support (Chapter \\ref{kap:H.264}) is also available.
+The Video Conferencing Tool (VIC) transmits video in real time using RTP, which is introduced in Chapter \ref{kap:RTP+RTCP}. Audio transmission must be handled by a separate application. VIC supports several codecs, although their number and implementation quality vary between versions. The most stable versions appear to be VIC-2.8ucl1.1.3 from the AccessGrid package and the VIC version from OpenMash. VIC supports multipoint communication over multicast networks. One special feature that we use is the ability to send RTP packets to the network loopback device (localhost). This allows us to prepare a presentation, record it and share it again during a conference. RTP packet contents can be encrypted before transmission to improve security. However, a potential attacker can still see the sender and receiver of each RTP packet, as well as a great deal of other potentially useful information. H.261 is the default codec. As explained in Chapter \ref{kap:H.261}, it is up to three times more efficient than the original NV codec. Other important codecs are H.263 and H.263+ (Chapter \ref{kap:H.263}), although they cause the application to crash in some VIC versions. Fortunately, this does not apply to the OpenMash-based version that we intend to use. A development version of VIC with H.264 support (Chapter \ref{kap:H.264}) is also available.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.3\textwidth]{images/video-app-vic-ucl}
 \includegraphics[width=0.3\textwidth]{images/video-app-vic-vrvs}
 \includegraphics[width=0.3\textwidth]{images/video-app-vievo}
-\\caption{Applications for video transmission (vic-ucl, vic-vrvs, vievo).}
+\caption{Applications for video transmission (vic-ucl, vic-vrvs, vievo).}
 \label{fig:MBoneVideoApplications}
 \end{figure}
 
-Figure \\ref{fig:MBoneVideoApplications} shows different versions of the VIC application. On the left is the original VIC-2.8ucl1.1.3; in the centre is the version from VRVS, based on a modified OpenMash 6.1; and on the right is a heavily modified version from the EVO project, which is not open-source software. We are attempting to address this limitation in part by reimplementing it in the EVIC application.
+Figure \ref{fig:MBoneVideoApplications} shows different versions of the VIC application. On the left is the original VIC-2.8ucl1.1.3; in the centre is the version from VRVS, based on a modified OpenMash 6.1; and on the right is a heavily modified version from the EVO project, which is not open-source software. We are attempting to address this limitation in part by reimplementing it in the EVIC application.
 
 
 \subsection{RAT}\label{kap:RAT}
-Like VIC, the Robust Audio Tool (RAT) is designed to transmit multimedia content in real time using RTP packets among members of a multicast group. In RAT, the multimedia content is audio. Several audio codecs are available, including GSM, L16 and, in some versions, MP3. They differ in sound quality and bandwidth consumption. Like VIC, RAT supports encryption of RTP contents and exists in several versions, examples of which are shown in Figure \\ref{fig:MBoneAudioApplications}. The figure shows the original VAT application, which supported simultaneous audio and video transmission, the original RAT version from the AccessGrid package, and the version from the VRVS project.
+Like VIC, the Robust Audio Tool (RAT) is designed to transmit multimedia content in real time using RTP packets among members of a multicast group. In RAT, the multimedia content is audio. Several audio codecs are available, including GSM, L16 and, in some versions, MP3. They differ in sound quality and bandwidth consumption. Like VIC, RAT supports encryption of RTP contents and exists in several versions, examples of which are shown in Figure \ref{fig:MBoneAudioApplications}. The figure shows the original VAT application, which supported simultaneous audio and video transmission, the original RAT version from the AccessGrid package, and the version from the VRVS project.
 
-Chapter \\ref{kap:HybridRAT} describes a hybrid version of RAT, created by combining source code from the RAT-VRVS and RAT-UCL projects. It makes it possible to record audio using the network loopback device (localhost). We make this modified version available on the CIANT AG node website \\cite{CIANT-AGnodeWiki}.
+Chapter \ref{kap:HybridRAT} describes a hybrid version of RAT, created by combining source code from the RAT-VRVS and RAT-UCL projects. It makes it possible to record audio using the network loopback device (localhost). We make this modified version available on the CIANT AG node website \cite{CIANT-AGnodeWiki}.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.3\textwidth]{images/audio-app-vat.png}
 \includegraphics[width=0.3\textwidth]{images/audio-app-rat.png}
 \includegraphics[width=0.3\textwidth]{images/audio-app-rat-vrvs.png}
-\\caption{Applications for audio transmission (vat, rat, rat-vrvs).}
+\caption{Applications for audio transmission (vat, rat, rat-vrvs).}
 \label{fig:MBoneAudioApplications}
 \end{figure}
 
@@ -131,18 +131,18 @@ Chapter \\ref{kap:HybridRAT} describes a hybrid version of RAT, created by combi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The basic AccessGrid installation already includes several shared applications, and this set can be extended using Python. The architecture of shared applications is shown in Figure \\ref{fig:ArchAGSharedApp}. The AG Toolkit provides the SharedAppClient class, which implements all operations required for communication over the Event Channel bus. This class simplifies message delivery and client synchronisation. Communication between clients (Application Clients) takes place using XML-RPC.
+The basic AccessGrid installation already includes several shared applications, and this set can be extended using Python. The architecture of shared applications is shown in Figure \ref{fig:ArchAGSharedApp}. The AG Toolkit provides the SharedAppClient class, which implements all operations required for communication over the Event Channel bus. This class simplifies message delivery and client synchronisation. Communication between clients (Application Clients) takes place using XML-RPC.
 
 \begin{figure}
 \centering
 \includesvg[width=0.8\textwidth]{arch-ag-sharedapp}
-\\caption{Architecture of AccessGrid shared applications.}
+\caption{Architecture of AccessGrid shared applications.}
 \label{fig:ArchAGSharedApp}
 \end{figure}
 
-Another way to create a shared environment is Virtual Network Computing (VNC) \\cite{MAN-Virtual-Network-Computing}. It uses the Remote Frame Buffer protocol (RFB) \\cite{MAN-RFB-Protocol}, which transmits information about changes to the shared screen and about pressed keys and mouse buttons. Both its server and client components are platform-independent. RFB is stateless, and several users can be connected to a server simultaneously. VNC uses unicast delivery, which can become problematic with a large number of participants. The VNCast project \\cite{Vislab-VNCast} aims to transmit VNC over multicast by encoding the VNC image as Motion JPEG (Chapter \\ref{kap:MJPEG}) in RTP packets. It is still under development.
+Another way to create a shared environment is Virtual Network Computing (VNC) \cite{MAN-Virtual-Network-Computing}. It uses the Remote Frame Buffer protocol (RFB) \cite{MAN-RFB-Protocol}, which transmits information about changes to the shared screen and about pressed keys and mouse buttons. Both its server and client components are platform-independent. RFB is stateless, and several users can be connected to a server simultaneously. VNC uses unicast delivery, which can become problematic with a large number of participants. The VNCast project \cite{Vislab-VNCast} aims to transmit VNC over multicast by encoding the VNC image as Motion JPEG (Chapter \ref{kap:MJPEG}) in RTP packets. It is still under development.
 
-The diagram in Figure \\ref{fig:PresentationFileFormats} illustrates how VNC can serve as an integration tool for formats that do not have a dedicated shared application. We consider recording the VNC image as RTP packets or using vncproxy/vncrec/transcode.
+The diagram in Figure \ref{fig:PresentationFileFormats} illustrates how VNC can serve as an integration tool for formats that do not have a dedicated shared application. We consider recording the VNC image as RTP packets or using vncproxy/vncrec/transcode.
 
 \begin{verbatim}
 # Example: convert a VNC recording to XviD format
@@ -155,7 +155,7 @@ XML-RPC communication cannot be recorded as easily as RTP or RFB packets. For re
 \begin{figure}
 \centering
 \includesvg[width=1\textwidth]{vc-input-formats}
-\\caption{Use of different formats in a presentation.}
+\caption{Use of different formats in a presentation.}
 \label{fig:PresentationFileFormats}
 \end{figure}
 
@@ -165,23 +165,23 @@ For completeness, we note that a more comprehensive protocol originating in Micr
 \subsection{Shared presentations}
 The Linux version of AccessGrid 2.4 includes the SharedBrowser, SharedPresentation and SharedPDF tools. \textbf{SharedPresentation} uses OpenOffice to display presentations in PPT (Microsoft PowerPoint), ODP (OpenDocument Presentation) and SXI (an older OpenOffice/StarOffice format). \textbf{SharedPDF} allows PDF presentations to be shared and uses xpdf on Linux. \textbf{SharedBrowser} uses the Mozilla web browser.
 
-Users will encounter several inconvenient bugs (or perhaps features?) in these applications. SharedPDF always opens two identical windows containing the PDF document, although one would be sufficient. Support for the KPDF viewer would also be useful. SharedBrowser requires a Python module that provides an interface to the Mozilla browser to be installed manually; otherwise, the application does not work. It also lacks support for Konqueror and Opera. SharedPresentation does not allow a full-screen presentation to be controlled, and it lacks a filter for ODP files. We make a corrected version available on the CIANT AG node project website \\cite{CIANT-AGnodeWiki}.
+Users will encounter several inconvenient bugs (or perhaps features?) in these applications. SharedPDF always opens two identical windows containing the PDF document, although one would be sufficient. Support for the KPDF viewer would also be useful. SharedBrowser requires a Python module that provides an interface to the Mozilla browser to be installed manually; otherwise, the application does not work. It also lacks support for Konqueror and Opera. SharedPresentation does not allow a full-screen presentation to be controlled, and it lacks a filter for ODP files. We make a corrected version available on the CIANT AG node project website \cite{CIANT-AGnodeWiki}.
 
 \subsection{Shared desktop}
-AccessGrid also includes two VNC tools: the older VenueVNC and its successor, SharedDesktop \\cite{AG-SharedDesktop}. A shared desktop can be used not only for presentations but also as a tool for resolving technical problems.
+AccessGrid also includes two VNC tools: the older VenueVNC and its successor, SharedDesktop \cite{AG-SharedDesktop}. A shared desktop can be used not only for presentations but also as a tool for resolving technical problems.
 
-The Vislab website describes a promising SharedDesktop application \\cite{Vislab-SharedDesktop}. Compared with conventional VNC, it adds audio transmission, 3D acceleration and display of the mouse cursors of all connected clients. Development of this application is progressing very slowly, however, and no usable version is available yet.
+The Vislab website describes a promising SharedDesktop application \cite{Vislab-SharedDesktop}. Compared with conventional VNC, it adds audio transmission, 3D acceleration and display of the mouse cursors of all connected clients. Development of this application is progressing very slowly, however, and no usable version is available yet.
 
 \subsection{Shared media player}
-Until then, the Shared Media Player application had been available exclusively on Windows \\cite{AG-SharedMoviePlayer}. We therefore decided to create a similar shared application for Linux. Our solution uses the capabilities of MPlayer, which is available for a wide range of Unix-like operating systems and even for Windows. We based our implementation on SharedPDF, which provides shared presentation of PDF documents, replacing its xpdf interface with an interface to MPlayer.
+Until then, the Shared Media Player application had been available exclusively on Windows \cite{AG-SharedMoviePlayer}. We therefore decided to create a similar shared application for Linux. Our solution uses the capabilities of MPlayer, which is available for a wide range of Unix-like operating systems and even for Windows. We based our implementation on SharedPDF, which provides shared presentation of PDF documents, replacing its xpdf interface with an interface to MPlayer.
 
-The installation package is available on the CIANT AG node project wiki \\cite{CIANT-SharedMPlayer}. Installation requires running the following command:
+The installation package is available on the CIANT AG node project wiki \cite{CIANT-SharedMPlayer}. Installation requires running the following command:
 \begin{verbatim}
 agpm.py -z SharedMPlayer.zip
 \end{verbatim}
 
 \subsection{Further shared applications}
-For completeness, we also mention \textbf{SharedRasmol} \\cite{AG-SharedRasmol}, which provides 3D visualisation of molecules; the \textbf{Shared Question Tool} \\cite{AG-SharedQuestionTool}, for collaborative creation of questions and answers; and \textbf{AGBasicImage}, which supports shared image viewing and metadata editing. Another application is \textbf{Media Lecture Board}, which allows documents to be created collaboratively but has proved very unstable in practice.
+For completeness, we also mention \textbf{SharedRasmol} \cite{AG-SharedRasmol}, which provides 3D visualisation of molecules; the \textbf{Shared Question Tool} \cite{AG-SharedQuestionTool}, for collaborative creation of questions and answers; and \textbf{AGBasicImage}, which supports shared image viewing and metadata editing. Another application is \textbf{Media Lecture Board}, which allows documents to be created collaboratively but has proved very unstable in practice.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -189,14 +189,14 @@ For completeness, we also mention \textbf{SharedRasmol} \\cite{AG-SharedRasmol},
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Echo-cancellation devices from ClearOne (formerly Gentner) are configured using the unified G-Ware tool. The CIANT AccessGrid node uses the AP-800 model. Until recently, the situation was complicated by the fact that the software was available only for Windows. Although the application is needed only when making substantial changes to room settings, this required owning at least one licence for an otherwise unused operating system. Recent versions of Wine and CrossoverOffice can now run this tool reliably on Linux (Figure \\ref{fig:GWareInWine}), eliminating the final dependency on Windows. The approximately 20 MiB G-Ware installation package, together with all required manuals, is available from the ClearOne website \\cite{ClearOne-ResourceLibrary}.
+Echo-cancellation devices from ClearOne (formerly Gentner) are configured using the unified G-Ware tool. The CIANT AccessGrid node uses the AP-800 model. Until recently, the situation was complicated by the fact that the software was available only for Windows. Although the application is needed only when making substantial changes to room settings, this required owning at least one licence for an otherwise unused operating system. Recent versions of Wine and CrossoverOffice can now run this tool reliably on Linux (Figure \ref{fig:GWareInWine}), eliminating the final dependency on Windows. The approximately 20 MiB G-Ware installation package, together with all required manuals, is available from the ClearOne website \cite{ClearOne-ResourceLibrary}.
 
-The Vislab website provides a detailed installation guide for older Wine versions \\cite{Vislab-GWare}, including instructions for compiling from source and applying the required patch.
+The Vislab website provides a detailed installation guide for older Wine versions \cite{Vislab-GWare}, including instructions for compiling from source and applying the required patch.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.9\textwidth]{images/gware}
-\\caption{G-Ware running under Wine.}
+\caption{G-Ware running under Wine.}
 \label{fig:GWareInWine}
 \end{figure}
 
@@ -209,9 +209,9 @@ The Vislab website provides a detailed installation guide for older Wine version
 The AccessGrid architecture depends heavily on multicast connectivity. Its correct operation can be verified using the Multicast Beacon tool. However, a node may temporarily or permanently lack multicast support. Problems related to multicast availability can be divided into three groups:
 
 \begin{enumerate}
-\\item A network without multicast support.
-\\item The existence of isolated multicast regions.
-\\item Problems associated with traversing NAT and firewalls.
+\item A network without multicast support.
+\item The existence of isolated multicast regions.
+\item Problems associated with traversing NAT and firewalls.
 \end{enumerate}
 
 Several attempts have been made throughout the history of AccessGrid to overcome these problems. These efforts resulted in the RCBridge, QuickBridge and AGConnector projects, as well as the commercial InSORS Enterprise Manager.
@@ -231,14 +231,14 @@ A commercial solution that, in addition to a multicast bridge, provides an H.323
 
 \subsection{QuickBridge}
 
-The operation of QuickBridge is illustrated in Figure \\ref{fig:QuickBridge}. The application forwards packets between a multicast network and unicast nodes; the UDP ports used can be configured freely. Detailed documentation, installation instructions and source code are available on the AccessGrid project website \\cite{AG-BridgingGuide}.
+The operation of QuickBridge is illustrated in Figure \ref{fig:QuickBridge}. The application forwards packets between a multicast network and unicast nodes; the UDP ports used can be configured freely. Detailed documentation, installation instructions and source code are available on the AccessGrid project website \cite{AG-BridgingGuide}.
 
 For simplicity, consider the following situation. All nodes send and receive UDP packets at multicast address 224.0.0.1 on port 10000. One of the nodes is QuickBridge, which also accepts unicast connections in the form of UDP packets on port 20000. QuickBridge maintains a list of active nodes that have sent it UDP packets on this port. It forwards every UDP packet from the unicast network to the multicast network, and vice versa. If a unicast node does not respond for a certain period, QuickBridge removes it from the list and stops forwarding new packets to it. This simple configuration can be modelled with the following command:
 \begin{verbatim}
 QuickBridge -g 224.0.0.1 -m 10000 -u 20000
 \end{verbatim}
 
-In AccessGrid, QuickBridge is configured for a particular VenueServer using the \\textbf{BridgeServer.cfg} configuration file. As an example, we can use the existing configuration for the CIANT node described in Chapter \\ref{kap:CIANT-AG-Bridge}. The bridge can then be started with the following command:
+In AccessGrid, QuickBridge is configured for a particular VenueServer using the \textbf{BridgeServer.cfg} configuration file. As an example, we can use the existing configuration for the CIANT node described in Chapter \ref{kap:CIANT-AG-Bridge}. The bridge can then be started with the following command:
 \begin{verbatim}
 BridgeServer.py -c ./BridgeServer.cfg
 \end{verbatim}
@@ -267,14 +267,14 @@ type = Venue
 \begin{figure}
 \centering
 \includesvg[width=0.7\textwidth]{arch-quickbridge}
-\\caption{Multicast bridging using QuickBridge.}
+\caption{Multicast bridging using QuickBridge.}
 \label{fig:QuickBridge}
 \end{figure}
 
 The problem with using QuickBridge in an environment with NAT is related to the behaviour of RTP/RTCP. Each data connection always uses two UDP ports: $2k$ for RTP and $2k+1$ for RTCP. The RTCP information can pass through NAT, but RTP packets cannot pass in the opposite direction.
 
 \subsection{AGConnector}
-This software replaces QuickBridge in the newer version of AccessGrid (version 3.0). It addresses the transmission of multicast packets between multicast islands, particularly when a network is behind a firewall and NAT. AGConnector uses the UMTP protocol (Chapter \\ref{kap:UMTP}) to tunnel multicast UDP packets between multicast islands (Figure \\ref{fig:AGConnector}). Transmission uses a single UDP port, 8010, which must not be blocked by the firewall. Installation is performed with the following command:
+This software replaces QuickBridge in the newer version of AccessGrid (version 3.0). It addresses the transmission of multicast packets between multicast islands, particularly when a network is behind a firewall and NAT. AGConnector uses the UMTP protocol (Chapter \ref{kap:UMTP}) to tunnel multicast UDP packets between multicast islands (Figure \ref{fig:AGConnector}). Transmission uses a single UDP port, 8010, which must not be blocked by the firewall. Installation is performed with the following command:
 \begin{verbatim}
 agpm.py –z AG_Connector.zip
 \end{verbatim}
@@ -282,7 +282,7 @@ agpm.py –z AG_Connector.zip
 \begin{figure}
 \centering
 \includesvg[width=1\textwidth]{arch-agconnector}
-\\caption{Multicast bridging using AGConnector (source: \\protect\\cite{AG-Connector}).}
+\caption{Multicast bridging using AGConnector (source: \protect\cite{AG-Connector}).}
 \label{fig:AGConnector}
 \end{figure}
 
@@ -293,6 +293,6 @@ agpm.py –z AG_Connector.zip
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 All components required to operate a fully equipped AccessGrid node can run on Linux. The problematic applications were G-Ware and SharedMediaPlayer. As part of this thesis, we developed the shared application SharedMPlayer, which provides functionality similar to the Windows-only SharedMediaPlayer. It also benefits from the large number of codecs supported by MPlayer. The other shared applications discussed above are available on both platforms. G-Ware can be emulated using Wine.
 
-The state of a videoconferencing node should be tested proactively. For this purpose, the AG community organises regular sessions focused on identifying and resolving problems with the help of experienced AG users. Useful information on troubleshooting audio, video, network connectivity and shared applications is available directly on the AG website \\cite{AG-QualityAssurancePreparation}.
+The state of a videoconferencing node should be tested proactively. For this purpose, the AG community organises regular sessions focused on identifying and resolving problems with the help of experienced AG users. Useful information on troubleshooting audio, video, network connectivity and shared applications is available directly on the AG website \cite{AG-QualityAssurancePreparation}.
 
 \proofed
