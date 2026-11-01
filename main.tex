@@ -1,0 +1,126 @@
+\documentclass[a4paper,11pt,english,oneside]{book}
+%\usepackage{lmodern}
+%\usepackage{ucs}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Moja specialna verzia pre 11pt a okrajmi 3cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\topmargin=0cm
+\voffset=0.5cm		% 1in=2.5cm => 3cm
+\hoffset=0.5cm		% 1in=2.5cm => 3cm
+\textwidth=14cm
+\textheight=22.5cm
+\oddsidemargin=1cm	% neparne stranky doprava o 1cm
+\evensidemargin=0cm	% parne stranky dolava o 1cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\fbox{ahoj ja som fbox} umoznuje vytvorit ramcek okolo textu
+
+% keby som naozaj chcel odsadzovat aj prve odstavce
+% je to ale typograficky nespravne
+%\usepackage{indentfirst}
+
+% definujeme, ze zdrojovy dokument je v kodovani utf8
+\usepackage[utf8]{inputenc}
+
+% spravne kodovanie vysledneho PDF
+\usepackage{cmap}
+\usepackage[T1]{fontenc}
+
+% pekné fonty vo výslednom PDF dokumente, ale nejde vyhladavat
+%\usepackage{ae,aecompl}
+%\usepackage{times}
+
+\usepackage[pdftex]{color,graphicx}
+\usepackage[english]{babel}
+\usepackage{latexsym}
+\usepackage{verbatim}
+\usepackage{url}
+
+\bibliographystyle{plain}
+
+\usepackage[
+	pdfborder={0 0 0},
+	unicode, % texty poli v PDF dokumente budu v unicode
+	plainpages=false,
+	pdfpagelabels,
+	hyperindex,
+	hyperfigures=true,
+	bookmarksnumbered=true, %v pdf zalozkach vygeneruje aj cisla kapitol
+	bookmarks,
+	breaklinks=true, %hypertextove odkazy mozu byt zalomene na dva riadky
+	hypertexnames=true 
+]{hyperref}
+
+% must go after hyperref definition
+\usepackage[all]{hypcap} % instead of captions, refs will scroll to images
+
+% malo by totalne zabranit vzniku vdov a sirot
+\clubpenalty=10000
+\widowpenalty=10000
+
+%\usepackage{breakurl} http://www.tex.ac.uk/cgi-bin/texfaq2html?label=breaklinks
+
+\usepackage{makeidx}
+
+% musi ist ako posledny prikaz v preambule
+\makeindex
+
+% ======================================
+% packed list
+% ======================================
+\newenvironment{paklist}{
+\begin{list}{-}{}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{list}}
+
+% ======================================
+% \proofed = stvorcek zarovnany doprava.
+% ======================================
+\usepackage{amssymb}
+\newcommand{\proofed}{
+	\begin{flushright}
+	$\square$
+	\end{flushright}
+}
+
+\begin{document}
+
+	% zabezpeci, ze znak uvodzovky bude zobrazeny podla cestiny
+	\include{csprimes}
+	
+	% zoznam slov, ktore sa nemaju rozdelovat
+	\hyphenation{AccessGrid AccessGridu VRVS RTMP Polylogues OpenOffice video-projekcie}
+	
+	\frontmatter
+	% -------------------------------------
+		\include{preface}
+		\tableofcontents
+		\include{abstract}
+
+	\mainmatter
+	% -------------------------------------
+		\include{introduction}
+		\include{chapter-technology}
+		\include{chapter-protocols}
+		\include{chapter-codecs}
+		\include{chapter-ciantnode}
+		\include{chapter-nat}
+		\include{chapter-nodesetup}
+		\include{chapter-recording}
+		\include{conclusion}
+	
+	\appendix
+	% -------------------------------------
+		\listoftables
+		\listoffigures
+		\bibliography{bibfile}
+		%\printindex
+
+	\backmatter
+	% -------------------------------------
+
+\end{document}
+

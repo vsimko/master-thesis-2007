@@ -1,0 +1,340 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Protocols}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Multicast}\label{kap:Multicast}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% **********************************************
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/unicast-multicast}
+\caption{Rozdiely medzi doručovaním metódou unicast a multicast.}
+\label{fig:UnicastMulticast}
+\end{figure}
+% **********************************************
+
+Vzhľadom na skutočnosť, že v~rámci videokonferencie spolu komunikuje istá skupina uzlov, začneme túto kapitolu vysvetlením rozdielov medzi spôsobmi doručovania paketov v kontexte skupinovej komunikácie.
+Vysvetlíme rozdiely medzi stratégiami \textbf{unicast} a \textbf{multicast}\footnote{Doručovanie formou broadcastu nás zaujímať nebude, pretože sa väčšinou obmedzuje na doručovanie v rámci jedného segmentu siete. Navyše multicast je silnejší pojem a dokáže ho efektívne emulovať.}. Z pohľadu spoľahlivosti nám pôjde o nespoľahlivé a nespojované služby, ktoré sú vhodné pre multimediálne prenosy. Zabezpečenie spoľahlivého doručovania by malo za následok nárast latencie. Rozdiel v efektivite doručovania sme schematicky znázornili na obrázku \ref{fig:UnicastMulticast}. Je dôležité si uvedomiť, že popisujeme situáciu, kedy jeden odosielateľ posiela rovnakú správu skupine príjemcov. Nielenže chceme riešiť otázku \textbf{efektivity}, ale aj otázku \textbf{adresovania skupiny} príjemcov.
+
+\paragraph*{Unicast:} Je spôsob doručovania, kde odosielateľ musí každému príjemcovi osobitne zaslať každý paket. Je to základný spôsob doručovania v súčasnom internete, ktorý však plytvá prenosovou kapacitou siete, pretože vyžaduje duplikovanie paketov. Navyše odosielateľ musí poznať adresu každého príjemcu. Na obrázku \ref{fig:UnicastMulticast} (1) je táto situácia znázornená ako 4 dátové toky vychádzajúce od odosielateľa. 
+
+\paragraph*{Multicast:} Je spôsob doručovania, kedy odosielateľ posiela pakety na skupinovú adresu. Pakety sú duplikované až pri prechode medzi sieťami. Multicast tak šetrí prenosovú kapacitu. Pre správne fungovanie musia všetky uzly v sieti vrátane prepínačov a smerovačov podporovať tento spôsob doručovania, čo vyžaduje úpravy v~pôvodnom unicastovom spôsobe doručovania (RFC 1112 \cite{RFC-1112-HostExtensionsForIPMulticasting}). V protokole IPv4 je pre multicast vyhradená skupina adries tzv. class D. Sú to adresy začínajúce v~binárnom zápise prefixom 1110, v protokole IPv6 prefixom 11111111. Každá adresa určuje multicastovú skupinu pre doručovanie. Členstvo v týchto skupinách riadi protokol IGMP. Skupina zariadení, ktoré podporujú protokol IGMP, tvorí v~rámci internetu virtuálnu sieť MBone (multicast backbone). Sieť je tvorená buď špecializovanými hardwarovými komponentmi, alebo počítačmi s~podporou IGMP v~operačnom systéme. Smerovanie multicastových paketov navyše vyžaduje podporu niektorého z~multicastových routovacích protokolov DVMRP (multicastová verzia RIP), MOSPF (multicastová verzia OSPF) alebo PIM (Protocol Independent Multicasting). Táto práca však o routovaní nepojednáva.
+
+V súčasnosti je dostupnosť multicastových služieb na nízkej úrovni a pre bežných užívateľov prakticky nedostupná. Zmenu by mal priniesť prechod na protokol IPv6, ktorý obsahuje multicast ako svoju neoddeliteľnú súčasť. Každopádne, univerzity a iné vybrané inštitúcie majú k multicastu väčšinou prístup.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{IGMP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pre pochopenie multicastových služieb v IPv4 sieti je nutné poznať protokol IGMP -- Internet Group Management Protocol, ktorý pomáha udržovať informácie o zložení skupín na danom sieťovom segmente. Pre správne doručovanie multicastových paketov musí byť podporovaný všetkými koncovými uzlami a smerovačmi. (Smerovače môžu byť totiž členmi multicastovej skupiny).
+
+Táto informácia je dôležitá hlavne pri nákupe potrebného hardware. Smerovače s podporou IGMP sú totiž podstatne drahšie ako ich bežné ekvivalenty. V dobe tvorby tohto textu sa cena najlacnejšieho zariadenia\footnote{Allied Telesyn AT-AR300V2SECPK} pohybovala okolo 5000 CZK bez DPH. Priemerná cena je však okolo 10000 CZK.
+
+% **********************************************
+% IGMP Packet Format.
+% **********************************************
+\begin{table}[htp]
+\centering
+\begin{tabular}[t]{|c|c|c|c|c|}
+4b & 1b & 3b & 8b & 16b \\
+\hline	Version & Type & Unused & Max. response time & Checksum\\
+\hline	\multicolumn{5}{|c|}{Group address} \\
+\hline	\multicolumn{5}{|c|}{IGMP packet structure} \\
+		\multicolumn{5}{|c|}{\vdots} \\
+\hline
+\end{tabular}
+\caption{Formát IGMP paketu.}
+\label{tab:IGMP-packet-format} 
+\end{table} 
+% **********************************************
+
+Multicastový smerovač na každom segmente vysiela periodické správy Memberhip Query (tab. \ref{tab:IGMP-Membership-query}), kde Group Address = 0 (tzv. General Membership Query). Uzol, ktorý je členom tejto skupiny, odpovie zaslaním správy typu Membership Report (tab. \ref{tab:IGMP-Membership-report}). Aby nedochádzalo k zahlteniu segmentu odpoveďami od všetkých uzlov v skupine, každý uzol čaká náhodne zvolený interval pred tým, než začne vysielať.
+
+Uzol, ktorý sa prihlasuje alebo opúšťa skupinu, zasiela tzv. State Change Report, čo je modifikovaný Membership Report (tab. \ref{tab:IGMP-Membership-report}). Pri odchode uzla zo skupiny môže nastať situácia, že skupina už neobsahuje ďalšie uzly. V takom prípade by mala skupina zaniknúť. Po každom odchode nejakého uzla odošle smerovač Group Specific Membership Query (znova modifikovaná verzia Membership Query) a uzly odpovedajú znova pomocou Membership Report.
+
+Detailný popis protokolu IGMP sa nachádza v RFC 3376 \cite{RFC-3376-IGMP-Protocol}.
+
+
+% **********************************************
+% IGMP Membership Query.
+% **********************************************
+\begin{table}[htp]
+\centering
+\begin{tabular}[t]{|c|c|c|c|c|}
+4b & 1b & 3b & 8b & 16b \\
+\hline	\multicolumn{3}{|c|}{Type = 0x11} & Max Resp Code & Checksum \\
+\hline	\multicolumn{5}{|c|}{Group address} \\
+\hline	Resv & S & QRV & QQIC & Number of Sources (N) \\
+\hline	\multicolumn{5}{|c|}{Source Address [1]} \\
+		\multicolumn{5}{|c|}{\vdots} \\
+		\multicolumn{5}{|c|}{Source Address [N]} \\
+\hline
+\end{tabular}
+\caption{IGMP Membership Query.}
+\label{tab:IGMP-Membership-query} 
+\end{table} 
+% **********************************************
+
+
+% **********************************************
+% IGMP Membership Report.
+% **********************************************
+\begin{table}[htp]
+\centering
+\begin{tabular}[t]{|c|c|c|}
+8b & 8b & 16b \\
+\hline	Type = 0x22 & Reserved & Checksum \\
+\hline	\multicolumn{2}{|c|}{Reserved} & Number of Group Records (N) \\
+\hline	\multicolumn{3}{|c|}{Group Record [1]} \\
+		\multicolumn{3}{|c|}{\vdots} \\
+		\multicolumn{3}{|c|}{Group Record [N]} \\
+\hline
+\end{tabular}
+
+\begin{center}
+Group Record má nasledujúci formát:
+\end{center}
+
+\begin{tabular}[t]{|c|c|c|}
+8b & 8b & 16b \\
+\hline	Record Type & Aux Data Len & Number of Sources (N) \\
+\hline	\multicolumn{3}{|c|}{Multicast Address} \\
+\hline	\multicolumn{3}{|c|}{Source Address [1]} \\
+		\multicolumn{3}{|c|}{\vdots} \\
+		\multicolumn{3}{|c|}{Source Address [N]} \\
+\hline	\multicolumn{3}{|c|}{Auxiliary Data} \\
+\hline
+\end{tabular}
+
+\caption{IGMP Membership Report.}
+\label{tab:IGMP-Membership-report}
+\end{table} 
+% **********************************************
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{SAP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Session Announcement Protocol (SAP), definovaný v RFC 2327 \cite{RFC-2974-SAP-Protocol}, umožňuje periodicky vysielať informácie o prebiehajúcom multimediálnom prenose na vybrané multicastové adresy. Potenciálni príjemcovia SAP paketu môžu tento popis použiť na spustenie a nastavenie potrebného dekódovacieho nástroja.
+
+% **********************************************
+% SAP Packet Format.
+% **********************************************
+\begin{table}[htp]
+\centering
+\begin{tabular}[t]{|c|c|c|c|c|c|c|c|}
+3b & 1b & 1b & 1b & 1b & 1b & 8b & 16b \\
+\hline	V = 1 & A & R & T & E & C & auth len & msg id hash \\
+\hline	\multicolumn{8}{|c|}{} \\
+		\multicolumn{8}{|c|}{originating source (32 or 128 bits)} \\
+		\multicolumn{8}{|c|}{} \\
+\hline	\multicolumn{8}{|c|}{optional authentication data} \\
+		\multicolumn{8}{|c|}{\vdots} \\
+\hline	\multicolumn{8}{|c|}{optional payload type} \\
+		\cline{2-8}
+		\multicolumn{1}{|r|}{\ldots} & 0 & \multicolumn{6}{|l|}{\ldots} \\
+		\cline{1-2}
+		\multicolumn{8}{|c|}{payload} \\
+		\multicolumn{8}{|c|}{} \\
+\hline
+\end{tabular}
+\caption{Formát SAP paketu.}
+\label{tab:SAP-packet-format} 
+\end{table} 
+% **********************************************
+
+\begin{quote}
+Príklad: Nech existuje odosielateľ, ktorý generuje RTP pakety na multicastovú adresu 224.0.0.1. Obraz zakódovaný kodekom H.263 odosiela na port 10000, zvuk zakódovaný ako L16 na port 20000. Pre príjem obrazu a zvuku je preto nutné spustiť na strane príjemcu aplikácie VIC a RAT:
+
+\verb|vic 224.0.0.1/10000 & rat 224.0.0.1/20000|
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{MADCAP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% **********************************************
+% MADCAP Packet Format
+% **********************************************
+\begin{table}[htp]
+\centering
+\begin{tabular}[t]{|c|c|c|}
+8b & 8b & 16b \\
+\hline	version & msgtype & addrfamily \\
+\hline	\multicolumn{3}{|c|}{xid} \\
+\hline	\multicolumn{3}{|c|}{Options} \\
+		\multicolumn{3}{|c|}{\vdots} \\
+\hline
+\end{tabular}
+\caption{Formát MADCAP paketu.}
+\label{tab:MADCAP-packet-format} 
+\end{table} 
+% **********************************************
+
+Tento protokol podobný DHCP umožňuje dynamicky alokovať multicastové adresy. Funguje ako alternatíva k statickej alokácii, kde adresy priraďuje administrátor. Podľa modelu ISO/OSI hovoríme o protokole aplikačnej vrstvy. Používa port 2535 (UDP). Klienti kontaktujú niektorý z MADCAP serverov pomocou unicastu alebo multicastu. Server odpovedá vždy pomocou unicastu. Protokoly DHCP a MADCAP sa používajú v disjunktných sférach.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{UMTP}\label{kap:UMTP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Riešenie problémov spojených s nedostupnosťou multicastových služieb by mal riešiť protokol UMTP \cite{IETFDraft-UMTP}, ktorého štandardizácia je v stave IETF Internet-Draft. Ako ukazujú výsledky z najnovšej verzie AccessGridu 3, môžeme sa tešiť na silný nástroj, ktorý rieši problémy spojené s prechodom cez NAT a firewall. Jednou z prvých implementácií je aplikácia AGConnector, ktorej fungovanie znázorňuje obrázok \ref{fig:AGConnector}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Multimedia-related protocols}\label{kap:Multimedia}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{RTP and RTCP}\label{kap:RTP+RTCP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+RTP (Real Time Transport Protocol) je protokol navrhnutý pre prenos dát v reálnom čase. Podľa modelu ISO/OSI ide o protokol aplikačnej vrstvy. Spolu s protokolom RTCP (Real Time Control Protocol) tvorí rámec vhodný hlavne na prenos multimediálnych dát prostredníctvom unicastovej alebo multicastovej siete.
+
+Zatiaľ čo RTP prenáša samotné dáta, RTCP umožňuje monitorovať a riadiť doručovanie RTP paketov. Protokoly neobsahujú funkcie pre rezerváciu zdrojov ani QoS (quality of service), pre ktoré je potrebná spolupráca s nižšími vrstvami\footnote{Pre rezerváciu zdrojov a QoS je možné použiť protokol RSVP popísaný v kapitole \ref{kap:RSVP}.}. Umožňujú ale identifikovať možné zmeny v sieti a prispôsobiť vlastnosti vysielača alebo prijímača napr. zmenou kodeku, kvality alebo bufferovania. Oba protokoly sú navrhnuté tak, aby boli nezávislé na použitých sieťových a transportných vrstvách.
+
+Detailný popis oboch protokolov sa nachádza v RFC 3550 \cite{RFC-3550-RTP-Protocol}. Pre naše účely je vhodné spomenúť, že pri videokonferenčných prenosoch bude zvuk a obraz prenášaný nezávislými dátovými tokmi. Každý tok je reprezentovaný dvoma UDP portami -- obvykle port s párnym číslom $N$ pre RTP-data a port $N+1$ pre RTCP pakety. Tvorcovia protokolu vychádzali z predpokladu, že niektorí účastníci môžu požadovať iba príjem niektorých dátových tokov (napr. iba príjem zvuku z dôvodu pomalej linky). Takéto rozdelenie však v praxi spôsobuje problémy pri prechode cez NAT/firewall. Úspešnejší sa zdá byť protokol IAX2 (kapitola \ref{kap:IAX2}), ktorý prenáša všetky dáta na jednom UDP porte.
+
+RFC 3550 popisuje aj využitie RTP mixerov, ktoré umožňujú multiplexing dátových tokov a RTP translatorov, meniacich obsah dátového toku napr. pri preklade medzi multicastovou a unicastovou sieťou.
+
+Synchronizácia dátových tokov je zabezpečená časovými razítkami obsiahnutými v~rámci RTCP.
+
+% **********************************************
+% RTP Packet Format
+% **********************************************
+\begin{table}[htp]
+\centering
+\begin{tabular}[t]{|c|c|c|c|c|c|c|}
+0b & 0b & 0b & 0b & 0b & 0b & 0b \\
+\hline	V=2 & P & X & CSRC count & M & payload type & sequence number \\
+\hline	\multicolumn{7}{|c|}{timestamp} \\
+\hline	\multicolumn{7}{|c|}{synchronization source (SSRC) identifier} \\
+\hline	\multicolumn{7}{|c|}{contributing source (CSRC) identifiers} \\
+		\multicolumn{7}{|c|}{\vdots} \\
+\hline
+\end{tabular}
+\caption{Formát RTP paketu.}
+\label{tab:RTP-packet-format} 
+\end{table} 
+% **********************************************
+
+Tabuľka \ref{tab:RTP-packet-format} popisuje formát RTP paketu, z ktorého sú pre nás najdôležitejšie nasledujúce položky:
+
+\paragraph*{payload type:} Informácia o obsahu paketu, ktorá je buď implicitne definovaná v~RFC 3551 \cite{RFC-3551-RTP-Profile-AudioVideo}, alebo dohodnutá mimo RTP.
+
+\paragraph*{sequence number:} Číslo inkrementované s každým paketom umožňuje detekciu straty paketov. Na začiatku session býva obvykle zvolená náhodná hodnota.
+
+\paragraph*{timestamp:} časové razítko dátového toku, záleží na obsahu, umožňuje výpočet hodnoty jitter (rozptyl reakčnej odozvy). Na začiatku session je hodnota obvykle volená náhodne a inkrementovaná podľa vnútorných hodín odosielateľa.
+
+\paragraph*{synchronization source (SSRC) identifier:} Umožňuje príjemcovi identifikovať entitu, ktorá paket odoslala.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{RSVP}\label{kap:RSVP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Resource Reservation Protocol (RSVP) \cite{RFC-2205-RSVP-Protocol} umožňuje príjemcovi požadovať rezerváciu sieťových zdrojov počas unicastových alebo multicastových dátových prenosov. Pre správne fungovanie QoS musia všetky smerovače na ceste od zdroja k príjemcovi podporovať RSVP. Podľa modelu ISO/OSI ide o protokol transportnej vrstvy, ktorý pracuje nad IPv4 alebo IPv6. RSVP neprenáša aplikačné dáta, funguje len ako riadiaci mechanizmus. RSVP sa zaoberá iba nastavením QoS pre prenášané pakety na~rozdiel od smerovacích protokolov, ktoré rozhodujú o ceste paketov.
+
+% **********************************************
+% RSVP Packet Format
+% **********************************************
+\begin{table}[htp]
+\centering
+\begin{tabular}[t]{|c|c|c|c|}
+4b & 8b & 16b & 32b \\
+\hline	V=2 & flags & Message Type & RSVP Checksum \\
+\hline	\multicolumn{2}{|c|}{Send TTL} & Reserved & RSVP Length \\
+\hline	\multicolumn{4}{|c|}{RSVP header structure} \\
+\hline
+\end{tabular}
+\caption{Formát RSVP paketu.}
+\label{tab:RSVP-packet-format} 
+\end{table} 
+% **********************************************
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{RTSP}\label{kap:RTSP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Real Time Streaming Protocol (RTSP) \cite{RFC-2326-RTSP-Protocol} môžeme podľa modelu ISO/OSI zaradiť medzi protokoly aplikačnej vrstvy. Využíva sa pri streamovaní multimediálnych dát. Umožňuje prijímajúcej strane ovládať priebeh streamovania. Syntax pripomína HTTP a podporovanými metódami sú napr. PLAY, RECORD, SETUP, PAUSE atď. \ldots Protokol RTSP nie je určený na prenos dát, ten je riešený iným mechanizmom, napr. pomocou RTP. Môžeme ho nájsť implementovaný napr. v aplikácii MPlayer ako jeden z možných spôsobov prenosu multimediálneho obsahu.
+\begin{quote}
+Príklad: \verb|mplayer rtsp://path/to/stream|
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{SDP}\label{kap:SDP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Session Description Protocol (SDP), popísaný v RFC 2327 \cite{RFC-2327-SDP-Protocol}, je vhodný na popis multimediálnych dátových tokov v unicastovej alebo multicastovej sieti. Umožňuje nastaviť parametre aplikácie, ktorá bude tieto dáta interpretovať. Podľa modelu ISO/OSI ide o protokol aplikačnej vrstvy.
+
+\begin{quote}
+Príklad: Streamovací server na adrese 239.255.42.42 má uložené prednášky, ktoré môže klient prijať vo vysokej alebo v nízkej kvalite. Každý takýto dátový tok je reprezentovaný SDP súborom.
+Pre príjem môže použiť napr. aplikáciu MPlayer:
+\begin{verbatim}
+mplayer sdp://presentation_01_low.sdp
+\end{verbatim} 
+
+\ldots Príslušný SDP súbor môže vyzerať nasledovne:
+\begin{verbatim}
+v=0
+o=- 49451 3 IN IP4 127.0.0.1
+s=Test MPEG Audio+Video session
+i=Session streamed by testMPEG1or2AudioVideoStreamer
+t=0 0
+a=tool:testMPEG1or2AudioVideoStreamer
+a=type:broadcast
+m=audio 6666 RTP/AVP 14
+c=IN IP4 239.255.42.42/127
+m=video 8888 RTP/AVP 32
+c=IN IP4 239.255.42.42/127
+\end{verbatim}
+\end{quote}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{VoIP protocols}\label{kap:VoIP-Protocols}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{SIP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Session Initiation Protocol je otvorený signalizačný protokol určený pre uskutočňovanie telefónnych hovorov prostredníctvom IP siete. Jedná sa o textovo-orientovaný protkol aplikačnej vrstvy, je definovaný v RFC 3261 \cite{RFC-3261-SIP-Protocol}. Spojenie je zabezpečené prostredníctvom dvoch typov uzlov -- User Agent a Server. Spojenie môže byť naviazané aj medzi dvoma klientmi bez účasti servera. Niekoľko aplikácií, používajúcich SIP, sme popísali v kapitole \ref{kap:VoIP-Software}. Užívateľ je adresovaný pomocou URL \texttt{sip:username@hostname}. Prechod cez firewall a NAT je zabezpečený pomocou STUN servera.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{H.323}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Protokol z dieľne ITU, ktorý konkuruje protokolu SIP. Je integrovaný v niektorých hardwarových zariadeniach určených pre IP telefóniu. Túto kapitolu uvádzame iba z didaktických dôvodov, pretože na niekoľkých miestach v texte práce spomíname zariadenia podporujúce H.323. Napríklad systém VRVS disponuje premostením zo~sveta H.323.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{IAX2}\label{kap:IAX2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Inter Asterisk Exchange je binárny protokol určený pre komunikáciu telefónnych ústrední Asterisk\footnote{Asterisk PBX uvádzame v kapitole \protect\ref{kap:VoIP-Software}} a ďalšie VoIP služby. Jeho štandardizácia je zatiaľ v štádiu IETF Internet-Draft \cite{IETFDraft-IAX2}. Podľa modelu ISO/OSI je IAX protokolom aplikačnej vrstvy. Využitie by mohol nájsť aj vo veľkých videokonferenčných systémoch akým je AccessGrid, prípadne ako protokol pre streamovanie multimediálneho obsahu. Kombinuje v~sebe vlastnosti \textbf{kontrolného}, \textbf{transportného} a \textbf{signalizačného} protokolu, takže zastupuje funkčnosť protokolov RTP/RTCP, SIP, H.323. Na prenos všetkých IAX paketov sa využíva jeden statický UDP port 4569, to mu umožňuje prekonávať problémy spojené s firewallmi a NAT. IAX nepotrebuje externý proxy server ako napríklad SIP, ani žiadne špeciálne nastavenie firewallu (okrem neblokovania portu 4569). Môžeme preto tvrdiť, že by mohol nahradiť protokoly RTP/RTCP, SIP, H.323.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluation of selection of protocols}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Spomínané protokoly pokrývali tri dôležité oblasti.
+
+Prvá skupina sa týkala multicastu, takže bolo potrebné spomenúť najdôležitejší protokol IGMP, bez ktorého multicast nefunguje. Protokolom MADCAP sme chceli poukázať na možnosti automatickej konfigurácie multicastových skupín. V budúcnosti by to mohla byť cesta ako vniesť poriadok do inak chaotického sveta náhodne volených multicastových adries. Navyše nám umožňuje dosiahnuť rovnaké pokroky ako DHCP vo svete statických IP adries. Protokol SAP zas umožňuje popísať už existujúci multicastový prenos.
+
+Druhá skupina sa týkala transportu a riadenia toku multimediálnych dát. Najdoležitejší protokol RTP, spolu s jeho partnerom RTCP, sme popísali podrobnejšie, pretože táto téma súvisí s informáciami v ďalšom texte. RTSP a SDP sme spomenuli v súvislosti so streamovaním multimediálneho obsahu. Ukázali sme aj krátky príklad prehrávania pomocou aplikácie MPlayer. Protokol RSVP spomíname pre jeho QoS vlastnosti.
+
+Poslednou popisovanou skupinou boli protokoly, ktoré sú využívané VoIP aplikáciami. Najzaujímavejším sa nám javí protokol IAX2, najmä jeho schopnosť bezproblémového prechodu cez NAT/firewall a schopnosť nahradiť niekoľko vyššie popisovaných protokolov. Protokol SIP sme spomínali v súvislosti so STUN serverom a ako zástupcu skupiny signalizačných protokolov.
+\proofed

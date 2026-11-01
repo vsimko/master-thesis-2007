@@ -87,6 +87,7 @@ latexmk -pdf main.tex
 
 ---
 
-## Continuous Integration (CI)
+## Continuous Integration & Releases (CI/CD)
 
-A GitHub Actions workflow (`.github/workflows/build.yml`) automatically compiles `main.tex` on every push and pull request. The resulting `main.pdf` is uploaded and available for download as a build artifact.
+- **Automatické testovanie a zostavenie:** Pri každom `push` alebo `pull_request` prebehne testovací balíček skriptu a kompilácia `main.tex`. Výsledný `main.pdf` je dostupný ako artefakt daného behu workflowu.
+- **Automatické GitHub Releases:** Pri každom zlúčení (merge) pull requestu alebo priamom pushi do vetvy `main` workflow automaticky vytvorí nový GitHub Release (`v<build_number>`) s priloženým `main.pdf` na priame stiahnutie.

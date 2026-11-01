@@ -1,0 +1,269 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{CIANT AccessGrid node}\label{kap:CIANT-AG-NODE}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Jedným z hlavných výsledkov tejto diplomovej práce je videokonferenčý uzol v neziskovej organizácii CIANT, ktorý môže inšpirovať aj ďalšie inštitúcie v snahe získať videokonferenčnú technológiu.
+
+CIANT (International Centre for Art and New Technologies) je nevládna nezisková organizácia založená v roku 1998. Pôsobí na mezinárodnej úrovni v kultúrnej, vzdelávacej a výzkumnej oblasti v spojení s novými technológiami. Prevádzkuje multimediálne laboratórium so zameraním na medziodborovú spoluprácu. Práve orientácia na nové technológie umožnila vznik jedného z prvých AccessGrid uzlov v~Českej republike. Významnú podporu v tomto projekte poskytla Česká akademická sieť CESNET vo forme multicastového pripojenia s rýchlosťou 15 Mbit/sec. Odborné konzultácie poskytli v úvode projektu Petr Holub, Masarykova Univerzita v~Brne a Grzesiek Sedek, Wimbledon School of Art.
+
+Naším pôvodným cieľom nebolo vytvoriť plnohodnotný videokonferenčný uzol. Chceli sme najskôr preskúmať možnosti ponúkaného riešenia vo forme AccessGridu. Postupne sme však prispôsobili jednu z miestností pre videokonferenčné účely a okrem pasívnej účasti sme nakoniec prešli až k implementácii unicast-to-multicast mostu a sprístupnili sme tak pripojenie aj pre užívateľov bez multicastového pripojenia.
+
+Za hlavný úspech považujeme spoluprácu s ostatnými AccessGrid uzlami zo skupiny MARCEL network, ktorá združuje umelcov, vedcov a inštitúcie so záujmom o~spoluprácu prostredníctvom vysokorýchlostnej siete. Cieľom je podpora interdisciplinárnej komunikácie vo vedeckých a umeleckých projektoch. Typickým príkladom je cyklus konferencií \textbf{Polylogues}, ktorému je venovaná kapitola \ref{kap:Polylogues}. MARCEL má v dnešnej dobe vyše 100 členov z viac ako 17 krajín a jedným z členov sa najnovšie stala aj Karlova Univerzita.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Series of Polylogue video-conferences}\label{kap:Polylogues}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Uzol AccessGridu sa vyvíja od roku 2005 a je zaregistovaný v zozname AGCentral \cite{CIANT-AGCentral}. Má za sebou niekoľko úspešných videokonferencií organizovaných v~rámci projektu \textbf{Polylogues 2006}, kde sa uplatnila spolupráca s Filozofickou fakultou Univerzity Karlovej, katedrou nových medií a MARCEL network.
+
+\paragraph*{Museums of the Future\cite{CIANT-Polylogues-1}:}
+Prvý videokonferenčný prenos z cyklu Polylogues sa konala 15.2.2006. Okrem uzla v Ciante sa na ňom podieľali uzly z USA -- University of Maine, Georgia Institute of Technology, uzol z Veľkej Británie -- University of East London a prvý AccessGridový uzol z Českej Republiky -- ANTLab, Masarykova Univerzita v Brne.
+
+\paragraph*{Game Engines/Social Engines\cite{CIANT-Polylogues-2}:}
+S mesačným odstupom nasledoval druhý prenos 29.3.2006, kde sa zúčastnili uzly Georgia Institute of Technology, University of East London a Masarykova Univerzita v Brne.
+
+\paragraph*{Visualizations in Art and Science\cite{CIANT-Polylogues-3}:}
+Posledný prenos z cyklu Polylogues sa konal 24.5.2006 za účasti University of East London a Masarykovej Univerzity v~Brne.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{AccessGrid in the art community}\label{kap:AGvUmeleckejKomunite}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Ukazuje sa, že technológia AccessGrid, pôvodne určená pre spoluprácu vedeckých tímov, vyžaduje v kontexte kultúry a umenia nástroje s novými vlastnosťami. V~rámci združenia MARCEL sa preto pripravuje projekt s pracovným názvom \textbf{Artists’ needs for a multicasting platform}, ktorého hlavným cieľom je umožniť umeleckej komunite efektívne využívať priestor vysokorýchlostných sietí. Umenie akým je tanec, hudba, divadlo a iná interaktívna komunikácia medzi umelcami a ich publikom vyžaduje niekoľko výrazných zmien v súčasnej architektúre AccessGridu. Vznikol tak zoznam nasledujúcich požiadaviek:
+
+\begin{enumerate}
+
+\item \label{item:MinLatency}
+Minimalizácia \textbf{latencie}, veľmi striktný limit 50 milisekúnd. Táto požiadavka ovplyvní hlavne výber \textbf{kodeku} a \textbf{protokolov} určených na prenos multimediálneho obsahu.
+
+\item \label{item:EyeContact}
+Dôležitým faktorom pri komunikácii v umení je \textbf{priamy očný kontakt}, ktorý vyžaduje správnu polohu a ovládanie kamery.
+
+\item Nový systém musí viac vychádzať v ústrety technicky menej skúsenej časti populácie. Táto požiadavka si vyžiada nielen zjednodušenie samotného AG nástroja, ale aj vytvorenie nových aplikácií založených na webových technológiách dostupných kedykoľvek z internetového prehliadača. Účastníci by mali dostať nástroj umožňujúci lepšiu orientáciu v priestore virtuálnych miestností a udalostí.
+
+\item Rozšírené možnosti monitorovania technického stavu celého systému.  Táto funkcia ale musí byť skrytá pred bežnými užívateľmi pre udržanie dostatočnej miery jednoduchosti.
+
+\item \label{item:TheatricalLightning}
+Osvetlenie divadelnej scény má byť závislé na podmienkach sieťového prenosu.
+
+\item \label{item:RealTimeEffects}
+Manipulácia s obrazom v reálnom čase, aplikovanie špeciálnych efektov.
+
+\item \label{itme:RearViewProjection} Možnosť vizuálne zväčšiť rozmery miestnosti napríklad pomocou veľkoplošnej projekcie na zadnú stenu.
+
+\item \label{item:RecAllNodes}
+Lepšie možnosti nahrávania videokonferenčného prenosu s možnosťou simultánne nahrávať dianie vo všetkých uzloch.
+
+\item Interaktivita s publikom prostredníctvom webu a distribúcia multimediálneho obsahu vo forme video-on-demand.
+\end{enumerate}
+
+Pri návrhu a implementácii častí požiadaviek sa môžeme inšpirovať existujúcimi riešeniami ako napr. VRVS/EVO\index{VRVS!system}, či InSORS. Požiadavky číslo
+\ref{item:EyeContact},
+\ref{item:TheatricalLightning},
+\ref{item:RealTimeEffects},
+\ref{itme:RearViewProjection} a
+\ref{item:RecAllNodes} sú však unikátne a nie sú zatiaľ implementované žiadnym videokonferenčným systémom spomínaným v kapitole \ref{kap:VyberTechnologie}.
+Systém VRVS môže ponúknuť vzor pre spôsoby monitorovania infraštruktúry pomocou distribuovanej siete MonaLisa. Navyše pre bežného užívateľa je práca s VRVS-rozhraním jenoduchšia už aj preto, že aplikáciu je možné spustiť priamo z internetového prehliadača. Systém reflektorov a zabudovaný nástroj RTP-proxy rieši niektoré problémy spojené s NAT/firewallom\index{NAT!traversal}.
+
+Požiadavka minimálnej latencie v \ref{item:MinLatency}. bode obmedzuje použité zvukové kodeky na~množinu uvedenú v tabuľke \ref{tab:AudioCodecsMinLatency}. Ako najperspektívnejší sa javí open-source kodek Speex. Súčasná verzia aplikácie RAT však tento kodek zatiaľ nepodporuje.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Information portal}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dôležitou súčasťou projektu bola myšlienka informačného portálu, ktorý by obsahoval všetky informácie o plánovaných i archivovaných konferenciách, rôzne návody a popis nastavenia AG a zároveň by umožnil lepšie zdieľanie informácií v~rámci organizácie. Pre tento účel sa osvedčil jednoduchý systém Wiki, ktorý s~odstupom času hodnotíme ako vysoko produktívny. Preto by sme ho radi doporučili každej organizácii, ktorá uvažuje o~vytvorení videokonferenčného uzla.
+
+Pri výbere sme porovnávali množstvo existujúcich wiki enginov, nakoniec sa však jednoduché riešenie ukázalo ako najpoužiteľnejšie. Rozhodli sme sa pre engine PmWiki. Presvedčili nás tieto vlastnosti:
+\begin{paklist}
+%-----------------------
+\item PmWiki ukladá stránky do súborov narozdiel napr. od MediaWiki, ktorá používa relačnú databázu. Aj napriek tomu je vyhľadávanie v relatívne veľkom množstve stránok dostatočne rýchle. Odpadá tak nutnosť inštalácie a správy databázy.
+
+%-----------------------
+\item Veľmi jednoduchá inštalácia -- stačí rozbaliť archív, nastaviť heslá pre prístup k stránkam a zmeniť logo.
+
+%-----------------------
+\item PmWiki umožňuje nastaviť globálne heslo pre editovanie, upload, prezeranie stránok, ako aj heslá špecifické pre skupiny stránok a dokonca aj pre samostatné stránky.
+
+%-----------------------
+\item Základný engine je možné obohatiť o ďalšie moduly (plugins).
+\end{paklist}
+
+PmWiki bolo nutné pred použitím značne upraviť. Môžeme spomenúť napríklad implementáciu kódovania UTF-8, podporu PHP5, prispôsobenie vzhľadu tak, aby uľahčoval orientáciu a úpravu stránok, hlavne prácu s obrázkami a sekciami. Pridaných bolo aj niekoľko bezpečnostných prvkov, hlavne podporu pre SSL pri editácii stránok a pri práci s heslami. Takto upravenú verziu je možné stiahnuť na~stránkach projektu \cite{CIANT-AGnodeWiki}. Užívateľ dostane do rúk funkčné a odskúšané riešenie.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Components used during the node setup} \label{kap:CiantAGKomponenty}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Pri voľbe komponentov uzla sme kládli dôraz na minimalizáciu finančných nákladov. Snahou bolo využiť maximum existujúcej techniky, infraštruktúry a zakúpených licencií na software. Pôvodne sme uvažovali aj o zakúpení komerčných produktov, no postupne sa vykryštalizovala myšlienka postaviť uzol založený čisto na voľne dostupných komponentoch.
+
+\paragraph*{Hardware:}
+Organizácia disponovala sieťovým unicastovým pripojením s rýchlosťou 15Mbit/s. Multicastové pripojenie poskytol CESNET na žiadosť organizácie. K dispozícii bolo niekoľko hardwarových komponentov, z ktorých sa podarilo poskladať tri funkčné počítače. Medzi komponentami sa nachádzali aj dve PCI karty určené na digitalizáciu videa. Dva použité projektory už organizácia vlastnila, rovnako ako zvukový zosilňovač, mixér, mikrofón a kamery.
+
+\paragraph*{Additionally purchased hardware:}
+\begin{paklist}
+%-----------------------
+\item Ethernetový prepínač (switch) s podporou protokolu IGMP.
+%-----------------------
+\item Systém na potlačenie spätnej väzby -- Gentner AP-800.
+%-----------------------
+\item Systém reproduktorov.
+%-----------------------
+\item Bodové osvetlenie.
+%-----------------------
+\item Sekundárna grafická karta do PCI, ktorá umožňuje zapojiť ďalšie dva projektory alebo monitory.
+%-----------------------
+\item Polohovateľný stojan na projektor.
+%-----------------------
+\item Niekoľko metrov VGA a STP káblových rozvodov.
+\end{paklist}
+
+\paragraph*{Software:}
+Po softwarovej stránke nebolo potrebné zakupovať žiadne nové licencie aj napriek tomu, že na jednom z počítačov bol nainštalovaný OS Windows a komerčný balík Microsoft Office. Tieto licencie už organizácia vlastnila. Na ostatných miestach bol použitý operačný systém Linux, ktorý je k dispozícii zdarma.
+
+\paragraph*{Deployment diagram:}
+Obrázok \ref{fig:CIANT-AG-node} znázorňuje schému zapojenia všetkých hardwarových komponentov. Záťaž systému je rozložená na tri počítače podľa ich zamerania -- \textbf{zobrazovanie}, \textbf{kódovanie} a \textbf{premostenie}.
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/arch-ciant-ag-node}
+\caption{Architektúra Ciant AG node.}
+\label{fig:CIANT-AG-node}
+\end{figure}
+
+\subsection{AG-Display}
+Jeho hlavnou úlohou je zobrazovať všetkých účastníkov konferencie pomocou projektorov na projekčné plátno. Aby sme získali dostatočný počet VGA výstupov, nainštalovali sme dve grafické karty (dual-head). Jednu z kariet sme navyše prinútili klonovať obraz z VGA výstupu na S-Video výstup, čo umožnilo nahrávanie signálu na mini-DV kazetu.
+
+Operačný systém Windows bolo nutné použiť z dôvodu zdieľaných prezentácií z~aplikácie PowerPoint. V dnešnej dobe už však existuje tzv. uno-driver pre OpenOffice.org, ktorý poskytuje rovnakú funkčnosť. Druhým dôvodom použitia Windows je software určený na ovládanie systému Gentner AP-800.
+Dnes už máme možnosť emulovať túto aplikáciu v prostredí Wine.
+
+\paragraph*{AG-Display comprises of following components}
+\begin{paklist}
+%-----------------------
+\item CPU Intel Celeron 1.4GHz, RAM 512MiB, 100Mbit Ethernet.
+%-----------------------
+\item Windows 2000 Professional operating system.
+%-----------------------
+\item Direct connection to IPv4 multicast-capable network.
+%-----------------------
+\item Three VGA outputs to external beamers, single VGA output to LCD monitor.
+%-----------------------
+\item AccessGrid version 2.4.
+%-----------------------
+\item MS Office suite.
+%-----------------------
+\item G-Ware: Gentner AP-800 controlling software.
+\end{paklist}
+
+
+\subsection{AG-AudioVideo}
+Jadrom nášho videokonferenčného systému je počítač s operačným systémom Linux, ktorý obsahuje dve PCI karty určené na digitalizáciu obrazu pomocou S-Video vstupu. Do týchto kariet sú zapojené primárna a sekundárna kamera (obrázok \ref{fig:CIANT-AG-node}). V~našej implementácii sme nepostupovali presne podľa doporučení uvedených v dokumente Access Grid Hardware Specification \cite{AG-HardwareSpecification}, ale rozhodli sme sa spojiť do~jedného hardwarového celku komponenty Video Capture Computer, Audio Capture Computer a Control Computer. Výkon procesoru v~našom systéme bol zatiaľ postačujúci aj pre desiatky účastníkov.
+
+\paragraph*{AG-AudioVideo comprises of following components}
+\begin{paklist}
+%-----------------------
+\item CPU Intel Celeron 1.4GHz, RAM 512MiB, 100Mbit Ethernet, SB Live.
+%-----------------------
+\item Operačný systém Linux Suse 9.3.
+%-----------------------
+\item Priame pripojenie na IPv4 sieť s podporou multicastu.
+%-----------------------
+\item VGA výstup na LCD monitor.
+%-----------------------
+\item AccessGrid verzia 2.4.
+\end{paklist}
+
+\subsection{AG-Bridge}\label{kap:CIANT-AG-Bridge}
+Problémy s pripojením klientov bez multicastovej siete rieši server AG-Bridge. Premostenie unicast-multicast je zabezpečené pomocou komponentu QuickBridge. Stále však ostáva problém s doručovaním UDP paketov ku klientom za firewallom.\index{NAT!problem}
+
+\paragraph*{AG-Bridge comprises of following components}
+\begin{paklist}
+%-----------------------
+\item CPU Intel Celeron 300MHz, RAM 255MiB, 100Mbit Ethernet.
+%-----------------------
+\item Operačný systém Debian GNU/Linux.
+%-----------------------
+\item Priame pripojenie na IPv4 sieť s podporou multicastu.
+%-----------------------
+\item AccessGrid verzia 2.4, z toho používame iba VenueServer a QuickBridge.
+\end{paklist}
+
+
+\subsection{Gentner AP-800}
+Obrázok \ref{fig:Gentner} ilustruje zariadenie špeciálne navrhnuté pre potlačenie spätnej väzby, ktorá prirodzene vzniká pri snímaní zvuku citlivým mikrofónom v miestnosti ozvučenej sústavou reproduktorov. Matica vstupov a výstupov 12x12 je programovateľná pomocou aplikácie G-Ware. Obvykle sa cena tohto zariadenia pohybuje v prepočte okolo 75000 CZK. Ponuky na eBay sa pohybujú v prepočte okolo 12000 CZK. Existujú aj lacnejšie verzie napr. AP-400.
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/gentner-ap-800.png}
+\caption{Gentner AP-800 echo cancellation device.}
+\label{fig:Gentner}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Videoconferencing room}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Miestnosť, ktorú sme sa rozhodli využiť pre účely AccessGridu, slúžila pôvodne ako kancelária organizácie. Pri návrhu sme preto mali stanovené obmedzujúce podmienky, pretože sme museli zachovať jej pôvodnú funkciu. Spôsob, ktorým sme sa vysporiadali s týmto problémom, ukazuje, že je možné aj v iných organizáciách postupovať podobne s minimálnymi nákladmi. Hlavné zmeny:
+\begin{paklist}
+%-----------------------
+\item Príprava projekčných plôch, kde sme využili dve steny, ktoré sme pred použitím museli premaľovať novou vrsvou bielej farby.
+%-----------------------
+\item Inštalovali sme reproduktory v rohoch miestnosti.
+%-----------------------
+\item Inštalovali sme dodatočné bodové osvetlenie v rohu miestnosti.
+%-----------------------
+\item Pripravili sme sústavu káblových rozvodov, ktoré pozostávajú z VGA (pc--projektor), S-VIDEO (kamera--pc), STP (pc--switch) a audio (mikrofón--mixer, zosilňovač--reproduktory) rozvodov.
+\end{paklist}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/arch-ciant-ag-room}
+\caption{Miestnosť určená pre videokonferenčné účely.}
+\label{fig:CIANT-AG-room}
+\end{figure}
+
+Obrázok \ref{fig:CIANT-AG-room}(A) popisuje rozloženie objektov v miestnosti. Pre účely videoprojekcie sme použili dve biele steny (6a, 6b). Projekciu zabezpečujú 3 projektory (5a, 5b), čo je znázornené na obrázku \ref{fig:CIANT-AG-room}(C), pripojené k počítaču AG-Display (8). Mikrofón (2) je umiestnený v prednej časti miestnosti. Umožňuje snímať zvuk pod dostatočne veľkým uhlom, čo je zázornené aj na obrázku \ref{fig:CIANT-AG-room}(D) spolu s rozložením reproduktorov (7a,7b,7c) v rohoch miestnosti. Zvuk z mikrofónu je prenášaný cez audio-mixér (3) priamo do počítača AG-AudioVideo (8). Dôležitou podmienkou je správne fungovanie zariadenia na potlačenie ozveny (Gentner AP-800). Z obrázku \ref{fig:CIANT-AG-room}(D) je zrejmé, že mikrofón bude snímať veľkú časť zvuku pochádzajúceho z~reproduktorov, čo by viedlo ku~vzniku nepríjemnej ozveny vo všetkých pripojených uzloch.
+
+Vzhľadom na malé rozmery nemôže v miestnosti sedieť viac ako 15 ľudí, čo sa zatiaľ neukázalo ako problém, pretože sme tento počet ešte nedosiahli. Účastníci sú rozdelení do dvoch kategórií -- aktívni a pasívni. V prednej časti miestnosti, okolo mikrofónu (2), sedia aktívni účastníci. Na mieste označenom (1) sedí moderátor. Tým je určené aj rozloženie kamier (4a, 4b) znázornené na obrázku \ref{fig:CIANT-AG-room}(B). Hlavná kamera (4a) sníma postavu moderátora a jeho najbližších susedov. Vedľajšia kamera (4b) sníma väčšinu publika. Operátor sedí na mieste (8) a má na starosti technickú stránku konferencie. V prípade problémov komunikuje s ostatnými operátormi v~textovej forme.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Day-to-day operation experience}\label{kap:CiantSkusenosti}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Pôvodne sme počítali s využitím troch projektorov, kde dva hlavné mali slúžiť pre zobrazovanie obrazu z aplikácie VIC a tretí mal slúžiť pre zobrazovanie ovládacích prvkov počítača AG-Display a zobrazovanie zdieľanej prezentácie.
+V priebehu niekoľkých konferencií sme však zistili, že vystačíme s dvoma projektormi. Navyše spôsob nahrávania konferencie, ktorý sme vtedy používali umožňoval zaznamenať obraz iba jedného projektora.
+
+Prvé pokusy o nahrávanie konferencie sa aj napriek svojej jednoduchosti a problémom ukázali veľmi použiteľné. Výsledky si záujemcovia môžu prezrieť na wiki--stránkach projektu \cite{CIANT-AGnodeWiki}, konkrétne záznamy z už spomínaných konferencií Polylogues \cite{CIANT-Polylogues-1}, \cite{CIANT-Polylogues-2} a \cite{CIANT-Polylogues-3}.
+
+Nahrávanie prebiehalo tak, že sme využili schopnosť grafickej karty klonovať obraz jedného VGA výstupu na S-Video výstup. Tento signál sme preniesli do~digitálnej kamery a nahrali na Mini-DV kazety. Po skončení konferencie sme záznam zdigitalizovali do výsledného FLV prípadne MPEG súboru.
+
+Výhodou tohto riešenia vidíme hlavne v jeho jednoduchosti a v tom, že žiadnym spôsobom nezasahuje do konferencie po softwarovej stránke. Nemusíme spracovávať dátový tok RTP paketov a odpadajú problémy so zvyšovaním latencie a jitter. Výsledkom je Mini-DV kazeta, ktorá zároveň slúži ako vhodné zálohovacie médium.
+
+Nevýhod je však hneď niekoľko. Obraz z grafickej karty vo forme S-Video signálu neposkytuje rozlíšenie viac ako 1024x768. Už toto rozlíšenie je hardwarovo preškálované na 800x600, takže nahrávaný obraz má o niečo nižšiu kvalitu ako pôvodný obraz zobrazovaný na projekčné plátno.
+Obraz, s ktorým teda môžeme disponovať nevyužíva možnosti technológie AccessGrid. Navyše môžeme takto nahrávať iba obraz z jedného projektora. Toto obmedzenie sme riešili tak, že sme ďalšie projektory jednoducho nepoužívali, prípadne sme na ne umiestňovali menej dôležitý obsah. V tom prípade musí operátor konferencie správne rozhodovať o dôležitosti jednotlivých video signálov a zdieľaných prezentácií. Pre operátora to znamená zvýšenú psychickú záťaž, pretože okrem technického zabezpečenia priebehu musí venovať svoju pozornosť aj obsahu konferencie. Obzvlášť náročné to môže byť v prípade, keď sa konferencia zaoberá pre operátora príliš vzdialenou problematikou.
+
+Ďalšou nevýhodou je nutnosť dodatočnej konverzie Mini-DV formátu do formátu MPEG. Toto riešenie navyše neumožňuje priame prehrávanie uložených dátových tokov v novej konferencii. Všetky zložky sú zmixované v jednom obrazovo-zvukovom zázname tak, ako ich účastníci videli pomocou projekcie.
+
+Už sme spomenuli, že kapacita našej miestnosti je 15 ľudí. V takto preplnenom priestore je nutné zabezpečiť dobré odvetrávanie, čo ale naše riešenie v podstate ignoruje. Odvetrávanie je riešené jednoduchým spôsobom -- otvorením okna. Už pri našich prvých prenosoch sa však objavil problém, keď zvuk a svetlo mimo miestnosť rušilo citlivé podmienky vo vnútri miestnosti. Otvorenie okna tak nepripadalo do~úvahy a účastníci museli vydržať nepríjemné teplo a vydýchaný vzduch.
+
+Dôležitým faktorom je osvetlenie miestnosti. Na jednej strane požadujeme tmavé prostredie pre správne fungovanie projekcie. Na strane druhej potrebujeme snímať obraz pomocou kamery, a preto potrebujeme dostatočne osvetliť účastníkov konferencie. Túto ambivalenciu sme vyriešili v prospech osvetlenia, pretože sa ukázalo, že tmavé prostredie nielenže zhoršuje kvalitu snímaného obrazu a uspáva účastníkov, ale dokonca zvyšuje dátový tok obrazu. Kamera totiž pri horších svetelných podmienkach pridáva do obrazu rôzne náhodné artefakty, ktoré zvyšujú náročnosť jeho kódovania.
+
+Pri inštalácií káblových rozvodov sme museli dbať na správne odtienenie jednotlivých prvkov. Stávalo sa totiž, že pri vedení VGA spolu s elektrickými a S-Video káblami vznikalo rušenie, ktoré deformovalo obraz.
+\proofed

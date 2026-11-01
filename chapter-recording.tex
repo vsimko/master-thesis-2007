@@ -1,0 +1,363 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Recording the conference}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Recording vs archivation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Na úvod kapitoly zdôrazníme rozdiel medzi pojmami nahrávanie a archivácia. Zatiaľ čo pri nahrávaní je cieľom vytvoriť záznam, ktorý je možné následne zrekonštruovať, pri archivácii sa navyše berie do úvahy celkový kontext, v ktorom bol záznam vytvorený. Na túto skutočnosť by sme radi poukázali hlavne v súvislosti s referenčným modelom OAIS \cite{OAIS-RM}, ktorý je ISO štandardom a tvorí framework pre archiváciu s~ďalekým časovým horizontom (long-term preservation). Pomerne obsiahly štandard je možné vystihnúť jednoduchou "rekurzívnou" myšlienkou:
+
+\begin{quote}
+Archivácia dát vyžaduje archiváciu metadáta aj nástrojov, ktoré tieto dáta dokážu interpretovať. Tento postup sa rekurzívne opakuje a zachádza až k archivácii popisu použitých protokolov a kódovaní.
+\end{quote}
+
+Je zrejmé, že z pohľadu archivácie budú uprednostňované otvorené technológie využívajúce otvorené štandardy, pred uzavretými, nedokumentovanými systémami. Dostávame sa tak až na úroveň zdrojových kódov. Takýto prístup zaručuje, že archivované dáta bude možne spätne rekonštruovať dokonca aj o niekoľko desaťročí.
+
+Systém založený na voľne dostupných komponentoch, je teda prvým krokom k~úspešnej archivácii. Ostáva už len doriešiť otázku samotného záznamu, definovať, ktoré aspekty komunikácie je vhodné archivovať a podľa toho nájsť vhodné nástroje.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Data-streams within the AccessGrid session}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+AccessGrid pozostáva z niekoľkých vzájomne prepojených komponentov. Spôsob komunikácie medzi nimi môžeme rozdeliť na dve hlavné skupiny:
+\begin{enumerate}
+\item prenos multimediálnych dát,
+\item prenos riediacich správ.
+\end{enumerate}
+
+V kapitole \ref{kap:Multicast} sme ako jeden zo spôsobov doručovania popisovali multicast, čo je vhodná prenosová metóda hlavne pre multimediálne dáta pri skupinovej komunikácii. Pre samotný prenos sa využíva protokol RTP.
+
+Na druhej strane, riadiace správy tvoria len malú časť celkovej komunikácie a pre ich prenos sa využíva jednoduchší unicast. Ak hovoríme konkrétne o komunikácii medzi VenueServerom a ostatnými komponentami AG, táto prebieha v istej forme XML-RPC.
+
+\subsection{Candidates for archivation}
+
+Najvhodnejšími kandidátmi pre nahrávanie, archiváciu a spätnú rekonštrukciu budú multimediálne prenosy -- zvuk a obraz. Hneď za nimi nasleduje obraz prezentácie a ďalej pracovná plocha. Nevhodným kandidátom sú riadiace správy, či rôzne fragmenty správ týkajúce sa bezpečnosti.
+
+% V praxi má zmysel nahrávať iba prenosy, ktoré nie sú závislé na stavovej informácii. Úspešné nahrávanie by muselo zvládnuť rekonštrukciu stavu, čo však môže naraziť na hranice priestorovej a časovej zložitosti, dokonca vyčíslitelnosti (ak by sme chceli ísť do teoretických extrémov).
+
+Zvukový a obrazový signál má iste bezstavovú povahu. Mierne komplikácie prinášajú kodeky, ktoré namiesto jednotlivých snímkov generujú prechody medzi kľúčovými snímkami. Tento problém sa v najhoršom prípade rieši preskočením k nasledujúcemu kľúčovému snímku. To platí aj pre fragmentáciu dát v jednotlivých ISO/OSI vrstvách. Chceme tým naznačiť, že obraz a zvuk vo forme RTP paketov bude pomerne jednoduché archivovať. V prípade rekonštrukcie poškodeného záznamu bude najkomplikovanejšou časťou rekonštrukcie nájsť nasledujúci kľúčový snímok, čo závisí na použitom kodeku.
+
+Ďalším kandidátom je protokol RFB používaný v komunikácii medzi VNC serverom a klientom. Protokol je bezstavový a konzistenciu VNC session nepoškodí ani ukončenie, či výpadky spojenia.
+
+Už sme spomenuli, že AG používa pre ovládanie svojich komponentov protokol XML-RPC. V podstate nás táto komunikácia nemusí zaujímať až na jednu výnimku -- pomocou XML-RPC sa totiž synchronizujú zdieľané aplikácie AccessGridu. Hlavne zdieľaná prezentácia je horúci kandidát na nahrávanie. Jedným z možných riešení by bolo ukladať udalosti prechodov medzi snímkami pomocou špeciálne upravenej verzie SharedPresentation. Problémom je však tvorba univerzálneho nahrávacieho nástroja pre všetky zdieľané aplikácie. Navyše takto uložené informácie je možné spätne prehrávať len rovnakým spôsobom, akým boli vytvorené. V kontexte OAIS by sme museli archivovať aj všetky použité prehliadače a zdieľané aplikácie.
+
+\subsection{Conversion to common format}
+
+\begin{quote}
+\ldots or how to avoid $n^2$ conversion tools while using solely $n$ formats
+\end{quote}
+
+Aby sme proces archivácie čo najviac zjednodušili, rozhodli sme sa všetky udalosti, ktoré vzniknú počas videokonferenčného prenosu, previesť do audio-vizuálnaho formátu, ktorý uložíme ako RTP pakety. Pri prevode sa kvalita pôvodných dát môže mierne zhoršiť, no získame jednotný formát, pre ktorý môžeme neskôr vytvoriť nástroje na prehrávanie a úpravu.
+
+\paragraph*{VNC display:} Prevod vyžaduje snímanie obrazu pracovnej plochy a kódovanie pomocou vhodného kodeku do formátu RTP.
+
+\paragraph*{Zdieľaná prezentácia:} Stačí ak budeme snímať tú časť pracovnej plochy, ktorá obsahuje zobrazenú prezentáciu. Vhodne uplatníme prechádzajúci prípad a využijeme VNC pre zobrazovanie prezentácie. Toto riešenie sa neobmedzuje iba na zdieľanie prezentácií vo~formáte PDF, či ODP.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.6\textwidth]{images/oais-environment}
+\caption{Prostredie pre archiváciu podľa OAIS\cite{OAIS-RM}.}
+\label{fig:OaisEnvironment}
+\end{figure}
+
+Referenčný model OAIS definuje 4 prvky archivačného prostredia (obrázok \ref{fig:OaisEnvironment}). Z nášho pohľadu bude "Producer" každá aplikácia, ktorá vysiela RTP pakety, teda VIC a RAT. Prvok "Consumer" bude užívateľ, ktorý sa snaží archivovaný záznam znova rekonštruovať a prehrať napr. pomocou aplikácie VIC a RAT. Ak by sme chceli postupovať podla referenčného modelu, musíme zabezpečiť aj existenciu entity "Management", ktorá nastavuje zásady dodržované v~rámci archivačného prostredia OAIS. O údržbu archívu sa teda nestará management ale štruktúry vo vnútri samotného archívu.
+
+Implementácia modelu OAIS je mimo záber tejto práce a ďalší text je nezávislý na použitej archivačnej paradigme.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Existujúce nástroje pre nahrávanie}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Tcpdump -- Packet sniffer}
+Tcpdump umožňuje ukladať pakety prechádzajúce sieťovým zariadením. Na prvý pohľad by sa zdalo, že ide o ideálny nástroj na zachytenie kompletnej informácie v~dátovom prenose. Problémom záznamu RTP paketov je však ich správne časovanie. Vysledný súbor síce obsahuje všetky audio-vizuálne dáta, ale spätná rekonštrukcia časovania je obtiažna. Tcpdump teda nie je vhodným nástrojom.
+
+\subsection{RTPtools}
+Je sada nástrojov pre prácu s RTP dátovým tokom. Nájdeme tu nástroje rtprecord, rtpplay a rtpproxy. Ďalším nástrojom je RTP reflekctor, ktorý umožňuje zrkadliť prichádzajúce dáta, dokáže mixovať rôzne RTP toky a transparentne prekódovať komunikáciu pomocou iného kodeku.
+Všetky nástroje sa spúšťajú z príkazového riadku a poskytujú iba základné funkcie.
+
+\subsection{AGVCR -- RTP recorder/player}
+Zatiaľ najvhodnejším nástrojom určeným pre nahrávanie RTP paketov je AGVCR od D. Pipera \cite{AGVCR-home}, Indiana University. Poskytuje grafické aj textové rozhranie (dokonca pomocou Telnetu), umožňuje automatické spúšťanie aplikácii určených na~nahrávanie a prehrávanie multimédií. Výsledkom nahrávania je samostatný súbor, ktorý obsahuje informáciu o všetkých prijatých dátových tokoch a ich časovaní. Ďalej umožňuje export podmnožiny týchto dát rozdelením na menšie časti.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Nahrávanie prebiehajúcej konferencie}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Účelom nahrávania je záznamenať v čo najvernejšej podobe priebeh konferencie z~pohľadu jedného uzla. Najjednoduchšou možnosťou, ktorú sme použili aj v prípade uzla v organizácii Ciant, je nahrávanie signálu z grafickej karty napr. vo forme S-Video signálu. Výhody a nevýhody tohto riešenia sme popisovali v kapitole \ref{kap:CiantSkusenosti}.
+
+Druhý komplexnejší prístup využíva práve nástroj AGVCR. Nahrávanie vyžaduje osobitný počítač, pretože nie je možné v jednom operačnom systéme zároveň nahrávať, prezerať a vysielať pakety pomocou rovnakého soketu. Vždy posledná aplikácia, ktorá použije volanie \verb|bind()|, bude dostávať pakety, ostatné môžu iba vysielať pomocou volania \verb|send()| alebo \verb|sendto()|.
+
+V prípade veľkej konferencie je nutné dbať na dostatočný výkon, diskový priestor a kvalitné sieťové pripojenie takéhoto nahrávacieho uzla. Bude totiž ukladať všetky pakety, ktoré sa v konferencii objavia. Uzol našťastie nemusí kódovať ani dekódovať žiadne dátové toky, jedinou úlohou je ukladanie RTP paketov.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{StreamVNC -- Nový nástroj pre lokálne nahrávanie}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Problém nahrávania konferencie viedol k myšlienke vytvoriť nástroj, ktorý by umožňoval prípavu prezentácie vysielaním na lokálne sieťové zariadenie -- localhost. Pri tvorbe systému sme brali do úvany nasledujúce požiadavky:
+\begin{paklist}
+\item Jednoduchá obsluha.
+\item Existencia grafického rozhrania.
+\item Schopnosť ukladať obraz pracovnej plochy, napr. s bežiacou prezentáciou.
+\item Dostatočná kvalita záznamu.
+\item Nízke nároky na prenosovú kapacitu.
+\item Podpora nahrávania zvuku aj obrazu.
+\item Využitie existujúcich komponentov.
+\item Jednoduchá úprava výsledného záznamu (strih).
+\item Možnosť jednoduchého prehrávania.
+\end{paklist}
+
+Prvým problémom, bolo získanie vhodných komponentov, ktoré by spolu dokázali komunikovať a boli by dostatočne konfigurovateľné a ovládateľné. Museli pokryť nasledujúce oblasti:
+\begin{paklist}
+\item Nahrávanie RTP paketov.
+\item Spracovanie zvuku.
+\item Spracovanie obrazu z kamery.
+\item Spracovanie obrazu pracovnej plochy.
+\item Sprístupnenie vhodných prezentačných nástrojov.
+\end{paklist}
+
+Modelová situácia je znázornená na obrázku \ref{fig:LocalhostRecording}. Kľúčovým prvkom je systém VNC (1), ktorý umožňuje zobraziť aplikáciu (2) bez interakcie s okolitou pracovnou plochou. Obrázok znázorňuje, že obsah VNC je odosielaný na lokálnu adresu aplikáciou VIC (3) spolu so zvukom z aplikácie RAT (4) a ďalším obrazom z kamery (5). Všetky tri dátové toky sú nahrávané pomocou AGVCR (6).
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{images/localhost-recording}
+\caption{Príprava prezentácie pre neskoršie použitie.}
+\label{fig:LocalhostRecording}
+\end{figure}
+
+\subsection{Otázka nahrávania RTP paketov}
+Výborný nástroj AGVCR nám uľahčil situáciu pri výbere vhodného nahrávacieho nástroja. Nástroj nevyžadoval žiadne ďalšie zmeny, pretože vykazuje vysokú stabilitu, výkonnosť a konfigurovateľnosť. Jediný problém vidíme v chýbajúcej funkcii, ktorá by umožňovala vystrihnúť časť uloženého záznamu. V dobe písania textu sme už túto požiadavku adresovali autorovi aplikácie.
+
+
+\subsection{Otázka spracovania zvuku}\label{kap:HybridRAT}
+Aplikáciu RAT, ktorá umožňuje prenos zvuku pomocou RTP paketov sme museli pred použitím mierne upraviť. Problém štandardne dodávanej verzie RAT 4.3 z~dielne UCL sa prejavil pri zapnutom firewalle. Aplikácia sa odmietala spustiť, čo bolo pre naše účely neakceptovateľné. Problém spôsobovala komunikácia komponentu "mbus" použitého v~rámci RATu, ktorý sa vždy pri štarte snažil kontaktovať jednu z~multicastových adries, čo spôsobovalo zamrznutie v prípade spusteného firewallu. Po čase sa podarilo nájsť inú upravenú verziu RATu z dieľne VRVS, ktorá štartovala bez problémov.
+Nevýhodou bola absencia rozhrania pre zvukový systém ALSA (Advanced Linux Sound Architecture), podporovaným bolo iba rozhranie OSS (Open Sound System), ktoré vykazovalo nízky výkon a problémy pri spolupráci s inými aplikáciami pracujúcimi so zvukom. Použili sme teda zdrojové kódy oboch implementácií a vytvorili sme hybridnú verziu RAT-SVNC, ktorá kombinuje výhody oboch.
+
+
+\subsection{Otázka spracovania obrazu pracovnej plochy}
+Pre spracovanie obrazového signálu je v AG určená aplikácia VIC. Znova sme však nemohli použiť originálnu verziu z dieľne UCL. Aplikácia totiž blokuje soket, na~ktorý vysiela RTP pakety. Znamená to, že AGVCR nedokáže tieto pakety nahrať. Navyše obsahuje podporu kodeku H.263 pochybnej kvality, pretože jeho použitie často vedie k chybe "segmentation fault". Verzia VICu zo systému VRVS, ktorý je založený na projekte OpenMash však obsahovala funkčný H.263 kodek a navyše disponovala kompaktnejším designom, dôležitým hlavne pre koncového užívateľa. V~projekte EVO sme ďalej objavili novšiu verziu VICu s názvom Vievo, ktorej design nás zaujal a rozhodli sme sa použiť jeho základ aj v novom nástroji.
+
+Názov pre novú verziu VICu sme zvolili EVIC. Obsahuje jadro z projektu OpenMash podľa VIC-VRVS a časti designu z Vieva. Do kódu sme pridali  ovládacie prvky umožňujúce prepnúť ovládanie nahrávania na externý X11 display. Túto vlastnosť využívame pri nahrávaní obsahu VNC, kedy ovládanie môžeme umiestniť na reálny X11 display.
+
+Výkon VICu z projektu OpenMash nám umožňuje dosiahnuť 2fps pri rozlíšení PAL a 10fps pri rozlíšení CIF. Pre účely prezentácie tieto hodnoty postačujú, navyše sa tým šetrí prenosová kapacita siete. V budúcnosti je však určite potrebné zvýšiť výkon tejto komponenty. Testy ukázali, že pri 8fps v rozlíšení PAL bolo dosiahnuté 100\% využitie procesoru Pentium 4 -- 1.8GHz.
+
+\subsection{Otázka spracovania obrazu z kamery}
+
+Aplikáciu VIC sme tiež úspešne použili pre snímanie obrazu z kamery pri 25fps pri rozlíšení CIF. Rozlíšenie PAL nie je zatiaľ podporované, obraz z kamery je zamýšľaný ako dodatočná informácia k dôležitejšej prezentácii a zvuku.
+
+\subsection{Podpora prezentačných nástrojov}
+
+Pri voľbe prezentačných nástrojov bol braný ohľad hlavne na podporu PDF, OpenDocument Format (ODF) a PowerPoint (PPT). Ďalej podpora prehliadača obrázkov, prezentácia webových stránok, obmedzená prezentácia video sekvencií a podpora pre virtuálny stroj VMWare. Samozrejmosťou je jednoduchá rozšíriteľnosť o ďalšie aplikácie. Verzia TightVNC ktorú používame, neobsahuje podporu pre 3D akceleráciu, preto zatiaľ nie sú podporované ani aplikácie využívajuce OpenGL.
+
+Pre VNC display sme ešte okrem samotnej aplikácie potrebovali vhodný window manager. Pri výbere hrali dôležitú ulohu faktory ako veľkosť, náročnosť na systémové prostriedky, a umiestnenie dekorácii okien. Nakoniec sme vybrali FLWM, ktorý umiesňuje dekorácie okien na~ich ľavú stranu. Opticky tak nekolidujú s dekoráciami samotného vncviewera. Pred použitím sme FLWM mierne upravili, okrem iného aj pridaním parametra \verb|-e|, ktorý umožňuje po štarte FLWM spustiť ďalší program. Umožňuje nám to napr. nastaviť pozadie obrazovky pomocou príkazu \verb|xsetroot -solid '#004455'|.
+
+\subsection{Architektúra StreamVNC}
+
+Všetky komponenty spomenuté v predchádzjúcom texte boli integrované do jedného systému -- StreamVNC -- znázorneného na obrázku \ref{fig:ArchStreamVNC}.
+
+Pri minimálnych nárokoch na užívateľa je umožnená vysoká miera konfigurovateľnosti. Použitými jazykmi sú C, TCL/Tk a Shell Script. Spustenie vyžaduje bežiaci X server, na ktorý sa umiestnia všetky ovládacie prvky. Hlavnými prvkami architektúry sú:
+\begin{paklist}
+\item nahrávanie RTP paketov,
+\item snímanie zvuku,
+\item VNC -- server, viewer a snímanie pracovnej plochy,
+\item snímanimanie obrazu z kamery,
+\item aplikácie.
+\end{paklist}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/arch-stream-vnc}
+\caption{Architektúra systému StreamVNC.}
+\label{fig:ArchStreamVNC}
+\end{figure}
+
+Použitie Xvnc (TightVNC server) vyžaduje existenciu fontov \verb|fixed| a \verb|helvetica|. Cesta k fontom obvykle býva správne nastavená v danej distribúcii Linuxu ako je tomu napr. v OpenSuse. Niektoré distribúcie, napr. Gentoo, však vyžadujú explicitné nastavenie fontpath pomocou \verb|Xvnc -fp <dir>|. Preto je v rámci StreamVNC poskytnutá binárna podoba Xvnc a najnutnejších fontov spolu s definíciami \verb|fonts.dir| a \verb|fonts.alias|. Server Xvnc sa teda nespúšťa priamo, ale pomocou skriptu \verb|vnc/Xvnc-run|, ktorý nastaví vlastné umiestnenie fontpath. V prípade potreby teda stačí zmeniť obsah tohto skriptu.
+
+\subsection{Implementované profily}
+Hlavný script \verb|agvcr-run| sa spúšťa buď bez parametrov, alebo s jedným parametrom reprezentujúcim názov súboru, ktorý sa má prehrať. Aplikácia teda rozlišuje dva profily pomocou dvoch rozdielnych konfiguračných súborov -- nahrávanie používa \verb|.agvcr.conf| a reprodukcia používa \verb|.play.conf|.
+
+\paragraph*{nahrávanie (record profile):} Implicitný profil určený pre nahrávanie prezentácie. Programy znázornené sivou farbou na obrázku \ref{fig:SequenceStreamVNC} sa spúšťajú iba v tomto profile. Užívateľ dostane k dispozícii menu, v ktorom zvolí jednu z aplikácií.
+
+\paragraph*{reprodukcia (playback profile):}
+V tomto profile začne AGVCR automaticky vysielať RTP pakety zo súboru, ktorý dostal ako jeden z parameterov. Spúšťa sa iba jedna inštancia aplikácie EVIC po tom, ako prijme jeden RTCP paket. Naopak VNC server ani VNC viewer sa nespúšťajú, pretože pri prehrávaní by zbytočne zaberali priestor na obrazovke. Vysielané RTP pakety sú automatický prijaté aplikáciou RAT a EVIC a užívateľ vidí obsah uloženej prezentácie.
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/sequence-stream-vnc}
+\caption{Náväznosť programov spustených v~rámci StreamVNC.}
+\label{fig:SequenceStreamVNC}
+\end{figure}
+
+\subsection{Správa bežiacich procesov}
+Kedže sa jedná o integrovaný systém pozostávajúci z množstva komunikujúcich procesov, bola otázka ich správy jednou z najdôležitejších. Hlavný spustiteľný program s názvom \verb|stream-vnc| je vytvorený v Shell scripte. Má za úlohu štartovať synovské procesy, kontrolovať ich činnosť a v prípade potreby ich aj všetky ukončiť. Najväčšou prekážkou bola malá flexibilita tzv. "job control" v Shell scripte\footnote{Konkrétne išlo o verziu GNU bash 3.00.16(1)-release (i586-suse-linux)}, ktorú sme nakoniec vyriešili nasledovne:
+
+Hlavný program si vedie zoznam procesov \verb|$REQ|, ktoré by mali pri skončení spôsobiť ukončenie celého systému. Registruje sighandler pre signal \verb|SIGCHLD|, čo spôsobí, že ak niektorý zo synovských procesov skončí, dostane rodičovský proces od jadra operačného systému automaticky správu (signál 17). Príkazom \verb|jobs -pr| shell zistí zoznam bežiacich synovských procesov. Ak medzi nimi chýba nejaký proces zo~zoznamu \verb|$REQ|, spustí sa ukončovacia sekvencia, kedy rodičovský proces rozosiela bežiacim synovským procesom signál \verb|SIGTERM|. Navyše všetky procesy používajúce VNC display sa automaticky ukončia spolu s VNC serverom.
+
+Iný prístup, ktorý sme sa pokúšali implementovať, využíval funkciu terminálu, ktorú poskytuje operačný systém. Terminál je špeciálne zariadenie určené na~medziprocesovú komunikáciu. Operačný systém poskytuje systémové volania pre tvorbu a správu tohto zariadenia. Proces, ktorý zariadenie vytvoril, sa stáva vedúcim skupiny procesov, ktoré budú so zariadením komunikovať. Skupina je identifikovaná pomocou skupinového PID, čo je PID jej vedúceho. V prípade, že vedúci ukončí svoju činnosť, operačný systém by mal rozoslať signál \verb|SIGHUP| všetkým procesom v danej skupine. Výhodou je automatické rozosielanie signálov, na~rozdiel od nášho aplikačného riešenia v shell scripte. Nevýhodou je, že niektoré verzie Shell-interpretov neposkytujú žiadne ekvivalenty systémových volaní \verb|grantpt()|, \verb|unlockpt()| a \verb|ptsname()|, čo musíme riešiť jednoduchým programom v C. Ten otvorí špeciálny súbor \verb|/dev/ptmx|, ktorý vytvorí "master" -- jednu stranu komunikačného kanálu. Unix API obsahuje funkcie \verb|posix_openpt()|, \verb|grantpt(master)|, \verb|unlockpt(master)|, \verb|ptsname(master)|. Posledná spomínaná funkcia vráti názov súboru \verb|/dev/pts/X|, kde \verb|X| predstavuje "slave" -- druhú stranu komunikačného kanálu. Jednoduchý program teda otvorí pseudo terminál, nastaví správne svoje filedescriptory, použije funkciu \verb|setsid()| pre vytvorenie novej session skupiny procesov a stane sa vedúcim tejto skupiny. Následne môže zavolať niektorú z foriem funkcie \verb|exec()| a spustiť iný proces vo svojom pamäťovom priestore. Praktické skúsenosti s používaním StreamVNC však ukázali, že mechanizmus, ktorý sme zvolili je postačujúci.
+
+
+\subsection{Test konzistencie prostredia}
+Aby sme uľahčili indentifikáciu problémov v prípade chýbajúcich aplikácií, poskytli sme v~rámci scriptu \verb|stream-vnc| parameter \verb|--check|. Pred prvým použitím je teda vhodné spustiť \verb|./stream-vnc --check|, ktorý skontroluje konzistenciu systému a identifikuje najbežnejšie problémy. Okrem iného detekuje aj bežiaci vmmon modul jadra operačného systému pre podporu VMWare.
+
+\proofed
+
+
+
+
+\begin{comment}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Spracovanie archivovaného obsahu}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Ako je mozne vlozit do videa obrazok
+http://www.videolan.org/doc/play-howto/en/ch04.html
+\begin{verbatim}
+vlc test.ogm --sub-filter logo --logo-file logo.png --logo-x 20 --logo-y 20
+\end{verbatim} 
+
+Real-time prekódovanie do MPEG4 video (128kb) + OGG audio (32kb)
+\begin{verbatim}
+vlc -vvv test.ogg --sout '#transcode{vcodec=mp4v, acodec=vorbis,vb=128,ab=32,deinterlace}:display'
+\end{verbatim} 
+
+Rozne filtre su popisane na adrese
+http://www.videolan.org/doc/streaming-howto/en/ch03.html
+
+2xPIP
+
+\begin{verbatim}
+vlc -vvv test.ogg --sout '#duplicate{
+dst={transcode{vcodec=mp2v,vb=4096,scale=1,sfilter=mosaic}:bridge-in{offset=100}:display},
+dst={duplicate{dst=mosaic-bridge{id=1,width=320,height=200},dst=mosaic-bridge{id=2,width=320,height=200}}}}'
+\end{verbatim} 
+
+\begin{verbatim}
+vlc --color -I telnet --vlm-conf /dev/shm/mosaic.conf --fake-file background.jpg
+--fake-aspect-ratio "4:3" --mosaic-width 640 --mosaic-height 400 --mosaic-keep-picture --mosaic-rows 2 --mosaic-cols 2 --mosaic-position 1 --mosaic-order 1,2,3
+
+
+Mplayer V4L loopback device
+http://lists.mplayerhq.hu/pipermail/mplayer-dev-eng/
+001-November/002600.html
+
+vloopback
+http://www.lavrsen.dk/twiki/bin/view/Motion/
+VideoFourLinuxLoopbackDevice
+
+VJ software, ktory dokaze input/output vloopback
+http://www.gephex.org/
+
+##################################
+## HTTP interface mosaic wizard ##
+##################################
+
+# Comment the following line if you don't want to reset your VLM configuration
+del all
+
+# Background options
+new   bg broadcast enabled
+setup bg input     "fake:" option "fake-file=background.jpg" option "fake-width=640" option "fake-height=400" option "fake-ar=4:3"
+setup bg output\
+	#transcode{vcodec=mp2v,vb=4096,scale=1,sfilter=mosaic}:\
+	bridge-in{offset=100}:
+
+# Mosaic options
+setup bg option mosaic-alpha=200
+setup bg option mosaic-height=400
+setup bg option mosaic-width=640
+setup bg option mosaic-align=5
+setup bg option mosaic-xoffset=10
+setup bg option mosaic-yoffset=10
+setup bg option mosaic-vborder=5
+setup bg option mosaic-hborder=10
+setup bg option mosaic-position=1
+setup bg option mosaic-rows=2
+setup bg option mosaic-cols=2
+setup bg option mosaic-order=1,2,3
+setup bg option mosaic-delay=0
+setup bg option mosaic-keep-picture
+
+new channel1 broadcast enabled
+setup channel1 input "test.ogg"
+setup channel1 output \
+	#mosaic-bridge{id=1,width=320,height=200},\
+	select=audio,\
+	dst=bridge-out{id=3},\
+	select=audio
+
+new channel2 broadcast enabled
+setup channel2 input "test.ogg"
+setup channel2 output \
+	#duplicate{
+		dst=mosaic-bridge{id=2,width=320,height=200},\
+		select=video,\
+		dst=bridge-out{id=3},\
+		select=audio\
+	}
+
+# Input options
+# Launch everything
+
+control bg play
+control channel1 play
+control channel2 play
+
+# end of mosaic batch
+\end{verbatim} 
+
+
+!!! RTSP je textovy protokol podobny HTTP, ktory by sme mohli vyuzit na streamovanie medii. LIVE555 je kniznica, ktora by to mohla umoznit.
+Prednasky by boli ulozene v spravnom formáte a nejaky server by umoznoval ich prehravanie on-demand. Existuje uz niekolko rieseni, ako napr. ffmpeg, helixdna, VLC
+
+!!! Problemom stale ostava prekodovanie RTP streamov ulozenych vo formáte rtpplay. Rovnaky problem ma aj formát AGVCR. Idealne by sme potrebovali utilitku, ktora by dane streamy oddelila do osobitnych suborov podla SSRC. Dalej potrebujeme utilitku, ktora takyto subor prekonvertuje do nejaeho rozumneho formátu, ktory by sa dal skonvertovat pomocou mencoder, pripadne ffmpeg. Potom by sa dal pouzit VLC player na vytvorenie gridu z niekolkych takychto streamov.
+
+!!! Semestralny projekt VRVS ukazuje, ze XviD je vhodny formát na archivaciu a ze nenasli sposob ako prehrat zapisany RTP stream. :)
+
+!!! V praci DP2006Patoraj.pdf vytvorili JRAT, ktory je rychlejsi ako RAT, je napisany v Jave ale spotrebuva o nieco viac pamate.
+
+!!! V praci DP2006Svrcek.pdf sa snazili upravit aplikáciu VIC tak, aby ukladala obsah stramu do suboru vo formáte YUV, potom to komprimovali na XviD.
+
+!!! Napisat, ze tato konfiguracia nefungovala spravne:
+= Chcel som nahravat z VICu priamo cez Mplayer. Teoreticky by to malo fungovat takto:
+Vytvorim SDP subor test.sdp
+
+c=IN IP4 127.0.0.1
+m=video 10000 RTP/AVP 31
+
+spustim mencode -ovc [raw|lavc|copy] sdp://test.sdp alebo mozem skusit mplayer namiesto mencode
+
+Potom spustim vic 127.0.0.1/10000 a v mplayeri sa zacne objavovat obraz, lenze s artefaktami a do logu sa vypisuje 
+Error while decoding frame!
+[h261 @ 0x8861b78]Bad picture start code
+[h261 @ 0x8861b78]header damaged
+Error while decoding frame!
+[h261 @ 0x8861b78]Bad picture start code
+[h261 @ 0x8861b78]header damaged
+Error while decoding frame!
+[h261 @ 0x8861b78]run overflow at 15x5
+[h261 @ 0x8861b78]Error at MB: 130
+
+-> TCN (Tudy Cesta Nevede)
+
+Rovnaky problem ma aj VLC, aj ffmpeg
+\end{comment}

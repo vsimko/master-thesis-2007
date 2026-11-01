@@ -1,0 +1,31 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+*.fls
+*.fdb_latexmk
+
+# Generated thesis PDF
+main.pdf
+
+# Backup archives
+ag-thesis-*.tgz
+*.tar.gz
+*.zip
+
+# IDE and OS metadata
+.idea/
+.DS_Store
+Thumbs.db

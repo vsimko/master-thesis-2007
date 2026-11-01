@@ -1,0 +1,159 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Codecs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Kodek\index{codec} je softwarový komponent poskytujúci dve najdôležitejšie funkcie pre prácu so~signálom -- kódovanie a dekódovanie. \textbf{Kodér} zabezpečuje prevod analógového resp. digitálneho obrazu v pôvodnom formáte (raw format) do formátu s inými vhodnými parametrami (encoded format), v prostredí počítačových sietí je dôležitým parametrom veľkosť prenášaných dát. Zníženie veľkosti sa dosahuje za cenu nižšej kvality a nárastu latencie resp. jitteru počas kódovania. Prevod kódovaných dát naspäť do pôvodného tvaru má za úlou komponent \textbf{dekodér}. V prípade videokonferencie sa proces kódovania a dekódovania dotýka signálov analógovej povahy, teda zvuku a obrazu. Preto budeme hovoriť o tzv. video a audio kodekoch.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Need of codecs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Ukážeme, prečo je vôbec nutné používať kódovanie obrazu. Prečo nestačí používať signál v originálnej podobe. (Podobný príklad je možné uviesť aj v prípade prenosu audio signálu.)
+
+Obraz v reálnom svete je snímaný niekoľkokrát za sekundu a rozdelený do snímkov (frames). Túto hodnotu označíme $fps$ (frames per second). Každý frame sa skladá z bodov (pixels), kde každý pixel je reprezentovaný ako n-tica bitov a táto kombinácia predstavuje istú farbu vo farebnom priestore RGB.
+
+\begin{quote}
+Príklad: Pre jednoduchosť predpokladajme, že máme obraz v rozlíšení CIF 352x288 pixelov pri použití 24-bitovej farebnej hĺbky s frekvenciou 20fps. (24bit RGB predstavuje : $256=2^8$ hodnôt červnej farby, $256=2^8$ hodnôt zelenej farby, $256=2^8$ hodnôt modrej farby = $2^{24}$ = $16777216$ rôznych farieb.) Výsledný dátový tok pre jeden takýto signál by dosiahol:
+
+width $\times$ height $\times$ depth $\times$ fps =
+$352\times288\times24\times20$ =
+48660480b/s =
+\textbf{5.7MiB/s}
+\end{quote}
+
+Táto hodnota je ďaleko za možnosťami súčasných sietí, keď si predstavíme, že v~rámci konferencie sa musí prenášať súčasne niekoľko obrazových tokov. V prípade veľkosti D1 PAL táto hodnota vychádza dokonca \textbf{23MiB/s}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Video and audio transmission using RTP protocol}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+V nasledujúcej časti uvedieme niektoré vybrané kodeky využívané dnešnými videokonferenčnými nástrojmi. Väčšina týchto systémov používa na prenos protokol RTP/RTCP, čo špecifikuje RFC 3551 \cite{RFC-3551-RTP-Profile-AudioVideo}. V prípade obrazu sú to kodeky: CelB, JPEG (Motion JPEG), H.261, H.263 H.263-1998 (H.263+), MPV, MP2T, nv. V prípade zvuku sú to kodeky: DVI4, G722, G723, G726-40, G726-32, G726-24, G726-16, G728, G729, G729D and G729E, GSM, GSM-EFR, L8, L16, LPC, MPA, PCMA, PCMU, QCELP, RED a VDVI.
+
+Ďalším dôležitým dokumentom je RFC 2198 \cite{RFC-2198-RTP-Payload-Redundant-Audio}, kde je popísaný spôsob prenosu audio paketov v sieťach, kde môže dochádzať k ich strate. Aby sa zabránilo výpadkom zvuku, používa sa niekoľko redundantných kódovaní okrem hlavného kódovania.
+
+
+\subsection{Video: NV}\label{kap:NV}
+Historický video-kodek od Xerox PARC implementovaný napr. v~aplikácii VIC z~dielne UCL.
+
+
+\subsection{Video: H.261}\label{kap:H.261}
+V roku 1990 bol štandardizovaný dodnes používaný nízkolatenčný kodek H.261, navrhnutý pre prenos obrazu veľkosti QCIF a CIF (obrázok \ref{fig:Resolutions}). Na obrázku \ref{fig:Comparison-H261-NV} je znázornený lepší pomer kvality k dátovému toku oproti staršiemu kodeku NV. Podporu H.261 nájdeme v širokom spektre aplikácií (vic, mplayer, vlc, ffmpeg), hlavne z dôvodu kompatibility so staršími systémami. Prenosom obrazu kódovaného pomocou H.261 sa zaoberá aj RFC 2032 \cite{RFC-2032-RTP-Payload-Format-H.261}.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.5\textwidth]{images/h261-vs-nv}
+\caption{Porovnanie kodeku H261 a NV. (zdroj \protect\cite{Comparison-H261-NV})}
+\label{fig:Comparison-H261-NV}
+\end{figure}
+
+
+\subsection{Video: H.263}\label{kap:H.263}
+Kodek H.263 je prirodzeným následníkom H.261. Štandardom sa stal v roku 1996. Kombinuje znaky z H.261 spolu s technológiou MPEG a optimalizuje ich pre nízke dátové toky. V porovnaní s jeho starším kolegom je oveľa efektívnejší pri všetkých dátových tokoch, ako vidíme na obrázku \ref{fig:Comparison-H263-H261}, navyše podporuje viac veľkostí obrazu: Sub-QCIF, QCIF, CIF, 4CIF, 16CIF. Prenosom obrazu kódovaného pomocou H.263 sa zaoberá RFC 2190 \cite{RFC-2190-RTP-Payload-Format-H.263}.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.5\textwidth]{images/h263-vs-h261}
+\caption{Porovnanie kodeku H261 a H263. (zdroj \protect\cite{Comparison-H263-H261})}
+\label{fig:Comparison-H263-H261}
+\end{figure}
+
+
+\subsection{Video: H.264 (MPEG-4 AVC)}\label{kap:H.264}
+Jeden z najnovších kodekov určený pre videokonferenčné účely, ktorý by mal nahradiť kodek H.263, čo znázorňuje obrázok \ref{fig:Comparison-H264-H263}. Je to štandard, ktorý by mal zastrešovať kódovanie obrazu pre účely interaktívnej komunikácie, streamovania, a broadcastu. Najväčším problémom pri rozširovaní tohto kodeku sú jeho vyššie nároky na procesor, kde sa uvádza až 8-krát zložitejšie kódovanie a 3-krát zložitejšie dekódovanie oproti MPEG-2 (zdroj \cite{Latency-H264}). Prenosom H.264 pomocou protokolu RTP sa zaoberá RFC 3984 \cite{RFC-3984-RTP-Payload-Format-H.264}.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.5\textwidth]{images/h264-vs-h263}
+\caption{Porovnanie kodeku H263 a H264. (zdroj \protect\cite{Comparison-H264-H263-MPEG2})}
+\label{fig:Comparison-H264-H263}
+\end{figure}
+
+
+\subsection{Video: MPEG-2}
+Tento kodek umožňuje komunikáciu vo vysokej kvalite pri šírke pásma 1.5Mbit/s až 15Mbit/s. Problémy s kompatibilitou medzi rôznymi implementáciami však zabraňujú jeho masovému rozšíreniu. Pokiaľ hovoríme o kvalite kódovania, vykazuje horšie parametre ako H.264 (obrázok \ref{fig:Comparison-H264-MPEG2}). Na druhej strane je však menej náročný na procesor.
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.5\textwidth]{images/h264-vs-mpeg2}
+\caption{Porovnanie kodeku H264 a MPEG-2. (zdroj \protect\cite{Comparison-H264-H263-MPEG2})}
+\label{fig:Comparison-H264-MPEG2}
+\end{figure}
+
+
+\subsection{Video: Motion JPEG}\label{kap:MJPEG}
+MJPEG kóduje obrazové snímky ako osobitné JPEG obrázky, ktoré sú pri prenose rozdelené do RTP paketov (RFC 2435 \cite{RFC-2435-RTP-Payload-Format-JPEG}). Výhodou je rýchlosť kompresie a dekompresie ako aj možnosť úpravy obrazového toku bez dopočítavania prechodov medzi jednotlivými snímkami. Táto jeho vlastnosť sa využíva pri úpravách obrazu v~reálnom čase. MJPEG navyše umožňuje posielať prakticky ľubovolné veľkosti obrazu vo vysokej kvalite, čo sa využíva napr. pri posielaní snímkov pracovnej plochy. Nevýhodami sú vyššie nároky na prenosovú kapacitu a väčšia náchylnosť k chybám spôsobených nekvalitným spojením a stratou RTP paketov.
+
+
+\subsection{Audio: L16}\label{kap:L16}
+Jednoduchý audio-kodek, ktorý umožňuje prenos nekomprimovaného zvukového signálu v rozlíšení 16 bitov. Úroveň signálu je rozložená na hodnoty -32768 až 32767. Používa sa ako implicitný kodek v aplikácii RAT (kapitola \ref{kap:RAT}). Jedna z verzií tohto kodeku (16KHz mono) je kompatibilná so štandardom G.711 \cite{ITU-G.711-PCM-of-voice}. Dokument RFC 3551 \cite{RFC-3551-RTP-Profile-AudioVideo} špecifikuje RTP Payload profile pre L16 Audio 44100Hz 1/2ch.
+
+
+\subsection{Audio: GSM}\label{kap:GSM}
+GSM (Groupe Speciale Mobile) definuje EU standard GSM 06.10 pre kódovanie hlasu s dátovým tokom 13,200 b/s. Dokument RFC 3551 \cite{RFC-3551-RTP-Profile-AudioVideo} špecifikuje RPT Payload profile pre GSM Audio 8000Hz 1ch.
+
+
+\subsection{Audio: G.722}\label{kap:G722}
+Tento proprietárny kodek sa používa v hardwarových H.323 klientoch, špecifikovaný v ITU-T G.722 \cite{ITU-G.722-7KHz-Audio}.
+
+\subsection{Audio: Speex}\label{kap:Speex}
+Kodek vznikol ako otvorený štandard a nie je zaťažený softwarovými patentami. Zatiaľ ešte nevzniklo RFC pre RTP Payload Format kodeku Speex, ale existuje draft dokument \cite{IETFDraft-RTP-Payload-Speex}, ktorý sa touto problematikou zaoberá. Speex má šancu stať sa najpoužívanejším kodekom vo videokonferenčných aplikáciách s otvoreným zdrojovým kódom, pre jeho voľbu hovoria parametre uvedené v literatúre \cite{Latency-AudioCodecs}.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluation of selection of codecs}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Popísali sme niekoľko bežne používaných kodekov, ktoré sú vhodné pre videokonferenčné účely. Uviedli sme dôvody, prečo je počas sieťového prenosu vôbec nutné uvažovať nad kódovaním multimediálnych dát. Z video-kodekov sme vybrali ako najvhodnejšieho kandidáta kodek H.263 pre jeho rozšírenie v existujúcich systémoch a kodek H.264 pre jeho výborný kompresný pomer. Z audio-kodekov dávame svoje preferencie kodeku Speex. Vzhľadom na využitie G722 a H.261 v mnohých hardwarových H.323 klientoch je vhodné uvažovať aj o tejto podpore.
+
+% **********************************************
+% Audio Codecs with Latency up to 50ms
+% **********************************************
+\begin{table}
+\centering
+\begin{tabular}[t]{|c|c|c|c|c|c|c|c|c|}
+\hline
+Codec  & B/ & frm & frm/ & pak/ & pay  & B/ & bits/ & latency \\
+ & frm & (ms) & pak & sec & (B) & pak & sec & \\
+\hline
+G723.1 & 20 & 30 & 1 & 33.33 & 20 & 60 & 16000 & 30 \\
+G723.1 & 24 & 30 & 1 & 33.33 & 24 & 64 & 17067 & 30 \\
+GSM & 33 & 20 & 1 & 50 & 33  & 73 & 29200 & 20 \\
+GSM & 33 & 20 & 2 & 25 & 66  & 106 & 21200 & 40 \\
+G.711 & 240 & 30 & 1 & 33.33 & 240 & 280 & 74667  & 30 \\
+LPC10 & 7 & 22.5 & 1 & 44.44 & 7  & 47 & 16711 & 23 \\
+LPC10 & 7 & 22.5 & 2 & 22.22 & 14 & 54 & 9600 & 45 \\
+Speex-5.95 & 15 & 20 & 1 & 50 & 15 &  55 & 22000 &  20 \\
+Speex-5.95 & 15 & 20 & 2 & 25 & 30 &  70 & 14000 &  40 \\
+Speex-8k & 20 & 20 & 1 & 50 & 20  & 60 & 24000  & 20 \\
+Speex-8k & 20 & 20 & 2 & 25 & 40  & 80 & 16000 &  40 \\
+Speex-11k & 28 & 20 & 1 & 50 & 28 & 68 & 27200 &  20 \\
+Speex-11k & 28 & 20 & 2 & 25 & 56 & 96 & 19200 &  40 \\
+Speex-15k & 38 & 20 & 1 & 50 & 38 & 78 & 31200 &  20 \\
+Speex-15k & 38 & 20 & 2 & 25 & 76 & 116 & 23200 &  40 \\
+Speex-18.2 & 46 & 20 & 1 & 50 & 46 & 86 & 34400 &  20 \\
+Speex-18.2 & 46 & 20 & 2 & 25 & 92 & 132 & 26400 &  40 \\
+Speex-24.6 & 62 & 20 & 1 & 50 & 62 & 102 & 40800 &  20 \\
+Speex-24.6 & 62 & 20 & 2 & 25 & 124 & 164 & 32800 &  40 \\
+\hline
+\end{tabular}
+\caption{Audio kodeky s latenciou maximálne 50ms. (zdroj \protect\cite{Latency-AudioCodecs})}
+\label{tab:AudioCodecsMinLatency}
+\end{table} 
+% **********************************************
+
+Na záver kapitoly by sme ešte radi uviedli tabuľku \ref{tab:AudioCodecsMinLatency}, ktorá obsahuje audio-kodeky s latenciou maximálne 50ms. Ide o nízkolatenčné kodeky, ktoré môžeme využiť pri spolupráci na projekte s MARCEL network (kapitola \ref{kap:AGvUmeleckejKomunite}).
+\proofed

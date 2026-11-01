@@ -1,0 +1,144 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{NAT/Firewall}\index{NAT!problem}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We use the RFC 3022 \cite{RFC-3022-NAT} (Traditional IP Network Address Translator) as a main reference in this chapter.
+
+Network Address Translation (NAT) is a technique to overcome the 32-bit limit of the IPv4 system of IP addresses in the TCP/IP protocol design.
+It allows for reusing IP addresses within a private local sub-network.
+Communication with the outside world is achieved through a gateway with two network interfaces - first with a private IP address, second with a public IP address.
+
+The gateway manages the translation process also known as NAT which is depicted in the figure \ref{fig:NatArchitecture}.
+The main element of this mechanism is \textbf{a mapping table}, which stores information about the mapping of the packet flow between private addresses+ports on both interfaces.
+The NAT mechanism alters the packet content in the following fields:
+\begin{paklist}
+\item source address and port (during the transition from the private to the public segment),
+\item destination address and port (reverse transition - from the public to the private segment),
+\item checksum (computed from the whole packet)
+\end{paklist}
+
+When a packet leaves the private network, its \textbf{source address} is substituted by the \textbf{public address} of the gateway.
+The receiver can only see the public address and therefore responds to the IP address of the gateway.
+On the way back, the target IP address of the packet is again translated in accordance with the mapping table and delivered to the original node inside the private network.
+The NAT mechanism has to recalculate the correct checksum of the packet because the data has been altered by the NAT itself.
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth]{images/nat-architecture}
+\caption{NAT architecture.}
+\label{fig:NatArchitecture}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{NAT-related issues}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The address translation alters only the IP packet header while not touching the payload.
+It is obvious that such a mechanism cannot deal with protocols that include routing information inside the payload area which is more obvious in case of encrypted packets.
+
+The NAT mechanism facilitates a communication initiated from nodes in the private network. However, the opposite direction is not directly possible.
+Although being a drawback, this principle can also be seen as a form of a security feature.
+In our case, however, we would like to connect nodes in a transparent manner. We will describe the QuickBridge tool later on.
+All packets arriving to the gateway from the public network are delivered only when there is an appropriate record in the NAT mapping table.
+A possible workaround is to initialise the mapping-record by periodically sending dummy packets to the outside world. (keep-alive)
+This solution, however, does not work with all types of NAT.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{A simple NAT-traversal test}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The NAT traversal mechanism can be tested as follows.
+(Our testing configuration contains three components: gateway, server and client)
+
+\paragraph*{NAT gateway:}
+A Linux-box with two network cards -- \verb|$NAT_PUB_DEV| with IP address \verb|$NAT_PUB_IP| directed to the public network \verb|$NAT_PRIV_DEV| with IP address \verb|$NAT_PRIV_IP| directed to the private network. NAT is started on the \verb|$NAT_PUB_DEV| interface using the tool \textbf{iptables}.
+
+\paragraph*{Server with public IP address:}
+The public IP address is  \verb|$SERVER_IP|. We used the \textbf{netcat} for testing purposes, which allows to create a UDP server on port \verb|$SERVER_PORT|. The content of each packet will be logged in the standard output (stdout) and the standard input (stdin) will be transformed to UDP paket sent to the same address and port.
+
+\paragraph*{Client with private IP address:}
+Located in the private network with the IP address \verb|$CLIENT_IP|. Node interface parameters were assigned automatically using DHCP, \textbf{default gateway} is set to \verb|NAT_PRIV_IP|. Again, using the \textbf{netcat} tool we facilitate the UDP communication through stdin/stdout.
+
+\bigskip
+The first UDP packet sent from the node in the private IP address to the server with the public IP address creates a path for the subsequent UDP-based communication in both directions. As described earlier, NAT translates packets based on the created mapping.
+The path usually disappears when the NAT server is restarted or when a timeout is detected.
+
+\begin{verbatim}
+# gateway: starting NAT
+iptables -t nat -A POSTROUTING -j MASQUERADE -o $NAT_PUB_DEV
+
+# server: testing the accessibility
+ping $NAT_PUB_IP
+
+# server: listen
+netcat -lup $SERVER_PORT
+
+# client: connect
+netcat -u $SERVER_IP $SERVER_PORT
+\end{verbatim} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tunneling}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In the previous test, we have seen a simple NAT traversal solution in case that the communication is initialised from within the private network segment and further continues in a bi-directional way using a single TCP/UDP port.
+If we could encapsulate our communication into a single packet-stream, we would be able to \textbf{tunnel} an arbitrary communication between two nodes.
+Such a hypothetical tunnel could provide the following services:
+\begin{paklist}
+\item encrypted communication,
+\item reliable delivery,
+\item transparent tunneling,
+\item tunneling of multicast packets,
+\item tunneling of other fancy protocols such as IPX
+\item and more \ldots
+\end{paklist}
+
+In case of multimedia streaming, an unreliable delivery service is always the best solution. Any additional layers, such as encrypton, could have a negative impact on the system latency. Through AGConnector, the AccessGrid benefits from the multicast tunneling through the UMTP protocol.
+
+\subsection{NAT-to-NAT communication}
+
+Until now, we have always considered a situation where the client in a NAT-ted network communicates with a public server.
+Howerver, there is also a solution to the issue of two NAT-ted nodes from separated network segments.
+
+In the following example, the \textbf{nat-traverse} tool is used together with the PPP protocol as a tunnel. NAT on both sides has to preserve port numbers.
+Our example depicts a NAT gateway \verb|${CLIENT_IP}| for the client and a NAT gateway \verb|${CLIENT_IP}| for the server.
+Both parties exchange UDP pakety through the port 40000.
+
+\begin{verbatim}
+#client: creates the ppp0 interface
+nat-traverse --cmd="pppd updetach noauth passive notty ipparam \
+  vpn 10.0.0.1:10.0.0.2" 40000:${CLIENT_IP}:40000
+\end{verbatim}
+
+\begin{verbatim}
+#server: accepts the PPP connection
+nat-traverse --cmd="pppd nodetach notty noauth" \
+  40000:${SERVER_IP}:40000
+\end{verbatim}
+
+Po vytvorení tunelu je nutné nastaviť smerovacie tabuľky na oboch stranách. Cez vytvorený tunel je možné posielať pakety z aplikácie QuickBridge, alebo je možné tunelovať multicastové pakety, čo však vyžaduje inštaláciu multicastového smerovača. Nastavenie navyše vyžaduje administrátorské práva aby mohlo vzniknúť PPP sieťové rozhranie (typicky ppp0).
+
+\begin{verbatim}
+#client: smerovanie multicastových paketov
+route add -net 224.0.0.0 netmask 255.0.0.0 gw ppp0
+route add -net 239.0.0.0 netmask 255.0.0.0 gw ppp0
+\end{verbatim}
+
+\begin{verbatim}
+#server: smerovanie paketov
+echo 1 > /proc/sys/net/ipv4/ip_forward
+mrouted
+\end{verbatim}
+
+Aplikáciu nat-traverse je možné využiť okrem PPP aj v spojení s OpenVPN, čo umožňuje zašifrovať celú komunikáciu.
+\proofed
