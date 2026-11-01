@@ -15,6 +15,13 @@ def uncomment(source: str) -> str:
         lines.append(line)
     return "\n".join(lines)
 
+def asset_path(raw_name: str) -> Path:
+    candidate = Path(raw_name)
+    if candidate.is_absolute():
+        return candidate
+    root_candidate = ROOT / candidate
+    return root_candidate if root_candidate.exists() else IMAGE_DIR / candidate
+
 svg_refs = []
 graphics_refs = []
 for tex_file in TEX_FILES:
@@ -52,11 +59,11 @@ for tex_file, raw_name in graphics_refs:
         )
 
 for tex_file, raw_name in graphics_refs:
-    candidate = IMAGE_DIR / raw_name
+    candidate = asset_path(raw_name)
     if candidate.suffix:
         exists = candidate.is_file()
     else:
-        exists = any(p.is_file() for p in IMAGE_DIR.glob(candidate.name + ".*"))
+        exists = any(p.is_file() for p in candidate.parent.glob(candidate.name + ".*"))
     if not exists:
         errors.append(f"{tex_file}: missing \\includegraphics asset {raw_name!r}")
 
