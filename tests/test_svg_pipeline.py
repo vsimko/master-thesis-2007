@@ -118,6 +118,11 @@ for svg_path in sorted(all_svg):
                 errors.append("arch-quickbridge.svg: QuickBridge label is not centered in its box")
             if unicast.get("transform") != "rotate(-90 4089 3495)" or unicast.get("font-size") != "205":
                 errors.append("arch-quickbridge.svg: unicast label must remain vertically centered")
+            overlays = [node for node in root.iter() if node.tag in {f"{svg_ns}rect", f"{svg_ns}ellipse"}]
+            if not any(node.get("x") == "5550" and node.get("width") == "1870" for node in overlays):
+                errors.append("arch-quickbridge.svg: original QuickBridge outlines must be masked")
+            if not any(node.get("cx") == "4029" and node.get("rx") == "205" for node in overlays):
+                errors.append("arch-quickbridge.svg: original unicast outlines must be masked")
             for node in (quickbridge, unicast):
                 if node.get("font-family") != "DejaVu Sans, sans-serif":
                     errors.append("arch-quickbridge.svg: QuickBridge and unicast must use DejaVu Sans")
@@ -129,6 +134,9 @@ for svg_path in sorted(all_svg):
                 f"found {visible_labels}"
             )
         else:
+            masks = [node for node in root.iter() if node.tag == f"{svg_ns}rect" and node.get("x") == "13470"]
+            if not masks:
+                errors.append("arch-agconnector.svg: original Registry Server outlines must be masked")
             for node in visible_text:
                 if node.get("font-family") != "DejaVu Sans, sans-serif":
                     errors.append("arch-agconnector.svg: Registry Server must use DejaVu Sans")
