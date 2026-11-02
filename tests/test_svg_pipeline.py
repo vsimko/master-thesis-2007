@@ -110,6 +110,7 @@ for svg_path in sorted(all_svg):
             runs = [
                 child for child in node.iter()
                 if child.tag == f"{svg_ns}tspan"
+                and (child.get("font-family") or "font-family:" in child.get("style", ""))
                 and "".join(child.itertext()).strip()
             ]
             if not runs or any(
