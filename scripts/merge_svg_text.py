@@ -155,14 +155,14 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
                 raise ValueError(f"{output_path.name}: cannot center visible number {label_id}")
 
 
-    # Repair the two visible labels in figure 7.6 using the same Arial family as the other labels. The original text outlines
+    # Repair the two visible labels in figure 7.6 with an installed sans-serif font. The original text outlines
     # wrap the final "e" in QuickBridge and render the rotated unicast label
     # incorrectly. Keep the ODG-derived invisible text overlay unchanged.
     if output_path.stem == "arch-quickbridge":
         fixes = {
-            "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3485" text-anchor="middle" dominant-baseline="middle" font-family="Arial embedded" font-size="240" fill="#000000" style="font-family:Arial embedded;white-space:pre">QuickBridge</text></g>',
+            "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3485" text-anchor="middle" dominant-baseline="middle" font-family="DejaVu Sans, sans-serif" font-size="205" fill="#000000" style="font-family:DejaVu Sans, sans-serif;white-space:pre">QuickBridge</text></g>',
             "text80": '<g id="text80" class="SVGTextShape" opacity="0" aria-label="unicast-background"/>',
-            "text85": '<g id="text85" class="SVGTextShape" aria-label="unicast"><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="Arial embedded" font-size="230" font-weight="700" fill="#ffffff" style="font-family:Arial embedded;white-space:pre">unicast</text></g>',
+            "text85": '<g id="text85" class="SVGTextShape" aria-label="unicast"><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="DejaVu Sans, sans-serif" font-size="205" font-weight="700" fill="#ffffff" style="font-family:DejaVu Sans, sans-serif;white-space:pre">unicast</text></g>',
         }
         for group_id, replacement in fixes.items():
             pattern = rf'<g\s+id="{group_id}"[\s\S]*?</g>'
@@ -176,10 +176,10 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
         replacement = (
             '<g id="text78" class="SVGTextShape" aria-label="RegistryServer">'
             '<text x="14155" y="1515" text-anchor="middle" dominant-baseline="middle" '
-            'font-family="Arial embedded" font-size="260" fill="#000000" style="font-family:Arial embedded;white-space:pre">Registry</text>'
+            'font-family="DejaVu Sans, sans-serif" font-size="230" fill="#000000" style="font-family:DejaVu Sans, sans-serif;white-space:pre">Registry</text>'
             '<text x="14155" y="2155" text-anchor="middle" dominant-baseline="middle" '
-            'font-family="Arial embedded" font-size="260" fill="#000000" '
-            'style="font-family:Arial embedded;white-space:pre">Server</text></g>'
+            'font-family="DejaVu Sans, sans-serif" font-size="260" fill="#000000" '
+            'style="font-family:DejaVu Sans, sans-serif;white-space:pre">Server</text></g>'
         )
         pattern = r'<g\s+id="text78"[\s\S]*?</g>'
         merged, count = re.subn(pattern, lambda _match: replacement, merged, count=1)
