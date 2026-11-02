@@ -176,11 +176,10 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
         replacement = (
             '<g id="text78" class="SVGTextShape" aria-label="RegistryServer">'
             '<text x="14155" y="1625" text-anchor="middle" dominant-baseline="middle" '
-            'font-family="DejaVu Sans, sans-serif" font-size="260" fill="#000000" style="font-family:DejaVu Sans,sans-serif;white-space:pre" '
-            'style="white-space:pre">Registry</text>'
+            'font-family="DejaVu Sans, sans-serif" font-size="260" fill="#000000" style="font-family:DejaVu Sans,sans-serif;white-space:pre">Registry</text>'
             '<text x="14155" y="2045" text-anchor="middle" dominant-baseline="middle" '
-            'font-family="Liberation Sans, sans-serif" font-size="353" fill="#000000" '
-            'style="white-space:pre">Server</text></g>'
+            'font-family="DejaVu Sans, sans-serif" font-size="260" fill="#000000" '
+            'style="font-family:DejaVu Sans,sans-serif;white-space:pre">Server</text></g>'
         )
         pattern = r'<g\s+id="text78"[\s\S]*?</g>'
         merged, count = re.subn(pattern, lambda _match: replacement, merged, count=1)
