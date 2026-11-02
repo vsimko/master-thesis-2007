@@ -139,6 +139,18 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
 
     merged = original[:closing_tag] + "\n" + fragment + "\n" + original[closing_tag:]
 
+    # Figure 3.1: center the visible number glyphs in their red circles.
+    if output_path.stem == "unicast-multicast":
+        for label_id in ("text101", "text110"):
+            pattern = rf'<path(?P<attrs>[^>]*\bid="{label_id}"[^>]*)>'
+            def center_number(match: re.Match[str]) -> str:
+                attrs = re.sub(r'\s+transform="[^"]*"', "", match.group("attrs"))
+                return f'<path transform="translate(-100,60)"{attrs}>'
+            merged, count = re.subn(pattern, center_number, merged, count=1, flags=re.DOTALL)
+            if count != 1:
+                raise ValueError(f"{output_path.name}: cannot center visible number {label_id}")
+
+
     # Repair the two visible labels in figure 7.6. The original text outlines
     # wrap the final "e" in QuickBridge and render the rotated unicast label
     # incorrectly. Keep the ODG-derived invisible text overlay unchanged.
