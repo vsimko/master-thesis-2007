@@ -187,6 +187,38 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
         if count != 1:
             raise ValueError(f"{output_path.name}: cannot repair Registry Server label")
 
+    # Render repaired visible labels after all legacy vector outlines. The SVG
+    # generator rebuilds these files from the original ODG on every PR update,
+    # so the z-order fix must live here rather than in the generated SVGs.
+    visible_label_ids = {
+        "arch-quickbridge": ("text60", "text85"),
+        "arch-agconnector": ("text78",),
+    }.get(output_path.stem, ())
+    visible_labels: list[str] = []
+    for label_id in visible_label_ids:
+        pattern = rf'<g\\s+id="{label_id}"[^>]*>[\\s\\S]*?</g>'
+        merged, count = re.subn(
+            pattern,
+            lambda match: (visible_labels.append(match.group(0)) or ""),
+            merged,
+            count=1,
+        )
+        if count != 1:
+            raise ValueError(
+                f"{output_path.name}: cannot move visible label {label_id} to front"
+            )
+    if visible_labels:
+        closing_tag = merged.rfind("</svg>")
+        if closing_tag < 0:
+            raise ValueError(f"{output_path.name}: missing closing SVG tag")
+        merged = (
+            merged[:closing_tag]
+            + "\\n<!-- Visible replacement labels: deliberately above legacy text outlines. -->\\n"
+            + "\\n".join(visible_labels)
+            + "\\n"
+            + merged[closing_tag:]
+        )
+
     output_path.write_text(merged, encoding="utf-8")
     print(
         f"{output_path.name}: preserved original artwork; "
