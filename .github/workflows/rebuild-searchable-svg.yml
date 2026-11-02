@@ -1,6 +1,9 @@
 name: Rebuild searchable SVG diagrams
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - fix/searchable-svg-text
