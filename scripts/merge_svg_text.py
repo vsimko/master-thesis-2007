@@ -58,7 +58,10 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
 
     # Keep the Figure 3.1 red-circle numbers optically centered after SVG rebuild.
     if output_path.stem == "unicast-multicast":
-        for label_id in ("text101", "text110"):
+        # The glyphs need separate horizontal offsets; their vertical alignment
+        # already matches the circle centers, so do not add the former +60 y shift.
+        number_offsets = {"text101": -112, "text110": -120}
+        for label_id, x_offset in number_offsets.items():
             marker = f'id="{label_id}"'
             id_pos = original.find(marker)
             path_start = original.rfind("<path", 0, id_pos)
@@ -66,9 +69,9 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
             if id_pos < 0 or path_start < 0 or path_end < 0:
                 raise ValueError(f"{output_path.name}: cannot locate red-circle number {label_id}")
             element = original[path_start:path_end + 1]
-            if 'transform="translate(-100,60)"' not in element:
-                element = element.replace("<path", '<path transform="translate(-100,60)"', 1)
-                original = original[:path_start] + element + original[path_end + 1:]
+            element = re.sub(r'\\s+transform="[^"]*"', "", element)
+            element = element.replace("<path", '<path transform="translate(' + str(x_offset) + ',0)"', 1)
+            original = original[:path_start] + element + original[path_end + 1:]
 
     def parse_viewbox(root: ET.Element, label: str) -> tuple[float, float, float, float]:
         raw = root.get("viewBox", "")
@@ -139,7 +142,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
 
     merged = original[:closing_tag] + "\n" + fragment + "\n" + original[closing_tag:]
 
-    # Figure 3.1: center the visible number glyphs in their red circles.
+    # Figure 3.1: center the visible number glyphs in both axes.
     if output_path.stem == "unicast-multicast":
         for label_id in ("text101", "text110"):
             pattern = rf'<path(?P<attrs>[^>]*\bid="{label_id}"[^>]*)>'
@@ -151,12 +154,12 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
                 raise ValueError(f"{output_path.name}: cannot center visible number {label_id}")
 
 
-    # Repair the two visible labels in figure 7.6. The original text outlines
+    # Repair the two visible labels in figure 7.6 using the same Arial family as the other labels. The original text outlines
     # wrap the final "e" in QuickBridge and render the rotated unicast label
     # incorrectly. Keep the ODG-derived invisible text overlay unchanged.
     if output_path.stem == "arch-quickbridge":
         fixes = {
-            "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3540" text-anchor="middle" dominant-baseline="middle" font-family="Liberation Sans, sans-serif" font-size="353" fill="#000000" style="white-space:pre">QuickBridge</text></g>',
+            "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3540" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="353" fill="#000000" style="white-space:pre">QuickBridge</text></g>',
             "text80": '<g id="text80" class="SVGTextShape" opacity="0" aria-label="unicast-background"/>',
             "text85": '<g id="text85" class="SVGTextShape" aria-label="unicast"><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="Liberation Sans, sans-serif" font-size="300" font-weight="700" fill="#ffffff" style="white-space:pre">unicast</text></g>',
         }
