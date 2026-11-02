@@ -213,7 +213,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
             raise ValueError(f"{output_path.name}: missing closing SVG tag")
         merged = (
             merged[:closing_tag]
-            + "\n<!-- Visible replacement labels: deliberately above legacy text outlines. -->\\n"
+            + "\n<!-- Visible replacement labels: deliberately above legacy text outlines. -->\n"
             + "\n".join(visible_labels)
             + "\n"
             + merged[closing_tag:]
