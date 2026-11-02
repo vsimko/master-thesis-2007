@@ -36,7 +36,7 @@ Key topics covered:
 ├── conclusion.tex           # Conclusion & future work
 ├── bibfile.bib              # Bibliography references
 ├── csprimes.tex             # Typography macros
-├── images/                  # SVG sources, historical PDF exports, raster images
+├── images/                  # SVG vector sources and raster images
 ├── build.sh                 # Build, cleanup, and test script
 ├── tests/                   # Build and SVG pipeline tests
 └── .github/workflows/       # GitHub Actions CI build workflow

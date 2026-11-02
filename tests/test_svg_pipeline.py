@@ -55,6 +55,8 @@ for diagram in ("arch-quickbridge", "arch-agconnector"):
 
 if list(IMAGE_DIR.glob("*.odg")):
     errors.append("ODG source files must not remain in the maintained images directory")
+if list(IMAGE_DIR.glob("*.pdf")):
+    errors.append("PDF sidecars/exports must not remain in images; SVG and raster files are the maintained inputs")
 
 used_svg = set()
 for tex_file, raw_name in svg_refs:
