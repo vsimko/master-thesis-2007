@@ -55,6 +55,21 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
                 raise ValueError(f"{output_path.name}: missing original transform for {label_id}")
             original = original[:path_start] + updated + original[path_end + 1:]
 
+
+    # Keep the Figure 3.1 red-circle numbers optically centered after SVG rebuild.
+    if output_path.stem == "unicast-multicast":
+        for label_id in ("text101", "text110"):
+            marker = f'id="{label_id}"'
+            id_pos = original.find(marker)
+            path_start = original.rfind("<path", 0, id_pos)
+            path_end = original.find(">", id_pos)
+            if id_pos < 0 or path_start < 0 or path_end < 0:
+                raise ValueError(f"{output_path.name}: cannot locate red-circle number {label_id}")
+            element = original[path_start:path_end + 1]
+            if 'transform="translate(-100,60)"' not in element:
+                element = element.replace("<path", '<path transform="translate(-100,60)"', 1)
+                original = original[:path_start] + element + original[path_end + 1:]
+
     def parse_viewbox(root: ET.Element, label: str) -> tuple[float, float, float, float]:
         raw = root.get("viewBox", "")
         values = raw.replace(",", " ").split()
@@ -129,15 +144,32 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     # incorrectly. Keep the ODG-derived invisible text overlay unchanged.
     if output_path.stem == "arch-quickbridge":
         fixes = {
-            "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3540" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="353" fill="#000000" style="white-space:pre">QuickBridge</text></g>',
+            "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3540" text-anchor="middle" dominant-baseline="middle" font-family="Liberation Sans, sans-serif" font-size="353" fill="#000000" style="white-space:pre">QuickBridge</text></g>',
             "text80": '<g id="text80" class="SVGTextShape" opacity="0" aria-label="unicast-background"/>',
-            "text85": '<g id="text85" class="SVGTextShape" aria-label="unicast"><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="Arial, sans-serif" font-size="300" font-weight="700" fill="#ffffff" style="white-space:pre">unicast</text></g>',
+            "text85": '<g id="text85" class="SVGTextShape" aria-label="unicast"><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="Liberation Sans, sans-serif" font-size="300" font-weight="700" fill="#ffffff" style="white-space:pre">unicast</text></g>',
         }
         for group_id, replacement in fixes.items():
             pattern = rf'<g\s+id="{group_id}"[\s\S]*?</g>'
             merged, count = re.subn(pattern, lambda _match: replacement, merged, count=1)
             if count != 1:
                 raise ValueError(f"{output_path.name}: cannot repair visible label group {group_id}")
+
+
+    # Figure 7.7: render the Registry Server label as two complete sans-serif lines.
+    if output_path.stem == "arch-agconnector":
+        replacement = (
+            '<g id="text78" class="SVGTextShape" aria-label="RegistryServer">'
+            '<text x="14204" y="1635" text-anchor="middle" dominant-baseline="middle" '
+            'font-family="Liberation Sans, sans-serif" font-size="353" fill="#000000" '
+            'style="white-space:pre">Registry</text>'
+            '<text x="14204" y="2040" text-anchor="middle" dominant-baseline="middle" '
+            'font-family="Liberation Sans, sans-serif" font-size="353" fill="#000000" '
+            'style="white-space:pre">Server</text></g>'
+        )
+        pattern = r'<g\\s+id="text78"[\\s\\S]*?</g>'
+        merged, count = re.subn(pattern, lambda _match: replacement, merged, count=1)
+        if count != 1:
+            raise ValueError(f"{output_path.name}: cannot repair Registry Server label")
 
     output_path.write_text(merged, encoding="utf-8")
     print(
