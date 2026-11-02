@@ -114,13 +114,13 @@ for svg_path in sorted(all_svg):
             by_label = {label: node for label, node in zip(visible_labels, visible_text)}
             quickbridge = by_label["QuickBridge"]
             unicast = by_label["unicast"]
-            if quickbridge.get("x") != "6485" or quickbridge.get("y") != "3485" or quickbridge.get("font-size") != "240":
+            if quickbridge.get("x") != "6485" or quickbridge.get("y") != "3485" or quickbridge.get("font-size") != "205":
                 errors.append("arch-quickbridge.svg: QuickBridge label is not centered in its box")
-            if unicast.get("transform") != "rotate(-90 4089 3495)" or unicast.get("font-size") != "230":
+            if unicast.get("transform") != "rotate(-90 4089 3495)" or unicast.get("font-size") != "205":
                 errors.append("arch-quickbridge.svg: unicast label must remain vertically centered")
             for node in (quickbridge, unicast):
-                if node.get("font-family") != "Arial embedded":
-                    errors.append("arch-quickbridge.svg: QuickBridge and unicast must use Arial sans-serif")
+                if node.get("font-family") != "DejaVu Sans, sans-serif":
+                    errors.append("arch-quickbridge.svg: QuickBridge and unicast must use DejaVu Sans")
     elif svg_path.stem == "arch-agconnector":
         visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
         if visible_labels != ["Registry", "Server"]:
@@ -131,7 +131,7 @@ for svg_path in sorted(all_svg):
         else:
             for node in visible_text:
                 if node.get("font-family") != "Arial embedded":
-                    errors.append("arch-agconnector.svg: Registry Server must use the matching sans-serif font")
+                    errors.append("arch-agconnector.svg: Registry Server must use DejaVu Sans")
     elif visible_text:
         errors.append(
             f"{svg_path.relative_to(ROOT)}: visible text elements found outside the hidden layer"
