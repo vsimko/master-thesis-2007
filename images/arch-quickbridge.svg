@@ -575,7 +575,7 @@
    stroke-linejoin="round"
    d="M 5485,2735 L 5485,2735 C 5441,2735 5398,2747 5360,2769 5322,2790 5290,2822 5269,2860 5247,2898 5235,2941 5235,2985 L 5235,3985 5235,3986 C 5235,4030 5247,4073 5269,4111 5290,4149 5322,4181 5360,4202 5398,4224 5441,4236 5485,4236 L 7485,4236 7486,4236 C 7530,4236 7573,4224 7611,4202 7649,4181 7681,4149 7702,4111 7724,4073 7736,4030 7736,3986 L 7736,2985 7736,2985 7736,2985 C 7736,2941 7724,2898 7702,2860 7681,2822 7649,2790 7611,2769 7573,2747 7530,2735 7486,2735 L 5485,2735 Z "
    id="path56" />
-        <g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3540" text-anchor="middle" dominant-baseline="middle" font-family="Liberation Sans, sans-serif" font-size="353" fill="#000000" style="white-space:pre">QuickBridge</text></g>
+        <g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3540" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="353" fill="#000000" style="white-space:pre">QuickBridge</text></g>
        </g>
       </g>
       <g
