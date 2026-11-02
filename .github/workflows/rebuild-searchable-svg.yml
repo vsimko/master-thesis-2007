@@ -68,7 +68,18 @@ jobs:
               for node in root.iter(ns + "text"):
                   value = "".join(node.itertext()).strip()
                   if value in {"QuickBridge", "unicast", "Registry", "Server"}:
-                      print("EXPORTED-LABEL", repr(value), node.attrib)
+                      chain, current = [], node
+                      while current is not None and len(chain) < 6:
+                          chain.append((current.tag.split("}")[-1], current.attrib))
+                          current = next((parent for parent in root.iter() if current in list(parent)), None)
+                      print("EXPORTED-LABEL", repr(value), "chain", chain)
+                      for child in node.iter():
+                          if child is not node:
+                              print("EXPORTED-CHILD", repr("".join(child.itertext()).strip()), child.attrib)
+              for style in root.iter(ns + "style"):
+                  css = "".join(style.itertext())
+                  if "SVGTextShape" in css or "font-family" in css:
+                      print("EXPORTED-CSS", css[:3000])
           PY
 
           for name in "${names[@]}"; do
