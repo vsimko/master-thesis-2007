@@ -178,7 +178,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
             '<text x="14155" y="1515" text-anchor="middle" dominant-baseline="middle" '
             'font-family="DejaVu Sans, sans-serif" font-size="230" fill="#000000" style="font-family:DejaVu Sans, sans-serif;white-space:pre">Registry</text>'
             '<text x="14155" y="2155" text-anchor="middle" dominant-baseline="middle" '
-            'font-family="DejaVu Sans, sans-serif" font-size="260" fill="#000000" '
+            'font-family="DejaVu Sans, sans-serif" font-size="230" fill="#000000" '
             'style="font-family:DejaVu Sans, sans-serif;white-space:pre">Server</text></g>'
         )
         pattern = r'<g\s+id="text78"[\s\S]*?</g>'
