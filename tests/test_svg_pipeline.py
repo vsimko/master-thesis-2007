@@ -104,25 +104,29 @@ for svg_path in sorted(all_svg):
                 break
     visible_text = [node for node in text_nodes if node not in layer_text]
     if svg_path.stem == "arch-quickbridge":
-        # Replacement labels must be root-level siblings after the original
-        # artwork and the invisible searchable layer, otherwise the legacy
-        # path outlines paint over them in the final PDF.
-        root_children = list(root)
-        layer_index = root_children.index(layer)
-        for label_id in ("text60", "text85"):
-            matches = [
-                i for i, node in enumerate(root_children)
-                if node.get("id") == label_id
-            ]
-            if len(matches) != 1 or matches[0] <= layer_index:
+        # Replacement labels must be the last objects inside LibreOffice's
+        # Page group; root-level siblings are ignored by its slide exporter.
+        page = next(
+            (
+                node for node in root.iter()
+                if node.tag == f"{svg_ns}g" and "Page" in node.get("class", "").split()
+            ),
+            None,
+        )
+        if page is None:
+            errors.append("arch-quickbridge.svg: missing LibreOffice Page group")
+        else:
+            page_children = list(page)
+            expected_tail = ["text60", "text85"]
+            actual_tail = [node.get("id") for node in page_children[-2:]]
+            if actual_tail != expected_tail:
                 errors.append(
-                    f"arch-quickbridge.svg: {label_id} must be a root-level overlay "
-                    "after the searchable text layer"
+                    "arch-quickbridge.svg: replacement labels must be last inside Page; "
+                    f"found tail {actual_tail}"
                 )
-            elif root_children[matches[0]].get("opacity") is not None:
-                errors.append(
-                    f"arch-quickbridge.svg: {label_id} must not inherit hidden-layer opacity"
-                )
+            for node in page_children[-2:]:
+                if node.get("opacity") is not None:
+                    errors.append("arch-quickbridge.svg: replacement labels must remain visible")
         visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
         if sorted(visible_labels) != ["QuickBridge", "unicast"]:
             errors.append(
@@ -146,16 +150,16 @@ for svg_path in sorted(all_svg):
                 if node.get("font-family") != "DejaVu Sans, sans-serif":
                     errors.append("arch-quickbridge.svg: QuickBridge and unicast must use DejaVu Sans")
     elif svg_path.stem == "arch-agconnector":
-        root_children = list(root)
-        layer_index = root_children.index(layer)
-        matches = [
-            i for i, node in enumerate(root_children)
-            if node.get("id") == "text78"
-        ]
-        if len(matches) != 1 or matches[0] <= layer_index:
+        page = next(
+            (
+                node for node in root.iter()
+                if node.tag == f"{svg_ns}g" and "Page" in node.get("class", "").split()
+            ),
+            None,
+        )
+        if page is None or not list(page) or list(page)[-1].get("id") != "text78":
             errors.append(
-                "arch-agconnector.svg: text78 must be a root-level overlay "
-                "after the searchable text layer"
+                "arch-agconnector.svg: text78 must be the last object inside the Page group"
             )
         visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
         if visible_labels != ["Registry", "Server"]:
