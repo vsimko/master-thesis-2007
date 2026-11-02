@@ -32,7 +32,8 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     label_offsets = {"localhost-recording": 6, "skype-architecture": 18}
     if output_path.stem in label_offsets:
         labels = [node for node in original_root.iter()
-                  if local_name(node.tag) == "path" and node.get("aria-label", "").isdigit()\n                  and "fill:#ffffff" in node.get("style", "")]
+                  if local_name(node.tag) == "path" and node.get("aria-label", "").isdigit()
+                  and "fill:#ffffff" in node.get("style", "")]
         if len(labels) != label_offsets[output_path.stem]:
             raise ValueError(f"{output_path.name}: unexpected numbered-label count: {len(labels)}")
         for label in labels:
