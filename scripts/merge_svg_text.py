@@ -160,9 +160,9 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     # incorrectly. Keep the ODG-derived invisible text overlay unchanged.
     if output_path.stem == "arch-quickbridge":
         fixes = {
-            "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3485" text-anchor="middle" dominant-baseline="middle" font-family="DejaVu Sans, sans-serif" font-size="205" fill="#000000" style="font-family:DejaVu Sans, sans-serif;white-space:pre">QuickBridge</text></g>',
+            "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><rect x="5550" y="2850" width="1870" height="870" fill="#e6e6e6"/><text x="6485" y="3485" text-anchor="middle" dominant-baseline="middle" font-family="DejaVu Sans, sans-serif" font-size="205" fill="#000000" style="font-family:DejaVu Sans, sans-serif;white-space:pre">QuickBridge</text></g>',
             "text80": '<g id="text80" class="SVGTextShape" opacity="0" aria-label="unicast-background"/>',
-            "text85": '<g id="text85" class="SVGTextShape" aria-label="unicast"><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="DejaVu Sans, sans-serif" font-size="205" font-weight="700" fill="#ffffff" style="font-family:DejaVu Sans, sans-serif;white-space:pre">unicast</text></g>',
+            "text85": '<g id="text85" class="SVGTextShape" aria-label="unicast"><ellipse cx="4029" cy="3435" rx="205" ry="870" fill="#800000"/><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="DejaVu Sans, sans-serif" font-size="205" font-weight="700" fill="#ffffff" style="font-family:DejaVu Sans, sans-serif;white-space:pre">unicast</text></g>',
         }
         for group_id, replacement in fixes.items():
             pattern = rf'<g\s+id="{group_id}"[\s\S]*?</g>'
@@ -175,9 +175,10 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     if output_path.stem == "arch-agconnector":
         replacement = (
             '<g id="text78" class="SVGTextShape" aria-label="RegistryServer">'
-            '<text x="14155" y="1515" text-anchor="middle" dominant-baseline="middle" '
+            '<rect x="13470" y="1400" width="1370" height="870" fill="#e6e6e6"/>'
+            '<text x="14155" y="1635" text-anchor="middle" dominant-baseline="middle" '
             'font-family="DejaVu Sans, sans-serif" font-size="230" fill="#000000" style="font-family:DejaVu Sans, sans-serif;white-space:pre">Registry</text>'
-            '<text x="14155" y="2155" text-anchor="middle" dominant-baseline="middle" '
+            '<text x="14155" y="2045" text-anchor="middle" dominant-baseline="middle" '
             'font-family="DejaVu Sans, sans-serif" font-size="230" fill="#000000" '
             'style="font-family:DejaVu Sans, sans-serif;white-space:pre">Server</text></g>'
         )
