@@ -41,8 +41,12 @@ def patch(path: Path) -> None:
     if content is None:
         raise ValueError(f"{path}: content.xml missing")
     root = ET.fromstring(content)
+    styles_data = next((data for item, data in entries if item.filename == "styles.xml"), None)
+    if styles_data is None:
+        raise ValueError(f"{path}: styles.xml missing")
+    styles_root = ET.fromstring(styles_data)
     automatic = root.find("office:automatic-styles", NS)
-    font_faces = root.find("office:font-face-decls", NS)
+    font_faces = styles_root.find("office:font-face-decls", NS)
     if automatic is None or font_faces is None:
         raise ValueError(f"{path}: ODF style containers missing")
 
@@ -86,6 +90,7 @@ def patch(path: Path) -> None:
         })
 
     updated = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+    updated_styles = ET.tostring(styles_root, encoding="utf-8", xml_declaration=True)
     fd, temporary = tempfile.mkstemp(suffix=".odg", dir=path.parent)
     os.close(fd)
     try:
@@ -93,6 +98,8 @@ def patch(path: Path) -> None:
             for item, data in entries:
                 if item.filename == "content.xml":
                     data = updated
+                elif item.filename == "styles.xml":
+                    data = updated_styles
                 target.writestr(item, data)
         os.replace(temporary, path)
     finally:
