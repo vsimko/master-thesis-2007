@@ -14,6 +14,8 @@ This repository is built and validated in GitHub Actions with the following tool
 
 The CI workflow is the authoritative tested dependency definition. The TeX Live release and required collections are explicit there; Inkscape and Poppler are installed from the Ubuntu 24.04 repositories. Their package revisions therefore follow the Ubuntu 24.04 security/update stream.
 
+Third-party GitHub Actions in the workflow are pinned to full commit SHAs rather than mutable version tags. The adjacent comments record the upstream release version. When updating an action, verify the full commit SHA against the intended upstream release tag and review the action's changelog before changing the pin.
+
 ## Fresh checkout
 
 1. Install Git, Python 3.9+, Inkscape, and TeX Live 2026 with the collections listed above. Ensure `pdflatex`, `bibtex`, and `inkscape` are on `PATH`. Install `latexmk` as well to use the same build-driver path as CI.
