@@ -104,6 +104,21 @@ for svg_path in sorted(all_svg):
                 break
     visible_text = [node for node in text_nodes if node not in layer_text]
     if svg_path.stem == "arch-quickbridge":
+        # Replacement labels must be root-level siblings after the original
+        # artwork and the invisible searchable layer, otherwise the legacy
+        # path outlines paint over them in the final PDF.
+        root_children = list(root)
+        layer_index = root_children.index(layer)
+        for label_id in ("text60", "text85"):
+            matches = [
+                i for i, node in enumerate(root_children)
+                if node.get("id") == label_id
+            ]
+            if len(matches) != 1 or matches[0] <= layer_index:
+                errors.append(
+                    f"arch-quickbridge.svg: {label_id} must be a root-level overlay "
+                    "after the searchable text layer"
+                )
         visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
         if sorted(visible_labels) != ["QuickBridge", "unicast"]:
             errors.append(
@@ -127,6 +142,17 @@ for svg_path in sorted(all_svg):
                 if node.get("font-family") != "DejaVu Sans, sans-serif":
                     errors.append("arch-quickbridge.svg: QuickBridge and unicast must use DejaVu Sans")
     elif svg_path.stem == "arch-agconnector":
+        root_children = list(root)
+        layer_index = root_children.index(layer)
+        matches = [
+            i for i, node in enumerate(root_children)
+            if node.get("id") == "text78"
+        ]
+        if len(matches) != 1 or matches[0] <= layer_index:
+            errors.append(
+                "arch-agconnector.svg: text78 must be a root-level overlay "
+                "after the searchable text layer"
+            )
         visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
         if visible_labels != ["Registry", "Server"]:
             errors.append(
