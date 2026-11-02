@@ -43,6 +43,22 @@ jobs:
       - name: Build PDF
         run: ./build.sh build
 
+      - name: Render SVG sources directly for visual diagnostics
+        run: |
+          mkdir -p svg-visual-diagnostics
+          inkscape images/arch-quickbridge.svg --export-filename=svg-visual-diagnostics/arch-quickbridge.pdf
+          inkscape images/arch-agconnector.svg --export-filename=svg-visual-diagnostics/arch-agconnector.pdf
+          pdftoppm -f 1 -l 1 -singlefile -png -r 140 svg-visual-diagnostics/arch-quickbridge.pdf svg-visual-diagnostics/arch-quickbridge
+          pdftoppm -f 1 -l 1 -singlefile -png -r 140 svg-visual-diagnostics/arch-agconnector.pdf svg-visual-diagnostics/arch-agconnector
+
+      - name: Upload direct SVG rendering diagnostics
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: svg-visual-diagnostics-${{ github.run_number }}
+          path: svg-visual-diagnostics/
+          retention-days: 14
+
       - name: Verify searchable text survives into the PDF
         run: |
           pdftotext -layout main.pdf main.txt
