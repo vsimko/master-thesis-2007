@@ -38,7 +38,7 @@ case "${1:-build}" in
     python3 ./tests/test_references.py
     ;;
   *)
-    printf 'Použitie: sh build.sh [build|clean|distclean|test]\n' >&2
+    printf 'Usage: sh build.sh [build|clean|distclean|test]\n' >&2
     exit 1
     ;;
 esac
