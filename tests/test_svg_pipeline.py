@@ -95,6 +95,13 @@ for svg_path in sorted(all_svg):
     ]
     if not layer_text:
         errors.append(f"{svg_path.relative_to(ROOT)}: searchable text layer is empty")
+    for text_node in layer.iter():
+        if text_node.tag in {f"{svg_ns}text", f"{svg_ns}tspan"}:
+            if text_node.get("opacity") != "0" or text_node.get("fill-opacity") != "0":
+                errors.append(
+                    f"{svg_path.relative_to(ROOT)}: searchable text glyphs must be fully transparent"
+                )
+                break
     if len(layer_text) != len(text_nodes):
         errors.append(
             f"{svg_path.relative_to(ROOT)}: visible text elements found outside the hidden layer"
