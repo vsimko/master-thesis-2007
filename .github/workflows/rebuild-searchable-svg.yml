@@ -61,8 +61,11 @@ jobs:
               path = Path('/tmp/rebuilt-svg') / f'{name}.svg'
               root = ET.parse(path).getroot()
               texts = root.findall('.//svg:text', ns)
-              if not texts:
+              if not texts and name != 'mff-logo':
                   raise SystemExit(f'{name}: no searchable SVG text elements')
+              if name == 'mff-logo' and not texts:
+                  print(f'{name}: original ODG contains vector logo artwork, no text objects; preserved as artwork')
+                  continue
               visible = ' '.join(''.join(t.itertext()) for t in texts)
               if any(c in visible for c in 'áäčďéěíĺľňóôŕřšťúůýžÁÄČĎÉĚÍĹĽŇÓÔŔŘŠŤÚŮÝŽ'):
                   raise SystemExit(f'{name}: possible non-English accented text; review required')
