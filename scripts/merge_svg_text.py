@@ -159,10 +159,10 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     if output_path.stem == "arch-agconnector":
         replacement = (
             '<g id="text78" class="SVGTextShape" aria-label="RegistryServer">'
-            '<text x="14204" y="1635" text-anchor="middle" dominant-baseline="middle" '
+            '<text x="14155" y="1635" text-anchor="middle" dominant-baseline="middle" '
             'font-family="Liberation Sans, sans-serif" font-size="353" fill="#000000" '
             'style="white-space:pre">Registry</text>'
-            '<text x="14204" y="2040" text-anchor="middle" dominant-baseline="middle" '
+            '<text x="14155" y="2040" text-anchor="middle" dominant-baseline="middle" '
             'font-family="Liberation Sans, sans-serif" font-size="353" fill="#000000" '
             'style="white-space:pre">Server</text></g>'
         )
