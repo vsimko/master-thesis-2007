@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate that maintained vector figures use SVG source files in LaTeX."""
+"""Validate SVG sources, searchable text, and visible label stacking in the final page groups."""
 from pathlib import Path
 import re
 import sys
