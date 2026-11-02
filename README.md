@@ -38,65 +38,36 @@ Key topics covered:
 ├── csprimes.tex             # Typography macros
 ├── images/                  # SVG vector sources and raster images
 ├── build.sh                 # Build, cleanup, and test script
+├── BUILDING.md              # Reproducible local build instructions
 ├── tests/                   # Build and SVG pipeline tests
 └── .github/workflows/       # GitHub Actions CI build workflow
 ```
 
 ---
 
-## Prerequisites
-
-To build the thesis document locally, you need a LaTeX distribution (such as TeX Live):
-
-- `pdflatex`
-- `bibtex`
-- `latexmk` *(optional, recommended for automated build passes)*
-
-On Debian/Ubuntu:
-```sh
-sudo apt-get install texlive-latex-base texlive-latex-extra texlive-fonts-recommended texlive-lang-czechslovak latexmk
-```
-
----
-
 ## Building the Thesis
 
-### Using the build script
+See [BUILDING.md](BUILDING.md) for the supported toolchain, fresh-checkout setup, dependency requirements, build/test commands, and cleanup behaviour.
 
-The provided `build.sh` script automates the compilation and cleanup process:
+Quick start after installing the documented dependencies:
 
 ```sh
-# Build main.pdf (uses latexmk if installed, otherwise pdflatex + bibtex)
-./build.sh build
-
-# Clean auxiliary build files (*.aux, *.log, *.toc, etc.)
-./build.sh clean
-
-# Clean auxiliary files and generated main.pdf
 ./build.sh distclean
-
-# Run tests for build script
 ./build.sh test
+./build.sh build
 ```
 
-### Using latexmk directly
+The production build uses `latexmk` when installed; otherwise it runs `pdflatex`, `bibtex`, and two further LaTeX passes. In both cases, `-shell-escape` is required so the LaTeX `svg` package can invoke Inkscape.
 
-```sh
-latexmk -pdf -shell-escape main.tex
-```
-
----
-
-
-### Figure source policy
+## Figure source policy
 
 - The 23 maintained vector diagrams in `images/*.svg` are the editable source of truth.
-- Reference vector diagrams from LaTeX with `\includesvg{...}`; the `svg` package invokes Inkscape during the build to create the PDF representation embedded in `main.pdf`.
-- Do not replace these references with PDF-only `\includegraphics` calls. The matching PDF files are retained as historical/reference exports, not editable sources.
+- Reference vector diagrams from LaTeX with `\includesvg{...}`; Inkscape converts them during the build.
 - Photos and screenshots remain raster assets and are included with `\includegraphics`.
-- Run `python3 tests/test_svg_pipeline.py` (or `./build.sh test`) to validate the figure references and source files.
+- Do not add ODG files or PDF sidecar exports to `images/`. SVG and raster images are the maintained inputs; generated SVG-to-PDF files belong in the build cache and are removed by `./build.sh clean`.
+- Run `./build.sh test` to validate SVG references, required conversion support, and LaTeX references.
 
 ## Continuous Integration & Releases (CI/CD)
 
-- **Automatické testovanie a zostavenie:** Pri každom `push` alebo `pull_request` prebehne testovací balíček skriptu a kompilácia `main.tex`. Výsledný `main.pdf` je dostupný ako artefakt daného behu workflowu.
-- **Automatické GitHub Releases:** Pri každom zlúčení (merge) pull requestu alebo priamom pushi do vetvy `main` workflow automaticky vytvorí nový GitHub Release (`v<build_number>`) s priloženým `main.pdf` na priame stiahnutie.
+- **Build validation:** Each push or pull request targeting `main` runs the source checks and compiles `main.tex`. Pull-request builds publish `main.pdf` as a workflow artifact.
+- **GitHub Releases:** Each qualifying push to `main` creates a GitHub Release (`v<build_number>`) with the generated `main.pdf` attached.
