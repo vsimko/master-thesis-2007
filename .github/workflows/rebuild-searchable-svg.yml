@@ -59,6 +59,18 @@ jobs:
 
           libreoffice --headless --convert-to svg --outdir /tmp/exported-svg /tmp/original-odg/*.odg
 
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          ns = "{http://www.w3.org/2000/svg}"
+          for name in ("arch-quickbridge", "arch-agconnector"):
+              root = ET.parse(f"/tmp/exported-svg/{name}.svg").getroot()
+              print("EXPORTED-TEXT", name)
+              for node in root.iter(ns + "text"):
+                  value = "".join(node.itertext()).strip()
+                  if value in {"QuickBridge", "unicast", "Registry", "Server"}:
+                      print("EXPORTED-LABEL", repr(value), node.attrib)
+          PY
+
           for name in "${names[@]}"; do
             if [[ "$name" == "arch-quickbridge" || "$name" == "arch-agconnector" ]]; then
               # For the repaired diagrams, the patched ODG export is the visual
