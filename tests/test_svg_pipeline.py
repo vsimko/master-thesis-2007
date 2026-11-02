@@ -3,6 +3,7 @@
 from pathlib import Path
 import re
 import sys
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 IMAGE_DIR = ROOT / "images"
@@ -52,6 +53,54 @@ for tex_file, raw_name in svg_refs:
         used_svg.add(path.resolve())
 
 all_svg = {p.resolve() for p in IMAGE_DIR.glob("*.svg")}
+
+# Searchable labels must not replace the original ODG-exported glyph artwork.
+# The visible paths stay byte-for-byte sourced from the pre-migration SVG;
+# extracted text is kept in a transparent overlay.
+svg_ns = "{http://www.w3.org/2000/svg}"
+for svg_path in sorted(all_svg):
+    try:
+        root = ET.parse(svg_path).getroot()
+    except ET.ParseError as exc:
+        errors.append(f"{svg_path.relative_to(ROOT)}: invalid SVG XML: {exc}")
+        continue
+
+    layers = [
+        node for node in root.iter()
+        if node.tag == f"{svg_ns}g"
+        and node.get("id") == "searchable-text-layer"
+    ]
+    text_nodes = [
+        node for node in root.iter()
+        if node.tag == f"{svg_ns}text"
+    ]
+
+    if svg_path.stem == "mff-logo":
+        if layers or text_nodes:
+            errors.append("mff-logo.svg: logo should remain vector artwork without text")
+        continue
+
+    if len(layers) != 1:
+        errors.append(
+            f"{svg_path.relative_to(ROOT)}: expected one searchable-text-layer; found {len(layers)}"
+        )
+        continue
+
+    layer = layers[0]
+    if layer.get("opacity") != "0":
+        errors.append(f"{svg_path.relative_to(ROOT)}: searchable text layer must be invisible")
+    layer_text = [
+        node for node in layer.iter()
+        if node.tag == f"{svg_ns}text"
+    ]
+    if not layer_text:
+        errors.append(f"{svg_path.relative_to(ROOT)}: searchable text layer is empty")
+    if len(layer_text) != len(text_nodes):
+        errors.append(
+            f"{svg_path.relative_to(ROOT)}: visible text elements found outside the hidden layer"
+        )
+    if not any("".join(node.itertext()).strip() for node in layer_text):
+        errors.append(f"{svg_path.relative_to(ROOT)}: searchable text contains no labels")
 for path in sorted(all_svg - used_svg):
     errors.append(f"Unreferenced maintained SVG source: {path.relative_to(ROOT)}")
 for path in sorted(used_svg - all_svg):
