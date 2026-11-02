@@ -119,7 +119,7 @@ for svg_path in sorted(all_svg):
             if unicast.get("transform") != "rotate(-90 4089 3495)" or unicast.get("font-size") != "230":
                 errors.append("arch-quickbridge.svg: unicast label must remain vertically centered")
             for node in (quickbridge, unicast):
-                if node.get("font-family") != "DejaVu Sans, sans-serif":
+                if node.get("font-family") != "Arial embedded":
                     errors.append("arch-quickbridge.svg: QuickBridge and unicast must use Arial sans-serif")
     elif svg_path.stem == "arch-agconnector":
         visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
@@ -130,7 +130,7 @@ for svg_path in sorted(all_svg):
             )
         else:
             for node in visible_text:
-                if node.get("font-family") != "DejaVu Sans, sans-serif":
+                if node.get("font-family") != "Arial embedded":
                     errors.append("arch-agconnector.svg: Registry Server must use the matching sans-serif font")
     elif visible_text:
         errors.append(
