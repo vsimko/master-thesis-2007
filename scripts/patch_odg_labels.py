@@ -46,9 +46,20 @@ def patch(path: Path) -> None:
         raise ValueError(f"{path}: styles.xml missing")
     styles_root = ET.fromstring(styles_data)
     automatic = root.find("office:automatic-styles", NS)
-    font_faces = styles_root.find("office:font-face-decls", NS)
+    automatic_in_styles = False
+    if automatic is None:
+        automatic = styles_root.find("office:automatic-styles", NS)
+        automatic_in_styles = automatic is not None
+    font_faces = root.find("office:font-face-decls", NS)
+    font_faces_in_styles = False
+    if font_faces is None:
+        font_faces = styles_root.find("office:font-face-decls", NS)
+        font_faces_in_styles = font_faces is not None
     if automatic is None or font_faces is None:
-        raise ValueError(f"{path}: ODF style containers missing")
+        raise ValueError(
+            f"{path}: ODF style containers missing "
+            f"(automatic={automatic is not None}, font_faces={font_faces is not None})"
+        )
 
     if not any(node.get(f"{{{NS['style']}}}name") == "ThesisDejaVu"
                for node in font_faces):
