@@ -69,5 +69,5 @@ The production build uses `latexmk` when installed; otherwise it runs `pdflatex`
 
 ## Continuous Integration & Releases (CI/CD)
 
-- **Automatické testovanie a zostavenie:** Pri každom `push` alebo `pull_request` prebehne testovací balíček skriptu a kompilácia `main.tex`. Výsledný `main.pdf` je dostupný ako artefakt daného behu workflowu.
-- **Automatické GitHub Releases:** Pri každom zlúčení (merge) pull requestu alebo priamom pushi do vetvy `main` workflow automaticky vytvorí nový GitHub Release (`v<build_number>`) s priloženým `main.pdf` na priame stiahnutie.
+- **Build validation:** Each push or pull request targeting `main` runs the source checks and compiles `main.tex`. Pull-request builds publish `main.pdf` as a workflow artifact.
+- **GitHub Releases:** Each qualifying push to `main` creates a GitHub Release (`v<build_number>`) with the generated `main.pdf` attached.
