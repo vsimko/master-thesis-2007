@@ -162,7 +162,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
         fixes = {
             "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3540" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="353" fill="#000000" style="white-space:pre">QuickBridge</text></g>',
             "text80": '<g id="text80" class="SVGTextShape" opacity="0" aria-label="unicast-background"/>',
-            "text85": '<g id="text85" class="SVGTextShape" aria-label="unicast"><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="Liberation Sans, sans-serif" font-size="300" font-weight="700" fill="#ffffff" style="white-space:pre">unicast</text></g>',
+            "text85": '<g id="text85" class="SVGTextShape" aria-label="unicast"><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="Arial, sans-serif" font-size="300" font-weight="700" fill="#ffffff" style="white-space:pre">unicast</text></g>',
         }
         for group_id, replacement in fixes.items():
             pattern = rf'<g\s+id="{group_id}"[\s\S]*?</g>'
