@@ -160,7 +160,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     # incorrectly. Keep the ODG-derived invisible text overlay unchanged.
     if output_path.stem == "arch-quickbridge":
         fixes = {
-            "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3540" text-anchor="middle" dominant-baseline="middle" font-family="Arial embedded" font-size="240" fill="#000000" style="font-family:Arial embedded;white-space:pre">QuickBridge</text></g>',
+            "text60": '<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><text x="6485" y="3485" text-anchor="middle" dominant-baseline="middle" font-family="Arial embedded" font-size="240" fill="#000000" style="font-family:Arial embedded;white-space:pre">QuickBridge</text></g>',
             "text80": '<g id="text80" class="SVGTextShape" opacity="0" aria-label="unicast-background"/>',
             "text85": '<g id="text85" class="SVGTextShape" aria-label="unicast"><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="Arial embedded" font-size="230" font-weight="700" fill="#ffffff" style="font-family:Arial embedded;white-space:pre">unicast</text></g>',
         }
