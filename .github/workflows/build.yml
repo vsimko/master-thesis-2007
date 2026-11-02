@@ -58,19 +58,20 @@ jobs:
           name: svg-visual-diagnostics-${{ github.run_number }}
           path: |
             svg-visual-diagnostics/
-            svg-inkscape/arch-quickbridge_svg-tex.pdf
-            svg-inkscape/arch-quickbridge_svg-tex.pdf_tex
-            svg-inkscape/arch-agconnector_svg-tex.pdf
-            svg-inkscape/arch-agconnector_svg-tex.pdf_tex
+            svg-inkscape/arch-quickbridge_svg-raw.pdf
+            svg-inkscape/arch-agconnector_svg-raw.pdf
           retention-days: 14
 
-      - name: Inspect LaTeX SVG conversion outputs
+      - name: Inspect direct SVG PDF exports
         run: |
           for name in arch-quickbridge arch-agconnector; do
-            echo "=== $name Inkscape output ==="
-            pdfinfo "svg-inkscape/${name}_svg-tex.pdf" | grep -E 'Pages:|Page size:'
-            echo "=== $name LaTeX overlay ==="
-            sed -n '1,180p' "svg-inkscape/${name}_svg-tex.pdf_tex"
+            echo "=== $name direct Inkscape PDF ==="
+            pdfinfo "svg-inkscape/${name}_svg-raw.pdf" | grep -E 'Pages:|Page size:'
+            pdftotext "svg-inkscape/${name}_svg-raw.pdf" - | sed -n '1,80p'
+            if [[ -e "svg-inkscape/${name}_svg-raw.pdf_tex" ]]; then
+              echo "Unexpected LaTeX text overlay for $name"
+              exit 1
+            fi
           done
 
       - name: Verify searchable text survives into the PDF
