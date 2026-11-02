@@ -58,7 +58,22 @@ jobs:
           missing = [label for label in required if label not in text]
           if missing:
               raise SystemExit('PDF text extraction is missing SVG labels: ' + ', '.join(missing))
+
+          import re
+          import subprocess
+          pages = subprocess.run(
+              ['pdftotext', '-f', '59', '-l', '60', '-layout', 'main.pdf', '-'],
+              check=True, capture_output=True, text=True,
+          ).stdout
+          compact_lines = [
+              re.sub(r'\\s+', '', line).lower()
+              for line in pages.splitlines() if line.strip()
+          ]
+          merged_labels = ('registryserver', 'multicastisland', 'umt pagent', 'umtpserver')
+          if any(label.replace(' ', '') in line for label in merged_labels for line in compact_lines):
+              raise SystemExit('PDF pages 53-54 contain merged diagram labels')
           print('Searchable SVG labels found in PDF:', ', '.join(required))
+          print('PDF pages 53-54: multiline diagram labels remain separated.')
           PY
 
       - name: Upload PDF preview
