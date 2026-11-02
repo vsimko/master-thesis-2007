@@ -69,6 +69,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
             "data-purpose": "invisible-searchable-text",
             "opacity": "0",
             "pointer-events": "none",
+            "style": "opacity:0 !important; fill-opacity:0 !important",
             "transform": transform,
         },
     )
@@ -77,6 +78,15 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
         # Avoid collisions with IDs in the original, path-based artwork.
         for element in cloned.iter():
             element.attrib.pop("id", None)
+            if local_name(element.tag) in {"text", "tspan"}:
+                element.set("opacity", "0")
+                element.set("fill-opacity", "0")
+                style = element.get("style", "").strip().rstrip(";")
+                element.set(
+                    "style",
+                    (style + ";" if style else "")
+                    + "opacity:0 !important;fill-opacity:0 !important",
+                )
         layer.append(cloned)
 
     fragment = ET.tostring(layer, encoding="unicode")
