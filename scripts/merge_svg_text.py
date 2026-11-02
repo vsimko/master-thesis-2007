@@ -196,7 +196,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     }.get(output_path.stem, ())
     visible_labels: list[str] = []
     for label_id in visible_label_ids:
-        pattern = rf'<g\\s+id="{label_id}"[^>]*>[\\s\\S]*?</g>'
+        pattern = rf'<g\s+id="{label_id}"[^>]*>[\s\S]*?</g>'
         merged, count = re.subn(
             pattern,
             lambda match: (visible_labels.append(match.group(0)) or ""),
@@ -213,9 +213,9 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
             raise ValueError(f"{output_path.name}: missing closing SVG tag")
         merged = (
             merged[:closing_tag]
-            + "\\n<!-- Visible replacement labels: deliberately above legacy text outlines. -->\\n"
-            + "\\n".join(visible_labels)
-            + "\\n"
+            + "\n<!-- Visible replacement labels: deliberately above legacy text outlines. -->\\n"
+            + "\n".join(visible_labels)
+            + "\n"
             + merged[closing_tag:]
         )
 
