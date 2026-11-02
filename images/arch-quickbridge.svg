@@ -575,7 +575,7 @@
    stroke-linejoin="round"
    d="M 5485,2735 L 5485,2735 C 5441,2735 5398,2747 5360,2769 5322,2790 5290,2822 5269,2860 5247,2898 5235,2941 5235,2985 L 5235,3985 5235,3986 C 5235,4030 5247,4073 5269,4111 5290,4149 5322,4181 5360,4202 5398,4224 5441,4236 5485,4236 L 7485,4236 7486,4236 C 7530,4236 7573,4224 7611,4202 7649,4181 7681,4149 7702,4111 7724,4073 7736,4030 7736,3986 L 7736,2985 7736,2985 7736,2985 C 7736,2941 7724,2898 7702,2860 7681,2822 7649,2790 7611,2769 7573,2747 7530,2735 7486,2735 L 5485,2735 Z "
    id="path56" />
-        <g id="text60" class="SVGTextShape" aria-label="QuickBridge"><rect x="5550" y="2850" width="1870" height="870" fill="#e6e6e6"/><text x="6485" y="3485" text-anchor="middle" dominant-baseline="middle" font-family="DejaVu Sans, sans-serif" font-size="205" fill="#000000" style="font-family:DejaVu Sans, sans-serif;white-space:pre">QuickBridge</text></g>
+        
        </g>
       </g>
       <g
@@ -804,7 +804,7 @@
    stroke="rgb(0,0,0)"
    d="M 4029,2434 C 4075,2434 4119,2480 4159,2568 4199,2656 4231,2782 4254,2934 4277,3086 4289,3259 4289,3435 4289,3610 4277,3783 4254,3935 4231,4087 4199,4213 4159,4301 4119,4389 4075,4435 4029,4435 3983,4435 3939,4389 3899,4301 3859,4213 3827,4087 3804,3935 3781,3783 3769,3610 3769,3435 3769,3259 3781,3086 3804,2934 3827,2782 3859,2656 3899,2568 3939,2480 3983,2434 4029,2434 L 4029,2434 Z "
    id="path81" />
-        <g id="text85" class="SVGTextShape" aria-label="unicast"><ellipse cx="4029" cy="3435" rx="205" ry="870" fill="#800000"/><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="DejaVu Sans, sans-serif" font-size="205" font-weight="700" fill="#ffffff" style="font-family:DejaVu Sans, sans-serif;white-space:pre">unicast</text></g>
+        
        </g>
       </g>
       <g
@@ -890,4 +890,8 @@
        <text class="SVGTextShape" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan class="TextParagraph" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan class="TextPosition" x="8274" y="1856" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan font-family="Arial, sans-serif" font-size="353px" font-weight="400" fill="rgb(0,0,0)" stroke="none" style="white-space: pre;opacity:0 !important;fill-opacity:0 !important" opacity="0" fill-opacity="0">Host</tspan></tspan></tspan></text>
        <text class="SVGTextShape" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan class="TextParagraph" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan class="TextPosition" x="5528" y="3606" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan font-family="Arial, sans-serif" font-size="353px" font-weight="400" fill="rgb(0,0,0)" stroke="none" style="white-space: pre;opacity:0 !important;fill-opacity:0 !important" opacity="0" fill-opacity="0">QuickBridge</tspan></tspan></tspan></text>
        </g>
+
+<!-- Visible replacement labels: deliberately above legacy text outlines. -->
+<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><rect x="5550" y="2850" width="1870" height="870" fill="#e6e6e6"/><text x="6485" y="3485" text-anchor="middle" dominant-baseline="middle" font-family="DejaVu Sans, sans-serif" font-size="205" fill="#000000" style="font-family:DejaVu Sans, sans-serif;white-space:pre">QuickBridge</text></g>
+<g id="text85" class="SVGTextShape" aria-label="unicast"><ellipse cx="4029" cy="3435" rx="205" ry="870" fill="#800000"/><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="DejaVu Sans, sans-serif" font-size="205" font-weight="700" fill="#ffffff" style="font-family:DejaVu Sans, sans-serif;white-space:pre">unicast</text></g>
 </svg>
