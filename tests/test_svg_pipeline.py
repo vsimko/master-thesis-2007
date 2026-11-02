@@ -114,7 +114,7 @@ for svg_path in sorted(all_svg):
             by_label = {label: node for label, node in zip(visible_labels, visible_text)}
             quickbridge = by_label["QuickBridge"]
             unicast = by_label["unicast"]
-            if quickbridge.get("x") != "6485" or quickbridge.get("y") != "3540" or quickbridge.get("font-size") != "260":
+            if quickbridge.get("x") != "6485" or quickbridge.get("y") != "3485" or quickbridge.get("font-size") != "240":
                 errors.append("arch-quickbridge.svg: QuickBridge label is not centered in its box")
             if unicast.get("transform") != "rotate(-90 4089 3495)" or unicast.get("font-size") != "230":
                 errors.append("arch-quickbridge.svg: unicast label must remain vertically centered")
