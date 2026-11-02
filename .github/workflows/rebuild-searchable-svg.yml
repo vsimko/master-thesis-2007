@@ -76,7 +76,12 @@ jobs:
           for name in ("arch-quickbridge", "arch-agconnector"):
               with zipfile.ZipFile(f"/tmp/original-odg/{name}.odg") as z:
                   root = ET.fromstring(z.read("content.xml"))
+                  styles = ET.fromstring(z.read("styles.xml"))
                   print("ODG-STRUCTURE", name, "elements", len(list(root.iter())))
+                  for node in styles.iter():
+                      if node.get("{urn:oasis:names:tc:opendocument:xmlns:style:1.0}name") in {"P4", "P5", "gr4", "gr5", "gr6"}:
+                          print("ODG-STYLE", node.tag.split("}")[-1], node.attrib, [child.attrib for child in node])
+
                   for node in root.iter():
                       tag = node.tag.split("}")[-1]
                       value = "".join(node.itertext()).strip()
