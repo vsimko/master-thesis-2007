@@ -130,7 +130,7 @@ for svg_path in sorted(all_svg):
             )
         else:
             for node in visible_text:
-                if node.get("font-family") != "Arial embedded":
+                if node.get("font-family") != "DejaVu Sans, sans-serif":
                     errors.append("arch-agconnector.svg: Registry Server must use DejaVu Sans")
     elif visible_text:
         errors.append(
