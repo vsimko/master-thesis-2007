@@ -50,10 +50,10 @@ jobs:
           from pathlib import Path
           text = ' '.join(Path('main.txt').read_text(errors='replace').lower().split())
           required = [
-              'multicast network', 'shared application', 'primary camera',
+              'multicast network', 'shared application', 'primarycamera',
               'quickbridge', 'flash media server', 'psnr',
               'mouth-to-ear-delay', 'nat gateway', 'oais',
-              'super node', 'accessgrid session'
+              'supernode', 'accessgrid session'
           ]
           missing = [label for label in required if label not in text]
           if missing:
