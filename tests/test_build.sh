@@ -37,9 +37,11 @@ test_clean_target() {
   cd "$ROOT_DIR"
   # Create dummy aux files
   touch dummy.aux main.log main.toc main.fls main.fdb_latexmk main.pdf
+  mkdir -p svg-inkscape
+  touch svg-inkscape/stale-figure.pdf
   "$BUILD_SH" clean >/dev/null 2>&1
   # Auxiliary files should be removed
-  if [ -f dummy.aux ] || [ -f main.log ] || [ -f main.toc ] || [ -f main.fls ] || [ -f main.fdb_latexmk ]; then
+  if [ -f dummy.aux ] || [ -f main.log ] || [ -f main.toc ] || [ -f main.fls ] || [ -f main.fdb_latexmk ] || [ -e svg-inkscape ]; then
     return 1
   fi
   # main.pdf must still exist after clean
@@ -54,8 +56,10 @@ test_clean_target() {
 test_distclean_target() {
   cd "$ROOT_DIR"
   touch dummy.aux main.log main.pdf
+  mkdir -p svg-inkscape
+  touch svg-inkscape/stale-figure.pdf
   "$BUILD_SH" distclean >/dev/null 2>&1
-  if [ -f dummy.aux ] || [ -f main.log ] || [ -f main.pdf ]; then
+  if [ -f dummy.aux ] || [ -f main.log ] || [ -f main.pdf ] || [ -e svg-inkscape ]; then
     return 1
   fi
   return 0
