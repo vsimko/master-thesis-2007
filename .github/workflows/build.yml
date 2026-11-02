@@ -48,7 +48,7 @@ jobs:
           pdftotext -layout main.pdf main.txt
           python3 - <<'PY'
           from pathlib import Path
-          text = Path('main.txt').read_text(errors='replace').lower()
+          text = ' '.join(Path('main.txt').read_text(errors='replace').lower().split())
           required = [
               'multicast network', 'shared application', 'primary camera',
               'quickbridge', 'flash media server', 'psnr',
@@ -62,7 +62,7 @@ jobs:
           PY
 
       - name: Upload PDF preview
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: thesis-pdf-preview-${{ github.run_number }}
@@ -84,6 +84,7 @@ jobs:
             main.lof
             main.lot
             main.toc
+            main.txt
           if-no-files-found: warn
           retention-days: 14
 
