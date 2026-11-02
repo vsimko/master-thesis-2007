@@ -29,12 +29,21 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     original_root = ET.fromstring(original)
     exported_root = ET.fromstring(exported)
 
-    for attribute in ("width", "height", "viewBox"):
-        if original_root.get(attribute) != exported_root.get(attribute):
-            raise ValueError(
-                f"{attribute} differs: original={original_root.get(attribute)!r}, "
-                f"exported={exported_root.get(attribute)!r}"
-            )
+    def parse_viewbox(root: ET.Element, label: str) -> tuple[float, float, float, float]:
+        raw = root.get("viewBox", "")
+        values = raw.replace(",", " ").split()
+        if len(values) != 4:
+            raise ValueError(f"{label}: invalid or missing viewBox {raw!r}")
+        x, y, width, height = (float(value) for value in values)
+        if width <= 0 or height <= 0:
+            raise ValueError(f"{label}: viewBox dimensions must be positive")
+        return x, y, width, height
+
+    ox, oy, ow, oh = parse_viewbox(original_root, str(original_path))
+    gx, gy, gw, gh = parse_viewbox(exported_root, str(exported_path))
+    sx, sy = ow / gw, oh / gh
+    tx, ty = ox - gx * sx, oy - gy * sy
+    transform = f"matrix({sx:.12g} 0 0 {sy:.12g} {tx:.12g} {ty:.12g})"
 
     text_nodes = [
         node for node in exported_root.iter()
@@ -57,6 +66,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
             "data-purpose": "invisible-searchable-text",
             "opacity": "0",
             "pointer-events": "none",
+            "transform": transform,
         },
     )
     for node in text_nodes:
