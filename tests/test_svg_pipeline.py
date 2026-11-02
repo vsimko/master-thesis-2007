@@ -118,10 +118,31 @@ for svg_path in sorted(all_svg):
                 errors.append("arch-quickbridge.svg: QuickBridge label is not centered in its box")
             if unicast.get("transform") != "rotate(-90 4089 3495)":
                 errors.append("arch-quickbridge.svg: unicast label must remain vertically centered")
+    elif svg_path.stem == "arch-agconnector":
+        visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
+        if visible_labels != ["Registry", "Server"]:
+            errors.append(
+                "arch-agconnector.svg: Registry Server must be two separate visible lines; "
+                f"found {visible_labels}"
+            )
+        else:
+            for node in visible_text:
+                if node.get("font-family") != "Liberation Sans, sans-serif":
+                    errors.append("arch-agconnector.svg: Registry Server must use the matching sans-serif font")
     elif visible_text:
         errors.append(
             f"{svg_path.relative_to(ROOT)}: visible text elements found outside the hidden layer"
         )
+    if svg_path.stem == "unicast-multicast":
+        numbered = {
+            node.get("id"): node
+            for node in root.iter()
+            if node.tag == f"{svg_ns}path" and node.get("id") in {"text101", "text110"}
+        }
+        if set(numbered) != {"text101", "text110"} or any(
+            node.get("transform") != "translate(-100,60)" for node in numbered.values()
+        ):
+            errors.append("unicast-multicast.svg: red-circle numbers must be optically centered")
     if not any("".join(node.itertext()).strip() for node in layer_text):
         errors.append(f"{svg_path.relative_to(ROOT)}: searchable text contains no labels")
 for path in sorted(all_svg - used_svg):
