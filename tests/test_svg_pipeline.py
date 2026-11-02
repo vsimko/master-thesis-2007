@@ -75,35 +75,50 @@ for svg_path in sorted(all_svg):
             errors.append("mff-logo.svg: logo should remain vector artwork without text")
         continue
 
-    # These two diagrams are now exported directly from patched ODG sources.
-    # Their visible text is the artwork; they intentionally have no invisible
-    # searchable-text overlay or legacy outlined duplicate labels.
+    # These two diagrams are exported directly from patched ODG sources.
+    # Their visible text is the artwork; no hidden overlay is needed.
     if svg_path.stem in {"arch-quickbridge", "arch-agconnector"}:
-        expected = (
-            {"QuickBridge", "unicast"}
-            if svg_path.stem == "arch-quickbridge"
-            else {"Registry", "Server"}
-        )
-        labels = ["".join(node.itertext()).strip() for node in text_nodes]
-        for label in expected:
-            matches = [node for node, value in zip(text_nodes, labels) if value == label]
-            if not matches:
-                errors.append(f"{svg_path.stem}.svg: missing visible ODG label {label!r}")
-                continue
-            for node in matches:
-                attrs = " ".join(node.attrib.values())
-                style = node.get("style", "")
-                if "DejaVu Sans" not in attrs + " " + style:
-                    errors.append(
-                        f"{svg_path.stem}.svg: label {label!r} must use DejaVu Sans"
-                    )
+        rendered = [
+            (node, " ".join("".join(node.itertext()).split()))
+            for node in text_nodes
+        ]
         if svg_path.stem == "arch-quickbridge":
-            for label in expected:
-                if labels.count(label) != 1:
-                    errors.append(
-                        f"arch-quickbridge.svg: expected one visible {label!r}; "
-                        f"found {labels.count(label)}"
-                    )
+            quick = [node for node, label in rendered if label == "QuickBridge"]
+            unicast = [node for node, label in rendered if label == "unicast"]
+            if len(quick) != 1:
+                errors.append(
+                    f"arch-quickbridge.svg: expected one QuickBridge label; found {len(quick)}"
+                )
+            if len(unicast) != 2:
+                errors.append(
+                    f"arch-quickbridge.svg: expected white unicast text plus its shadow; found {len(unicast)}"
+                )
+            targets = quick + unicast
+        else:
+            registry_server = [
+                node for node, label in rendered
+                if "Registry" in label and "Server" in label
+            ]
+            if len(registry_server) != 1:
+                errors.append(
+                    "arch-agconnector.svg: expected one Registry/Server text object; "
+                    f"found {len(registry_server)}"
+                )
+            targets = registry_server
+
+        for node in targets:
+            runs = [
+                child for child in node.iter()
+                if child.tag in {f"{svg_ns}text", f"{svg_ns}tspan"}
+                and "".join(child.itertext()).strip()
+            ]
+            if not runs or any(
+                "DejaVu Sans" not in (child.get("font-family", "") + " " + child.get("style", ""))
+                for child in runs
+            ):
+                errors.append(
+                    f"{svg_path.stem}.svg: repaired labels must use DejaVu Sans"
+                )
         continue
 
     layers = [
