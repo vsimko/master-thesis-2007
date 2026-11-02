@@ -102,7 +102,15 @@ for svg_path in sorted(all_svg):
                     f"{svg_path.relative_to(ROOT)}: searchable text glyphs must be fully transparent"
                 )
                 break
-    if len(layer_text) != len(text_nodes):
+    visible_text = [node for node in text_nodes if node not in layer_text]
+    if svg_path.stem == "arch-quickbridge":
+        visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
+        if sorted(visible_labels) != ["QuickBridge", "unicast"]:
+            errors.append(
+                "arch-quickbridge.svg: expected only the repaired visible labels "
+                f"QuickBridge and unicast; found {visible_labels}"
+            )
+    elif visible_text:
         errors.append(
             f"{svg_path.relative_to(ROOT)}: visible text elements found outside the hidden layer"
         )
