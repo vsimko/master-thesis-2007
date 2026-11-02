@@ -144,11 +144,12 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
 
     # Figure 3.1: center the visible number glyphs in both axes.
     if output_path.stem == "unicast-multicast":
-        for label_id in ("text101", "text110"):
-            pattern = rf'<path(?P<attrs>[^>]*\bid="{label_id}"[^>]*)>'
+        number_offsets = {"text101": -112, "text110": -120}
+        for label_id, x_offset in number_offsets.items():
+            pattern = rf'<path(?P<attrs>[^>]*\\bid="{label_id}"[^>]*)>'
             def center_number(match: re.Match[str]) -> str:
-                attrs = re.sub(r'\s+transform="[^"]*"', "", match.group("attrs"))
-                return f'<path transform="translate(-100,60)"{attrs}>'
+                attrs = re.sub(r'\\s+transform="[^"]*"', "", match.group("attrs"))
+                return '<path transform="translate(' + str(x_offset) + ',0)"' + attrs + '>'
             merged, count = re.subn(pattern, center_number, merged, count=1, flags=re.DOTALL)
             if count != 1:
                 raise ValueError(f"{output_path.name}: cannot center visible number {label_id}")
