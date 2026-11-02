@@ -771,7 +771,7 @@
    stroke-linejoin="round"
    d="M 13404,1085 L 13404,1085 C 13360,1085 13317,1097 13279,1119 13241,1140 13209,1172 13188,1210 13166,1248 13154,1291 13154,1335 L 13154,2335 13154,2336 C 13154,2380 13166,2423 13188,2461 13209,2499 13241,2531 13279,2552 13317,2574 13360,2586 13404,2586 L 14904,2586 14905,2586 C 14949,2586 14992,2574 15030,2552 15068,2531 15100,2499 15121,2461 15143,2423 15155,2380 15155,2336 L 15155,1335 15155,1335 15155,1335 C 15155,1291 15143,1248 15121,1210 15100,1172 15068,1140 15030,1119 14992,1097 14949,1085 14905,1085 L 13404,1085 Z "
    id="path71" />
-        <g id="text78" class="SVGTextShape" aria-label="RegistryServer"><text x="14155" y="1515" text-anchor="middle" dominant-baseline="middle" font-family="Arial embedded" font-size="240" fill="#000000" style="font-family:Arial embedded;white-space:pre">Registry</text><text x="14155" y="2155" text-anchor="middle" dominant-baseline="middle" font-family="Arial embedded" font-size="240" fill="#000000" style="font-family:Arial embedded;white-space:pre">Server</text></g>
+        <g id="text78" class="SVGTextShape" aria-label="RegistryServer"><text x="14155" y="1515" text-anchor="middle" dominant-baseline="middle" font-family="Arial embedded" font-size="260" fill="#000000" style="font-family:Arial embedded;white-space:pre">Registry</text><text x="14155" y="2155" text-anchor="middle" dominant-baseline="middle" font-family="Arial embedded" font-size="260" fill="#000000" style="font-family:Arial embedded;white-space:pre">Server</text></g>
        </g>
       </g>
       <g
