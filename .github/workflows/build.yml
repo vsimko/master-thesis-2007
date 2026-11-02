@@ -66,7 +66,7 @@ jobs:
               check=True, capture_output=True, text=True,
           ).stdout
           compact_lines = [
-              re.sub(r'\\s+', '', line).lower()
+              re.sub(r'\s+', '', line).lower()
               for line in pages.splitlines() if line.strip()
           ]
           merged_labels = ('registryserver', 'multicastisland', 'umt pagent', 'umtpserver')
