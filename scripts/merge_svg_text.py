@@ -187,16 +187,16 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
         if count != 1:
             raise ValueError(f"{output_path.name}: cannot repair Registry Server label")
 
-    # Render repaired visible labels after all legacy vector outlines. The SVG
-    # generator rebuilds these files from the original ODG on every PR update,
-    # so the z-order fix must live here rather than in the generated SVGs.
+    # Keep repaired labels inside LibreOffice's actual Page group. Objects
+    # appended at the SVG root are ignored by its slide exporter; labels must
+    # be the last children of the Page group to paint over legacy path outlines.
     visible_label_ids = {
         "arch-quickbridge": ("text60", "text85"),
         "arch-agconnector": ("text78",),
     }.get(output_path.stem, ())
     visible_labels: list[str] = []
     for label_id in visible_label_ids:
-        pattern = rf'<g\s+id="{label_id}"[^>]*>[\s\S]*?</g>'
+        pattern = rf'<g\\s+id="{label_id}"[^>]*>[\\s\\S]*?</g>'
         merged, count = re.subn(
             pattern,
             lambda match: (visible_labels.append(match.group(0)) or ""),
@@ -204,19 +204,33 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
             count=1,
         )
         if count != 1:
-            raise ValueError(
-                f"{output_path.name}: cannot move visible label {label_id} to front"
-            )
+            raise ValueError(f"{output_path.name}: cannot extract visible label {label_id}")
+
     if visible_labels:
-        closing_tag = merged.rfind("</svg>")
-        if closing_tag < 0:
-            raise ValueError(f"{output_path.name}: missing closing SVG tag")
+        # Find the Page group and its matching closing tag while respecting
+        # nested groups and self-closing LibreOffice metadata groups.
+        page_open = re.search(r'<g\\b(?=[^>]*\\bclass="Page")[^>]*>', merged)
+        if page_open is None:
+            raise ValueError(f"{output_path.name}: cannot find LibreOffice Page group")
+        depth = 1
+        page_close = None
+        for token in re.finditer(r'<g\\b[^>]*>|</g\\s*>', merged[page_open.end():]):
+            tag = token.group(0)
+            if tag.startswith("</g"):
+                depth -= 1
+                if depth == 0:
+                    page_close = page_open.end() + token.start()
+                    break
+            elif not tag.endswith("/>"):
+                depth += 1
+        if page_close is None:
+            raise ValueError(f"{output_path.name}: cannot find end of Page group")
         merged = (
-            merged[:closing_tag]
-            + "\n<!-- Visible replacement labels: deliberately above legacy text outlines. -->\n"
-            + "\n".join(visible_labels)
-            + "\n"
-            + merged[closing_tag:]
+            merged[:page_close]
+            + "\\n<!-- Visible replacement labels: last objects inside the LibreOffice Page group. -->\\n"
+            + "\\n".join(visible_labels)
+            + "\\n"
+            + merged[page_close:]
         )
 
     output_path.write_text(merged, encoding="utf-8")
