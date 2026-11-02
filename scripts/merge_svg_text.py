@@ -79,6 +79,8 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
         for element in cloned.iter():
             element.attrib.pop("id", None)
             if local_name(element.tag) in {"text", "tspan"}:
+                # Inkscape may ignore opacity on the containing group when
+                # importing nested text; force transparency on each text node.
                 element.set("opacity", "0")
                 element.set("fill-opacity", "0")
                 style = element.get("style", "").strip().rstrip(";")
