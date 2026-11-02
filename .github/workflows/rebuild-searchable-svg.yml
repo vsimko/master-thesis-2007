@@ -49,56 +49,27 @@ jobs:
             git show "${source_commit}:images/${name}.svg" > "/tmp/original-svg/${name}.svg"
           done
 
-          python3 - <<'PY'
-          import zipfile
-          import xml.etree.ElementTree as ET
-          targets = {"arch-quickbridge": {"QuickBridge", "unicast"},
-                     "arch-agconnector": {"Registry", "Server"}}
-          ns = {"text": "urn:oasis:names:tc:opendocument:xmlns:text:1.0"}
-          for name, labels in targets.items():
-              with zipfile.ZipFile(f"/tmp/original-odg/{name}.odg") as z:
-                  root = ET.fromstring(z.read("content.xml"))
-                  parent = {child: node for node in root.iter() for child in node}
-                  print(f"ODG-LABEL-DIAGNOSTIC {name}")
-                  for p in root.iter(f"{{{ns['text']}}}p"):
-                      value = "".join(p.itertext()).strip()
-                      if any(label.lower() in value.lower() for label in labels):
-                          chain, node = [], p
-                          while node is not None and len(chain) < 8:
-                              chain.append((node.tag.split("}")[-1], node.attrib))
-                              node = parent.get(node)
-                          print({"text": value, "ancestors": chain})
-          PY
 
 
-          python3 - <<'PY'
-          import zipfile, xml.etree.ElementTree as ET
-          for name in ("arch-quickbridge", "arch-agconnector"):
-              with zipfile.ZipFile(f"/tmp/original-odg/{name}.odg") as z:
-                  root = ET.fromstring(z.read("content.xml"))
-                  styles = ET.fromstring(z.read("styles.xml"))
-                  print("ODG-STRUCTURE", name, "elements", len(list(root.iter())))
-                  wanted = {"P4", "P5", "gr4", "gr5", "gr6"}
-                  for source, tree in (("content", root), ("styles", styles)):
-                      for node in tree.iter():
-                          if node.get("{urn:oasis:names:tc:opendocument:xmlns:style:1.0}name") in wanted:
-                              print("ODG-STYLE", name, source, node.tag.split("}")[-1], node.attrib,
-                                    [(child.tag.split("}")[-1], child.attrib) for child in node])
 
-                  for node in root.iter():
-                      tag = node.tag.split("}")[-1]
-                      value = "".join(node.itertext()).strip()
-                      if value or tag in ("custom-shape", "rect", "ellipse", "frame"):
-                          print("ODG-NODE", tag, node.attrib, repr(value[:120]))
-          PY
+          # Apply the typography fixes to the ODG text objects before export.
+          # The ODG files are temporary historical sources and are not committed.
+          python3 scripts/patch_odg_labels.py /tmp/original-odg/arch-quickbridge.odg
+          python3 scripts/patch_odg_labels.py /tmp/original-odg/arch-agconnector.odg
 
           libreoffice --headless --convert-to svg --outdir /tmp/exported-svg /tmp/original-odg/*.odg
 
           for name in "${names[@]}"; do
-            python3 scripts/merge_svg_text.py \
-              --original "/tmp/original-svg/${name}.svg" \
-              --exported "/tmp/exported-svg/${name}.svg" \
-              --output "/tmp/merged-svg/${name}.svg"
+            if [[ "$name" == "arch-quickbridge" || "$name" == "arch-agconnector" ]]; then
+              # For the repaired diagrams, the patched ODG export is the visual
+              # source of truth; do not reintroduce the legacy outlined labels.
+              cp "/tmp/exported-svg/${name}.svg" "/tmp/merged-svg/${name}.svg"
+            else
+              python3 scripts/merge_svg_text.py \
+                --original "/tmp/original-svg/${name}.svg" \
+                --exported "/tmp/exported-svg/${name}.svg" \
+                --output "/tmp/merged-svg/${name}.svg"
+            fi
           done
 
           cp /tmp/merged-svg/*.svg images/
