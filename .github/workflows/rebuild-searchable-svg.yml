@@ -1,0 +1,83 @@
+name: Rebuild searchable SVG diagrams
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - fix/searchable-svg-text
+    paths:
+      - .github/workflows/rebuild-searchable-svg.yml
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install LibreOffice Draw
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libreoffice-draw
+
+      - name: Re-export every diagram from its original ODG
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_commit="6f5adde6b9cbfebd2539d51c61776b1c7b95eb0b"
+          names=(
+            arch-ag-default arch-ag-sharedapp arch-agconnector
+            arch-ciant-ag-node arch-ciant-ag-room arch-multicast
+            arch-quickbridge arch-stream-vnc flash-architecture
+            h261-vs-nv h263-vs-h261 h264-vs-h263 h264-vs-mpeg2
+            localhost-recording mff-logo mouth-to-ear-delay
+            nat-architecture oais-environment resolutions
+            sequence-stream-vnc skype-architecture unicast-multicast
+            vc-input-formats
+          )
+          mkdir -p /tmp/original-odg /tmp/rebuilt-svg
+          for name in "${names[@]}"; do
+            git show "${source_commit}:images/${name}.odg" > "/tmp/original-odg/${name}.odg"
+          done
+          libreoffice --headless --convert-to svg --outdir /tmp/rebuilt-svg /tmp/original-odg/*.odg
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          ns = {'svg': 'http://www.w3.org/2000/svg'}
+          names = """arch-ag-default arch-ag-sharedapp arch-agconnector arch-ciant-ag-node
+          arch-ciant-ag-room arch-multicast arch-quickbridge arch-stream-vnc
+          flash-architecture h261-vs-nv h263-vs-h261 h264-vs-h263 h264-vs-mpeg2
+          localhost-recording mff-logo mouth-to-ear-delay nat-architecture
+          oais-environment resolutions sequence-stream-vnc skype-architecture
+          unicast-multicast vc-input-formats""".split()
+          for name in names:
+              path = Path('/tmp/rebuilt-svg') / f'{name}.svg'
+              root = ET.parse(path).getroot()
+              texts = root.findall('.//svg:text', ns)
+              if not texts and name != 'mff-logo':
+                  raise SystemExit(f'{name}: no searchable SVG text elements')
+              if name == 'mff-logo' and not texts:
+                  print(f'{name}: original ODG contains vector logo artwork, no text objects; preserved as artwork')
+                  continue
+              visible = ' '.join(''.join(t.itertext()) for t in texts)
+              if any(c in visible for c in 'áäčďéěíĺľňóôŕřšťúůýžÁÄČĎÉĚÍĹĽŇÓÔŔŘŠŤÚŮÝŽ'):
+                  raise SystemExit(f'{name}: possible non-English accented text; review required')
+              print(f'{name}: {len(texts)} text elements')
+          PY
+          cp /tmp/rebuilt-svg/*.svg images/
+          git add images/*.svg
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --cached --quiet; then
+            git commit -m "Rebuild SVG diagrams from original ODG with searchable text"
+            git push origin HEAD:refs/heads/fix/searchable-svg-text
+          else
+            echo "All SVG exports are already up to date."
+          fi

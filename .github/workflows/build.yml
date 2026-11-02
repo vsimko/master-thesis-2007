@@ -21,7 +21,7 @@ jobs:
       - name: Install Inkscape
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends inkscape
+          sudo apt-get install -y --no-install-recommends inkscape poppler-utils
 
       # TeX Live is cached by the action. Bump cache_version when changing
       # the TeX Live version or required package set to force a fresh install.
@@ -43,6 +43,32 @@ jobs:
       - name: Build PDF
         run: ./build.sh build
 
+      - name: Verify searchable text survives into the PDF
+        run: |
+          pdftotext -layout main.pdf main.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          text = ' '.join(Path('main.txt').read_text(errors='replace').lower().split())
+          required = [
+              'multicast network', 'shared application', 'primarycamera',
+              'quickbridge', 'flash media server', 'psnr',
+              'mouth-to-ear-delay', 'nat gateway', 'oais',
+              'supernode', 'accessgrid session'
+          ]
+          missing = [label for label in required if label not in text]
+          if missing:
+              raise SystemExit('PDF text extraction is missing SVG labels: ' + ', '.join(missing))
+          print('Searchable SVG labels found in PDF:', ', '.join(required))
+          PY
+
+      - name: Upload PDF preview
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: thesis-pdf-preview-${{ github.run_number }}
+          path: main.pdf
+          retention-days: 14
+
       - name: Audit final LaTeX and BibTeX logs
         run: python3 ./tests/check_build_logs.py
 
@@ -58,6 +84,7 @@ jobs:
             main.lof
             main.lot
             main.toc
+            main.txt
           if-no-files-found: warn
           retention-days: 14
 
