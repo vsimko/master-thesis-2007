@@ -59,32 +59,56 @@ jobs:
           if missing:
               raise SystemExit('PDF text extraction is missing SVG labels: ' + ', '.join(missing))
 
-          import re
           import subprocess
-          def page_text(number, caption):
-              raw = subprocess.run(
-                  ['pdftotext', '-f', str(number), '-l', str(number), '-layout', 'main.pdf', '-'],
-                  check=True, capture_output=True, text=True,
-              ).stdout
-              return raw.split(caption, 1)[0]
+          import xml.etree.ElementTree as ET
 
-          page53 = page_text(59, 'Figure 7.6')
-          page54 = page_text(60, 'Figure 7.7')
-          lines53 = [
-              re.sub(r'\s+', '', line).lower()
-              for line in page53.splitlines() if line.strip()
-          ]
-          lines54 = [
-              re.sub(r'\s+', '', line).lower()
-              for line in page54.splitlines() if line.strip()
-          ]
-          if not any('quickbridge' in line for line in lines53) or 'unicast' not in lines53:
+          subprocess.run(
+              ['pdftotext', '-f', '59', '-l', '60', '-bbox', 'main.pdf', 'diagram-pages.xml'],
+              check=True,
+          )
+          root = ET.parse('diagram-pages.xml').getroot()
+          pages = [node for node in root.iter() if node.tag.endswith('page')]
+          if len(pages) != 2:
+              raise SystemExit(f'Expected two diagram pages, found {len(pages)}')
+
+          def words(page):
+              return [
+                  (
+                      (node.text or '').strip(),
+                      (float(node.get('xMin')) + float(node.get('xMax'))) / 2,
+                      (float(node.get('yMin')) + float(node.get('yMax'))) / 2,
+                  )
+                  for node in page.iter()
+                  if node.tag.endswith('word') and (node.text or '').strip()
+              ]
+
+          page53_words = words(pages[0])
+          page53_labels = {item[0].lower() for item in page53_words}
+          if 'quickbridge' not in page53_labels or 'unicast' not in page53_labels:
               raise SystemExit('PDF page 53 is missing the QuickBridge/unicast labels')
-          merged_labels = ('registryserver', 'multicastisland', 'umtpagent', 'umtpserver')
-          if any(label in line for label in merged_labels for line in lines54):
-              raise SystemExit('PDF page 54 contains merged AGConnector labels')
+
+          def require_separate_lines(page, first, second, x_tolerance=45):
+              items = words(page)
+              first_words = [item for item in items if item[0] == first]
+              second_words = [item for item in items if item[0] == second]
+              return any(
+                  abs(a[1] - b[1]) <= x_tolerance and abs(a[2] - b[2]) > 2
+                  for a in first_words for b in second_words
+              )
+
+          for first, second in (
+              ('Registry', 'Server'),
+              ('Multicast', 'Island'),
+              ('UMTP', 'Agent'),
+              ('UMTP', 'Server'),
+          ):
+              if not require_separate_lines(pages[1], first, second):
+                  raise SystemExit(
+                      f'PDF page 54: {first}/{second} are not on distinct lines'
+                  )
+
           print('Searchable SVG labels found in PDF:', ', '.join(required))
-          print('PDF pages 53-54: multiline diagram labels remain separated.')
+          print('PDF pages 53-54: multiline diagram labels have distinct text baselines.')
           PY
 
       - name: Upload PDF preview
