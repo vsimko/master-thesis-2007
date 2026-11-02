@@ -109,7 +109,7 @@ for svg_path in sorted(all_svg):
         for node in targets:
             runs = [
                 child for child in node.iter()
-                if child.tag in {f"{svg_ns}text", f"{svg_ns}tspan"}
+                if child.tag == f"{svg_ns}tspan"
                 and "".join(child.itertext()).strip()
             ]
             if not runs or any(
