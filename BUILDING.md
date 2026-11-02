@@ -6,7 +6,7 @@ This repository is built and validated in GitHub Actions with the following tool
 | --- | --- | --- |
 | Operating system | Ubuntu 24.04 GitHub-hosted runner | CI environment |
 | TeX distribution | TeX Live 2026 | LaTeX engine and packages |
-| TeX Live collections | `collection-latexrecommended`, `collection-latexextra`, `collection-fontsrecommended`, `collection-langczechslovak` | Document class, graphics, fonts, and Czech/Slovak language support |
+| TeX Live collections | `collection-latexrecommended`, `collection-latexextra`, `collection-fontsrecommended` | Document class, graphics, and fonts |
 | Build driver | `latexmk` from TeX Live 2026 (optional locally) | Repeated LaTeX/BibTeX passes |
 | SVG renderer | Inkscape (Ubuntu 24.04 package) | SVG-to-PDF conversion invoked by the LaTeX `svg` package |
 | Python | Python 3.9 or newer | Static source, SVG, and reference checks |
@@ -41,7 +41,7 @@ Third-party GitHub Actions in the workflow are pinned to full commit SHAs rather
 
 ## Maintained figure inputs
 
-The 23 vector diagrams are maintained as SVG files in `images/` and referenced with `\includesvg`. Photos and screenshots remain raster images. Do not add ODG source files or PDF sidecar exports to `images/`; the SVG files are the editable vector inputs and Inkscape-generated PDFs are build intermediates only.
+The 23 vector diagrams are maintained as SVG files in `images/` and referenced with `\\includesvg`. Photos and screenshots remain raster images. Do not add ODG source files or PDF sidecar exports to `images/`; the SVG files are the editable vector inputs and Inkscape-generated PDFs are build intermediates only.
 
 ## Clean-up
 
