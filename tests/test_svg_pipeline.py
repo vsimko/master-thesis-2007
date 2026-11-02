@@ -46,7 +46,7 @@ if not re.search(r"apt-get install[^\n]*\binkscape\b", workflow):
 chapter_setup = (ROOT / "chapter-nodesetup.tex").read_text(encoding="utf-8")
 for diagram in ("arch-quickbridge", "arch-agconnector"):
     if not re.search(
-        rf"\\\\includesvg\\[[^]]*inkscapelatex=false[^]]*\\]\\{{{diagram}\\}}",
+        rf"\\includesvg\\[[^]]*inkscapelatex=false[^]]*\\]\\{{{diagram}\\}}",
         chapter_setup,
     ):
         errors.append(
