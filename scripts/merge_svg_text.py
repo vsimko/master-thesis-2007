@@ -166,7 +166,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
             'font-family="Liberation Sans, sans-serif" font-size="353" fill="#000000" '
             'style="white-space:pre">Server</text></g>'
         )
-        pattern = r'<g\\s+id="text78"[\\s\\S]*?</g>'
+        pattern = r'<g\s+id="text78"[\s\S]*?</g>'
         merged, count = re.subn(pattern, lambda _match: replacement, merged, count=1)
         if count != 1:
             raise ValueError(f"{output_path.name}: cannot repair Registry Server label")
