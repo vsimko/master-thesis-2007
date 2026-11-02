@@ -69,7 +69,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
             if id_pos < 0 or path_start < 0 or path_end < 0:
                 raise ValueError(f"{output_path.name}: cannot locate red-circle number {label_id}")
             element = original[path_start:path_end + 1]
-            element = re.sub(r'\\s+transform="[^"]*"', "", element)
+            element = re.sub(r'\s+transform="[^"]*"', "", element)
             element = element.replace("<path", '<path transform="translate(' + str(x_offset) + ',0)"', 1)
             original = original[:path_start] + element + original[path_end + 1:]
 
@@ -146,9 +146,9 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     if output_path.stem == "unicast-multicast":
         number_offsets = {"text101": -112, "text110": -120}
         for label_id, x_offset in number_offsets.items():
-            pattern = rf'<path(?P<attrs>[^>]*\\bid="{label_id}"[^>]*)>'
+            pattern = rf'<path(?P<attrs>[^>]*\bid="{label_id}"[^>]*)>'
             def center_number(match: re.Match[str]) -> str:
-                attrs = re.sub(r'\\s+transform="[^"]*"', "", match.group("attrs"))
+                attrs = re.sub(r'\s+transform="[^"]*"', "", match.group("attrs"))
                 return '<path transform="translate(' + str(x_offset) + ',0)"' + attrs + '>'
             merged, count = re.subn(pattern, center_number, merged, count=1, flags=re.DOTALL)
             if count != 1:
