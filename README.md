@@ -69,5 +69,5 @@ The production build uses `latexmk` when installed; otherwise it runs `pdflatex`
 
 ## Continuous Integration & Releases (CI/CD)
 
-- **Build validation:** Each push or pull request targeting `main` runs the source checks and compiles `main.tex`. Pull-request builds publish `main.pdf` as a workflow artifact.
-- **GitHub Releases:** Each qualifying push to `main` creates a GitHub Release (`v<build_number>`) with the generated `main.pdf` attached.
+- **Build validation:** Each push or pull request targeting `main`, and each manual workflow dispatch, runs the source checks, compiles `main.tex`, and uploads the validated PDF as a workflow artifact. Build validation runs with read-only repository permissions.
+- **GitHub Releases:** Only a successful push to `main` publishes a GitHub Release (`v<build_number>`) with the validated `main.pdf` attached. The separate publishing job receives write permission only after validation succeeds; manual runs and pull requests never publish releases.
