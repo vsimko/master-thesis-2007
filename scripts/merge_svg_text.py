@@ -196,7 +196,7 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     }.get(output_path.stem, ())
     visible_labels: list[str] = []
     for label_id in visible_label_ids:
-        pattern = rf'<g\\s+id="{label_id}"[^>]*>[\\s\\S]*?</g>'
+        pattern = rf'<g\s+id="{label_id}"[^>]*>[\s\S]*?</g>'
         merged, count = re.subn(
             pattern,
             lambda match: (visible_labels.append(match.group(0)) or ""),
@@ -209,12 +209,12 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     if visible_labels:
         # Find the Page group and its matching closing tag while respecting
         # nested groups and self-closing LibreOffice metadata groups.
-        page_open = re.search(r'<g\\b(?=[^>]*\\bclass="Page")[^>]*>', merged)
+        page_open = re.search(r'<g\b(?=[^>]*\bclass="Page")[^>]*>', merged)
         if page_open is None:
             raise ValueError(f"{output_path.name}: cannot find LibreOffice Page group")
         depth = 1
         page_close = None
-        for token in re.finditer(r'<g\\b[^>]*>|</g\\s*>', merged[page_open.end():]):
+        for token in re.finditer(r'<g\b[^>]*>|</g\s*>', merged[page_open.end():]):
             tag = token.group(0)
             if tag.startswith("</g"):
                 depth -= 1
@@ -227,9 +227,9 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
             raise ValueError(f"{output_path.name}: cannot find end of Page group")
         merged = (
             merged[:page_close]
-            + "\\n<!-- Visible replacement labels: last objects inside the LibreOffice Page group. -->\\n"
-            + "\\n".join(visible_labels)
-            + "\\n"
+            + "\n<!-- Visible replacement labels: last objects inside the LibreOffice Page group. -->\n"
+            + "\n".join(visible_labels)
+            + "\n"
             + merged[page_close:]
         )
 
