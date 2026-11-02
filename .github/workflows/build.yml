@@ -35,7 +35,6 @@ jobs:
             collection-latexrecommended
             collection-latexextra
             collection-fontsrecommended
-            collection-langczechslovak
 
       - name: Validate build and SVG source pipeline
         run: ./build.sh test
