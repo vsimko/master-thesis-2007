@@ -29,15 +29,30 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
     original_root = ET.fromstring(original)
     exported_root = ET.fromstring(exported)
     # Keep the numbered red-node correction across automated SVG rebuilds.
+    # Apply it to the original XML string so the remaining artwork stays untouched.
     label_offsets = {"localhost-recording": 6, "skype-architecture": 18}
     if output_path.stem in label_offsets:
-        labels = [node for node in original_root.iter()
-                  if local_name(node.tag) == "path" and node.get("aria-label", "").isdigit()
-                  and "fill:#ffffff" in node.get("style", "")]
+        labels = [
+            node for node in original_root.iter()
+            if local_name(node.tag) == "path"
+            and node.get("aria-label", "").isdigit()
+            and "fill:#ffffff" in node.get("style", "")
+        ]
         if len(labels) != label_offsets[output_path.stem]:
-            raise ValueError(f"{output_path.name}: unexpected numbered-label count: {len(labels)}")
+            raise ValueError(f"{output_path.name}: unexpected white numbered-label count: {len(labels)}")
         for label in labels:
-            label.set("transform", "translate(-100,-30)")
+            label_id = label.get("id")
+            marker = f'id="{label_id}"'
+            id_pos = original.find(marker)
+            path_start = original.rfind("<path", 0, id_pos)
+            path_end = original.find(">", id_pos)
+            if not label_id or id_pos < 0 or path_start < 0 or path_end < 0:
+                raise ValueError(f"{output_path.name}: cannot locate numbered label {label_id}")
+            element = original[path_start:path_end + 1]
+            updated = element.replace('transform="translate(-30,-30)"', 'transform="translate(-100,-30)"', 1)
+            if updated == element:
+                raise ValueError(f"{output_path.name}: missing original transform for {label_id}")
+            original = original[:path_start] + updated + original[path_end + 1:]
 
     def parse_viewbox(root: ET.Element, label: str) -> tuple[float, float, float, float]:
         raw = root.get("viewBox", "")
