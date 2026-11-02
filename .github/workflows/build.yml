@@ -58,7 +58,57 @@ jobs:
           missing = [label for label in required if label not in text]
           if missing:
               raise SystemExit('PDF text extraction is missing SVG labels: ' + ', '.join(missing))
+
+          import subprocess
+          import xml.etree.ElementTree as ET
+
+          subprocess.run(
+              ['pdftotext', '-f', '59', '-l', '60', '-bbox', 'main.pdf', 'diagram-pages.xml'],
+              check=True,
+          )
+          root = ET.parse('diagram-pages.xml').getroot()
+          pages = [node for node in root.iter() if node.tag.endswith('page')]
+          if len(pages) != 2:
+              raise SystemExit(f'Expected two diagram pages, found {len(pages)}')
+
+          def words(page):
+              return [
+                  (
+                      (node.text or '').strip(),
+                      (float(node.get('xMin')) + float(node.get('xMax'))) / 2,
+                      (float(node.get('yMin')) + float(node.get('yMax'))) / 2,
+                  )
+                  for node in page.iter()
+                  if node.tag.endswith('word') and (node.text or '').strip()
+              ]
+
+          page53_words = words(pages[0])
+          page53_labels = {item[0].lower() for item in page53_words}
+          if 'quickbridge' not in page53_labels or 'unicast' not in page53_labels:
+              raise SystemExit('PDF page 53 is missing the QuickBridge/unicast labels')
+
+          def require_separate_lines(page, first, second, x_tolerance=45):
+              items = words(page)
+              first_words = [item for item in items if item[0] == first]
+              second_words = [item for item in items if item[0] == second]
+              return any(
+                  abs(a[1] - b[1]) <= x_tolerance and abs(a[2] - b[2]) > 2
+                  for a in first_words for b in second_words
+              )
+
+          for first, second in (
+              ('Registry', 'Server'),
+              ('Multicast', 'Island'),
+              ('UMTP', 'Agent'),
+              ('UMTP', 'Server'),
+          ):
+              if not require_separate_lines(pages[1], first, second):
+                  raise SystemExit(
+                      f'PDF page 54: {first}/{second} are not on distinct lines'
+                  )
+
           print('Searchable SVG labels found in PDF:', ', '.join(required))
+          print('PDF pages 53-54: multiline diagram labels have distinct text baselines.')
           PY
 
       - name: Upload PDF preview

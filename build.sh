@@ -7,6 +7,9 @@ clean_aux() {
   rm -f ./*.aux main.bbl main.blg main.dvi main.idx main.ilg \
     main.ind main.lof main.log main.lot main.nav main.out \
     main.snm main.synctex.gz main.toc main.fls main.fdb_latexmk
+  # The svg package caches Inkscape exports here. They must be regenerated
+  # after source SVG changes, otherwise LaTeX can silently embed stale figures.
+  rm -rf ./svg-inkscape
 }
 
 case "${1:-build}" in
