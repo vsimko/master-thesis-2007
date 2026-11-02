@@ -62,8 +62,8 @@ The production build uses `latexmk` when installed; otherwise it runs `pdflatex`
 ## Figure source policy
 
 - The 23 maintained vector diagrams in `images/*.svg` are the editable source of truth.
-- Reference vector diagrams from LaTeX with `\\includesvg{...}`; Inkscape converts them during the build.
-- Photos and screenshots remain raster assets and are included with `\\includegraphics`.
+- Reference vector diagrams from LaTeX with `\includesvg{...}`; Inkscape converts them during the build.
+- Photos and screenshots remain raster assets and are included with `\includegraphics`.
 - Do not add ODG files or PDF sidecar exports to `images/`. SVG and raster images are the maintained inputs; generated SVG-to-PDF files belong in the build cache and are removed by `./build.sh clean`.
 - Run `./build.sh test` to validate SVG references, required conversion support, and LaTeX references.
 
