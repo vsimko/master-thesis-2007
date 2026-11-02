@@ -71,6 +71,19 @@ jobs:
           PY
 
 
+          python3 - <<'PY'
+          import zipfile, xml.etree.ElementTree as ET
+          for name in ("arch-quickbridge", "arch-agconnector"):
+              with zipfile.ZipFile(f"/tmp/original-odg/{name}.odg") as z:
+                  root = ET.fromstring(z.read("content.xml"))
+                  print("ODG-STRUCTURE", name, "elements", len(list(root.iter())))
+                  for node in root.iter():
+                      tag = node.tag.split("}")[-1]
+                      value = "".join(node.itertext()).strip()
+                      if value or tag in ("custom-shape", "rect", "ellipse", "frame"):
+                          print("ODG-NODE", tag, node.attrib, repr(value[:120]))
+          PY
+
           libreoffice --headless --convert-to svg --outdir /tmp/exported-svg /tmp/original-odg/*.odg
 
           for name in "${names[@]}"; do
