@@ -54,22 +54,7 @@ def patch(path: Path) -> None:
     if automatic is None:
         automatic = ET.SubElement(root, f"{{{NS['office']}}}automatic-styles")
 
-    font_faces = root.find(".//office:font-face-decls", NS)
-    font_faces_in_styles = False
-    if font_faces is None:
-        font_faces = styles_root.find(".//office:font-face-decls", NS)
-        font_faces_in_styles = font_faces is not None
-    if font_faces is None:
-        font_faces = ET.Element(f"{{{NS['office']}}}font-face-decls")
-        styles_root.insert(0, font_faces)
-        font_faces_in_styles = True
 
-    if not any(node.get(f"{{{NS['style']}}}name") == "ThesisDejaVu"
-               for node in font_faces):
-        ET.SubElement(font_faces, f"{{{NS['style']}}}font-face", {
-            f"{{{NS['style']}}}name": "ThesisDejaVu",
-            f"{{{NS['svg']}}}font-family": "DejaVu Sans",
-        })
 
     expected = {label: count for label, (_, _, count) in specs.items()}
     found = {label: 0 for label in specs}
@@ -98,7 +83,6 @@ def patch(path: Path) -> None:
             f"{{{NS['fo']}}}margin-right": "0cm",
         })
         ET.SubElement(style, f"{{{NS['style']}}}text-properties", {
-            f"{{{NS['style']}}}font-name": "ThesisDejaVu",
             f"{{{NS['fo']}}}font-family": "DejaVu Sans",
             f"{{{NS['fo']}}}font-size": font_size,
         })
