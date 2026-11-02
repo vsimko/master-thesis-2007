@@ -118,6 +118,9 @@ for svg_path in sorted(all_svg):
                 errors.append("arch-quickbridge.svg: QuickBridge label is not centered in its box")
             if unicast.get("transform") != "rotate(-90 4089 3495)":
                 errors.append("arch-quickbridge.svg: unicast label must remain vertically centered")
+            for node in (quickbridge, unicast):
+                if node.get("font-family") != "Arial, sans-serif":
+                    errors.append("arch-quickbridge.svg: QuickBridge and unicast must use Arial sans-serif")
     elif svg_path.stem == "arch-agconnector":
         visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
         if visible_labels != ["Registry", "Server"]:
@@ -139,10 +142,12 @@ for svg_path in sorted(all_svg):
             for node in root.iter()
             if node.tag == f"{svg_ns}path" and node.get("id") in {"text101", "text110"}
         }
-        if set(numbered) != {"text101", "text110"} or any(
-            node.get("transform") != "translate(-100,60)" for node in numbered.values()
+        expected_offsets = {"text101": "translate(-112,0)", "text110": "translate(-120,0)"}
+        if set(numbered) != set(expected_offsets) or any(
+            node.get("transform") != expected_offsets[label_id]
+            for label_id, node in numbered.items()
         ):
-            errors.append("unicast-multicast.svg: red-circle numbers must be optically centered")
+            errors.append("unicast-multicast.svg: red-circle numbers must be centered horizontally and vertically")
     if not any("".join(node.itertext()).strip() for node in layer_text):
         errors.append(f"{svg_path.relative_to(ROOT)}: searchable text contains no labels")
 for path in sorted(all_svg - used_svg):
