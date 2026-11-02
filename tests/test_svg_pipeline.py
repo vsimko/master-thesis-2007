@@ -43,6 +43,19 @@ if "-shell-escape" not in build_script:
 if not re.search(r"apt-get install[^\n]*\binkscape\b", workflow):
     errors.append("GitHub Actions must install Inkscape before building the PDF")
 
+chapter_setup = (ROOT / "chapter-nodesetup.tex").read_text(encoding="utf-8")
+for diagram in ("arch-quickbridge", "arch-agconnector"):
+    if not re.search(
+        rf"\\\\includesvg\\[[^]]*inkscapelatex=false[^]]*\\]\\{{{diagram}\\}}",
+        chapter_setup,
+    ):
+        errors.append(
+            f"{diagram}: use direct SVG PDF export (inkscapelatex=false) to preserve multiline labels"
+        )
+
+if list(IMAGE_DIR.glob("*.odg")):
+    errors.append("ODG source files must not remain in the maintained images directory")
+
 used_svg = set()
 for tex_file, raw_name in svg_refs:
     name = raw_name.removesuffix(".svg")
