@@ -52,27 +52,24 @@ jobs:
           python3 - <<'PY'
           import zipfile
           import xml.etree.ElementTree as ET
-          from pathlib import Path
-          ns = {
-              "draw": "urn:oasis:names:tc:opendocument:xmlns:drawing:1.0",
-              "text": "urn:oasis:names:tc:opendocument:xmlns:text:1.0",
-              "svg": "urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0",
-              "style": "urn:oasis:names:tc:opendocument:xmlns:style:1.0",
-          }
           targets = {"arch-quickbridge": {"QuickBridge", "unicast"},
                      "arch-agconnector": {"Registry", "Server"}}
+          ns = {"text": "urn:oasis:names:tc:opendocument:xmlns:text:1.0"}
           for name, labels in targets.items():
               with zipfile.ZipFile(f"/tmp/original-odg/{name}.odg") as z:
                   root = ET.fromstring(z.read("content.xml"))
+                  parent = {child: node for node in root.iter() for child in node}
                   print(f"ODG-LABEL-DIAGNOSTIC {name}")
-                  for frame in root.iter(f"{{{ns['draw']}}}frame"):
-                      texts = ["".join(p.itertext()).strip() for p in frame.iter(f"{{{ns['text']}}}p")]
-                      found = [t for t in texts if t in labels]
-                      if found:
-                          print({"labels": found, "frame": frame.attrib,
-                                 "paragraphs": [(p.attrib, [(c.tag.split('}')[-1], c.attrib) for c in p])
-                                                for p in frame.iter(f"{{{ns['text']}}}p")]})
+                  for p in root.iter(f"{{{ns['text']}}}p"):
+                      value = "".join(p.itertext()).strip()
+                      if any(label.lower() in value.lower() for label in labels):
+                          chain, node = [], p
+                          while node is not None and len(chain) < 8:
+                              chain.append((node.tag.split("}")[-1], node.attrib))
+                              node = parent.get(node)
+                          print({"text": value, "ancestors": chain})
           PY
+
 
           libreoffice --headless --convert-to svg --outdir /tmp/exported-svg /tmp/original-odg/*.odg
 
