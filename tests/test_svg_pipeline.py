@@ -65,21 +65,52 @@ for svg_path in sorted(all_svg):
         errors.append(f"{svg_path.relative_to(ROOT)}: invalid SVG XML: {exc}")
         continue
 
-    layers = [
-        node for node in root.iter()
-        if node.tag == f"{svg_ns}g"
-        and node.get("id") == "searchable-text-layer"
-    ]
     text_nodes = [
         node for node in root.iter()
         if node.tag == f"{svg_ns}text"
     ]
 
     if svg_path.stem == "mff-logo":
-        if layers or text_nodes:
+        if text_nodes:
             errors.append("mff-logo.svg: logo should remain vector artwork without text")
         continue
 
+    # These two diagrams are now exported directly from patched ODG sources.
+    # Their visible text is the artwork; they intentionally have no invisible
+    # searchable-text overlay or legacy outlined duplicate labels.
+    if svg_path.stem in {"arch-quickbridge", "arch-agconnector"}:
+        expected = (
+            {"QuickBridge", "unicast"}
+            if svg_path.stem == "arch-quickbridge"
+            else {"Registry", "Server"}
+        )
+        labels = ["".join(node.itertext()).strip() for node in text_nodes]
+        for label in expected:
+            matches = [node for node, value in zip(text_nodes, labels) if value == label]
+            if not matches:
+                errors.append(f"{svg_path.stem}.svg: missing visible ODG label {label!r}")
+                continue
+            for node in matches:
+                attrs = " ".join(node.attrib.values())
+                style = node.get("style", "")
+                if "DejaVu Sans" not in attrs + " " + style:
+                    errors.append(
+                        f"{svg_path.stem}.svg: label {label!r} must use DejaVu Sans"
+                    )
+        if svg_path.stem == "arch-quickbridge":
+            for label in expected:
+                if labels.count(label) != 1:
+                    errors.append(
+                        f"arch-quickbridge.svg: expected one visible {label!r}; "
+                        f"found {labels.count(label)}"
+                    )
+        continue
+
+    layers = [
+        node for node in root.iter()
+        if node.tag == f"{svg_ns}g"
+        and node.get("id") == "searchable-text-layer"
+    ]
     if len(layers) != 1:
         errors.append(
             f"{svg_path.relative_to(ROOT)}: expected one searchable-text-layer; found {len(layers)}"
@@ -102,82 +133,6 @@ for svg_path in sorted(all_svg):
                     f"{svg_path.relative_to(ROOT)}: searchable text glyphs must be fully transparent"
                 )
                 break
-    visible_text = [node for node in text_nodes if node not in layer_text]
-    if svg_path.stem == "arch-quickbridge":
-        # Replacement labels must be the last objects inside LibreOffice's
-        # Page group; root-level siblings are ignored by its slide exporter.
-        page = next(
-            (
-                node for node in root.iter()
-                if node.tag == f"{svg_ns}g" and "Page" in node.get("class", "").split()
-            ),
-            None,
-        )
-        if page is None:
-            errors.append("arch-quickbridge.svg: missing LibreOffice Page group")
-        else:
-            page_children = list(page)
-            expected_tail = ["text60", "text85"]
-            actual_tail = [node.get("id") for node in page_children[-2:]]
-            if actual_tail != expected_tail:
-                errors.append(
-                    "arch-quickbridge.svg: replacement labels must be last inside Page; "
-                    f"found tail {actual_tail}"
-                )
-            for node in page_children[-2:]:
-                if node.get("opacity") is not None:
-                    errors.append("arch-quickbridge.svg: replacement labels must remain visible")
-        visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
-        if sorted(visible_labels) != ["QuickBridge", "unicast"]:
-            errors.append(
-                "arch-quickbridge.svg: expected only the repaired visible labels "
-                f"QuickBridge and unicast; found {visible_labels}"
-            )
-        else:
-            by_label = {label: node for label, node in zip(visible_labels, visible_text)}
-            quickbridge = by_label["QuickBridge"]
-            unicast = by_label["unicast"]
-            if quickbridge.get("x") != "6485" or quickbridge.get("y") != "3485" or quickbridge.get("font-size") != "205":
-                errors.append("arch-quickbridge.svg: QuickBridge label is not centered in its box")
-            if unicast.get("transform") != "rotate(-90 4089 3495)" or unicast.get("font-size") != "205":
-                errors.append("arch-quickbridge.svg: unicast label must remain vertically centered")
-            overlays = [node for node in root.iter() if node.tag in {f"{svg_ns}rect", f"{svg_ns}ellipse"}]
-            if not any(node.get("x") == "5550" and node.get("width") == "1870" for node in overlays):
-                errors.append("arch-quickbridge.svg: original QuickBridge outlines must be masked")
-            if not any(node.get("cx") == "4029" and node.get("rx") == "205" for node in overlays):
-                errors.append("arch-quickbridge.svg: original unicast outlines must be masked")
-            for node in (quickbridge, unicast):
-                if node.get("font-family") != "DejaVu Sans, sans-serif":
-                    errors.append("arch-quickbridge.svg: QuickBridge and unicast must use DejaVu Sans")
-    elif svg_path.stem == "arch-agconnector":
-        page = next(
-            (
-                node for node in root.iter()
-                if node.tag == f"{svg_ns}g" and "Page" in node.get("class", "").split()
-            ),
-            None,
-        )
-        if page is None or not list(page) or list(page)[-1].get("id") != "text78":
-            errors.append(
-                "arch-agconnector.svg: text78 must be the last object inside the Page group"
-            )
-        visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
-        if visible_labels != ["Registry", "Server"]:
-            errors.append(
-                "arch-agconnector.svg: Registry Server must be two separate visible lines; "
-                f"found {visible_labels}"
-            )
-        else:
-            masks = [node for node in root.iter() if node.tag == f"{svg_ns}rect" and node.get("x") == "13470"]
-            if not masks:
-                errors.append("arch-agconnector.svg: original Registry Server outlines must be masked")
-            for node in visible_text:
-                if node.get("font-family") != "DejaVu Sans, sans-serif":
-                    errors.append("arch-agconnector.svg: Registry Server must use DejaVu Sans")
-    elif visible_text:
-        errors.append(
-            f"{svg_path.relative_to(ROOT)}: visible text elements found outside the hidden layer"
-        )
     if svg_path.stem == "unicast-multicast":
         numbered = {
             node.get("id"): node
