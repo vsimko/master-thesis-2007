@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
-"""Rebuild live, searchable SVG text from the reviewed English text labels."""
+"""Rebuild live, searchable SVG text from reviewed English text labels."""
 from pathlib import Path
 import re
 
-FILES = sorted(Path("images").glob("*.svg"))
-
 def attr(source, name):
-    match = re.search(r'\\b' + re.escape(name) + r'="([^"]*)"', source)
+    match = re.search(r'\b' + re.escape(name) + r'="([^"]*)"', source)
     return match.group(1) if match else None
 
 def make_text(header, inner, label):
-    path_match = re.search(r"<path\\b[^>]*>", inner)
+    path_match = re.search(r"<path\b[^>]*>", inner)
     path = path_match.group(0) if path_match else header
     data = attr(path, "d") or ""
-    point = re.match(r"\\s*[mM]\\s*([-+]?(?:\\d*\\.)?\\d+(?:e[-+]?\\d+)?)[,\\s]+([-+]?(?:\\d*\\.)?\\d+)", data, re.I)
+    point = re.match(r"\s*[mM]\s*([-+]?(?:\d*\.)?\d+(?:e[-+]?\d+)?)[,\s]+([-+]?(?:\d*\.)?\d+)", data, re.I)
     if not point:
         return None
     style = attr(path, "style") or attr(header, "style") or ""
@@ -30,9 +28,9 @@ def make_text(header, inner, label):
 
 def rebuild(path):
     source = path.read_text(encoding="utf-8")
-    counts = {"groups": 0, "paths": 0, "unconverted": 0}
+    counts = {"groups": 0, "paths": 0}
     failures = []
-    group_re = re.compile(r'<g\\b(?=[^>]*\\bclass="SVGTextShape")(?=[^>]*\\baria-label="([^"]*)")[^>]*>([\\s\\S]*?)</g>')
+    group_re = re.compile(r'<g\b(?=[^>]*\bclass="SVGTextShape")(?=[^>]*\baria-label="([^"]*)")[^>]*>([\s\S]*?)</g>')
     def replace_group(match):
         text = make_text(match.group(0), match.group(2), match.group(1))
         if text is None:
@@ -40,7 +38,7 @@ def rebuild(path):
             return match.group(0)
         counts["groups"] += 1
         return text
-    path_re = re.compile(r'<path\\b(?=[^>]*\\bclass="SVGTextShape")(?=[^>]*\\baria-label="([^"]*)")[^>]*?/>')
+    path_re = re.compile(r'<path\b(?=[^>]*\bclass="SVGTextShape")(?=[^>]*\baria-label="([^"]*)")[^>]*?/>')
     def replace_path(match):
         text = make_text(match.group(0), "", match.group(1))
         if text is None:
@@ -50,15 +48,15 @@ def rebuild(path):
         return text
     updated = group_re.sub(replace_group, source)
     updated = path_re.sub(replace_path, updated)
-    counts["unconverted"] = updated.count('class="SVGTextShape"')
-    if failures or counts["unconverted"]:
-        raise RuntimeError(f"{path}: failed labels={failures}; remaining outlined text={counts['unconverted']}")
+    remaining = updated.count('class="SVGTextShape"')
+    if failures or remaining:
+        raise RuntimeError(f"{path}: failed labels={failures}; remaining outlined text={remaining}")
     if counts["groups"] + counts["paths"]:
         path.write_text(updated, encoding="utf-8")
     return counts
 
 total = {"groups": 0, "paths": 0, "files": 0}
-for svg in FILES:
+for svg in sorted(Path("images").glob("*.svg")):
     result = rebuild(svg)
     if result["groups"] + result["paths"]:
         total["files"] += 1
