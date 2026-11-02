@@ -41,6 +41,9 @@ def merge(original_path: Path, exported_path: Path, output_path: Path) -> None:
 
     ox, oy, ow, oh = parse_viewbox(original_root, str(original_path))
     gx, gy, gw, gh = parse_viewbox(exported_root, str(exported_path))
+    # Some legacy SVGs use a cropped or differently scaled viewBox. Map the
+    # invisible full-page text into the original canvas; visible artwork stays
+    # byte-for-byte unchanged, and searchable text remains inside the PDF page.
     sx, sy = ow / gw, oh / gh
     tx, ty = ox - gx * sx, oy - gy * sy
     transform = f"matrix({sx:.12g} 0 0 {sy:.12g} {tx:.12g} {ty:.12g})"
