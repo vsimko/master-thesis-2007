@@ -39,7 +39,7 @@ The CI workflow is the authoritative tested dependency definition. The TeX Live 
 
 ## Maintained figure inputs
 
-The 23 vector diagrams are maintained as SVG files in `images/` and referenced with `\\includesvg`. Photos and screenshots remain raster images. Do not add ODG source files or PDF sidecar exports to `images/`; the SVG files are the editable vector inputs and Inkscape-generated PDFs are build intermediates only.
+The 23 vector diagrams are maintained as SVG files in `images/` and referenced with `\includesvg`. Photos and screenshots remain raster images. Do not add ODG source files or PDF sidecar exports to `images/`; the SVG files are the editable vector inputs and Inkscape-generated PDFs are build intermediates only.
 
 ## Clean-up
 
