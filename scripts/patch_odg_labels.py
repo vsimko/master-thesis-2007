@@ -45,21 +45,24 @@ def patch(path: Path) -> None:
     if styles_data is None:
         raise ValueError(f"{path}: styles.xml missing")
     styles_root = ET.fromstring(styles_data)
-    automatic = root.find("office:automatic-styles", NS)
+    # Legacy ODG exports can nest style containers or omit the declarations.
+    automatic = root.find(".//office:automatic-styles", NS)
     automatic_in_styles = False
     if automatic is None:
-        automatic = styles_root.find("office:automatic-styles", NS)
+        automatic = styles_root.find(".//office:automatic-styles", NS)
         automatic_in_styles = automatic is not None
-    font_faces = root.find("office:font-face-decls", NS)
+    if automatic is None:
+        automatic = ET.SubElement(root, f"{{{NS['office']}}}automatic-styles")
+
+    font_faces = root.find(".//office:font-face-decls", NS)
     font_faces_in_styles = False
     if font_faces is None:
-        font_faces = styles_root.find("office:font-face-decls", NS)
+        font_faces = styles_root.find(".//office:font-face-decls", NS)
         font_faces_in_styles = font_faces is not None
-    if automatic is None or font_faces is None:
-        raise ValueError(
-            f"{path}: ODF style containers missing "
-            f"(automatic={automatic is not None}, font_faces={font_faces is not None})"
-        )
+    if font_faces is None:
+        font_faces = ET.Element(f"{{{NS['office']}}}font-face-decls")
+        styles_root.insert(0, font_faces)
+        font_faces_in_styles = True
 
     if not any(node.get(f"{{{NS['style']}}}name") == "ThesisDejaVu"
                for node in font_faces):
