@@ -15,7 +15,7 @@ jobs:
       contents: read
     steps:
       - name: Checkout merge commit
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       # The SVG package in the thesis invokes Inkscape through -shell-escape.
       - name: Install Inkscape
@@ -26,7 +26,7 @@ jobs:
       # TeX Live is cached by the action. Bump cache_version when changing
       # the TeX Live version or required package set to force a fresh install.
       - name: Install cached TeX Live
-        uses: zauguin/install-texlive@v4
+        uses: zauguin/install-texlive@f5e7d0b117035fff797d4392ea94131747e03d60 # v4
         with:
           texlive_version: 2026
           cache_version: 1
@@ -112,7 +112,7 @@ jobs:
           PY
 
       - name: Upload PDF build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: thesis-pdf-${{ github.run_number }}
           path: main.pdf
@@ -124,7 +124,7 @@ jobs:
 
       - name: Upload build diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: thesis-build-diagnostics-${{ github.run_number }}
           path: |
@@ -147,12 +147,12 @@ jobs:
       contents: write
     steps:
       - name: Download validated PDF
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: thesis-pdf-${{ github.run_number }}
 
       - name: Publish GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           tag_name: v${{ github.run_number }}
           name: "Thesis Release v${{ github.run_number }}"
