@@ -119,6 +119,10 @@ for svg_path in sorted(all_svg):
                     f"arch-quickbridge.svg: {label_id} must be a root-level overlay "
                     "after the searchable text layer"
                 )
+            elif root_children[matches[0]].get("opacity") is not None:
+                errors.append(
+                    f"arch-quickbridge.svg: {label_id} must not inherit hidden-layer opacity"
+                )
         visible_labels = ["".join(node.itertext()).strip() for node in visible_text]
         if sorted(visible_labels) != ["QuickBridge", "unicast"]:
             errors.append(
