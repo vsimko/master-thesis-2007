@@ -871,7 +871,11 @@
    aria-label="Host" />
        </g>
       </g>
-     </g>
+     
+<!-- Visible replacement labels: last objects inside the LibreOffice Page group. -->
+<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><rect x="5550" y="2850" width="1870" height="870" fill="#e6e6e6"/><text x="6485" y="3485" text-anchor="middle" dominant-baseline="middle" font-family="DejaVu Sans, sans-serif" font-size="205" fill="#000000" style="font-family:DejaVu Sans, sans-serif;white-space:pre">QuickBridge</text></g>
+<g id="text85" class="SVGTextShape" aria-label="unicast"><ellipse cx="4029" cy="3435" rx="205" ry="870" fill="#800000"/><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="DejaVu Sans, sans-serif" font-size="205" font-weight="700" fill="#ffffff" style="font-family:DejaVu Sans, sans-serif;white-space:pre">unicast</text></g>
+</g>
     </g>
    </g>
   </g>
@@ -890,8 +894,4 @@
        <text class="SVGTextShape" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan class="TextParagraph" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan class="TextPosition" x="8274" y="1856" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan font-family="Arial, sans-serif" font-size="353px" font-weight="400" fill="rgb(0,0,0)" stroke="none" style="white-space: pre;opacity:0 !important;fill-opacity:0 !important" opacity="0" fill-opacity="0">Host</tspan></tspan></tspan></text>
        <text class="SVGTextShape" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan class="TextParagraph" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan class="TextPosition" x="5528" y="3606" opacity="0" fill-opacity="0" style="opacity:0 !important;fill-opacity:0 !important"><tspan font-family="Arial, sans-serif" font-size="353px" font-weight="400" fill="rgb(0,0,0)" stroke="none" style="white-space: pre;opacity:0 !important;fill-opacity:0 !important" opacity="0" fill-opacity="0">QuickBridge</tspan></tspan></tspan></text>
        </g>
-
-<!-- Visible replacement labels: deliberately above legacy text outlines. -->
-<g id="text60" class="SVGTextShape" aria-label="QuickBridge"><rect x="5550" y="2850" width="1870" height="870" fill="#e6e6e6"/><text x="6485" y="3485" text-anchor="middle" dominant-baseline="middle" font-family="DejaVu Sans, sans-serif" font-size="205" fill="#000000" style="font-family:DejaVu Sans, sans-serif;white-space:pre">QuickBridge</text></g>
-<g id="text85" class="SVGTextShape" aria-label="unicast"><ellipse cx="4029" cy="3435" rx="205" ry="870" fill="#800000"/><text x="4089" y="3495" text-anchor="middle" dominant-baseline="middle" transform="rotate(-90 4089 3495)" font-family="DejaVu Sans, sans-serif" font-size="205" font-weight="700" fill="#ffffff" style="font-family:DejaVu Sans, sans-serif;white-space:pre">unicast</text></g>
 </svg>
